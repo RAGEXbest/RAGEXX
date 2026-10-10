@@ -18,7 +18,7 @@ footer{border-top:1px solid var(--line);padding:23px 5%;display:flex;justify-con
 
 .actual-odds-note{font-size:10px;color:#b9c4b4;line-height:1.4;margin-top:4px;text-align:center;max-width:230px}
 .sell-btn{margin-top:5px;width:100%;padding:5px 4px;border:1px solid #634638;border-radius:6px;background:#211711;color:#ffbe8b;font-size:10px;font-weight:800;cursor:pointer}
-.sell-btn:hover{background:#382117;border-color:#ff9f65}
+.sell-btn:hover{background:#382117;border-color:#ff9f65}.buy-btn:disabled,.sell-btn:disabled{opacity:.38;cursor:not-allowed;filter:grayscale(1);pointer-events:none}
 @media(max-width:760px){.toolbar{justify-content:center}.mode-controls{justify-content:center}}
 
 </style>
@@ -49,7 +49,7 @@ let inventory=window.RagexStore.getInventory(),demoInventory=[],source=null,targ
 function activeInventory(){return demoMode?demoInventory:inventory}
 function persistInventory(){inventory=window.RagexStore.setInventory(inventory)}
 function escapeHtml(s){return String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
-function skinCard(item,kind,index){const selected=(kind==='source'&&source===item)||(kind==='target'&&target===item);const sell=(kind==='source'&&!demoMode)?`<button class="sell-btn" onclick="event.stopPropagation();sellInventoryItem(${index})">ПРОДАТЬ · ${Math.floor(Number(item.value)||0).toLocaleString('ru-RU')} ★</button>`:'';return `<div class="skin ${selected?'selected':''}" onclick="selectItem('${kind}',${index})"><div class="skin-icon">${item.icon||'🔹'}</div><div class="skin-name">${escapeHtml(item.name)}</div><div class="skin-price">${Number(item.value).toLocaleString('ru-RU')} ★</div>${kind==='target'?`<button class="buy-btn" onclick="event.stopPropagation();buySkin(${index})">КУПИТЬ</button>`:sell}</div>`}
+function skinCard(item,kind,index){const selected=(kind==='source'&&source===item)||(kind==='target'&&target===item);const disabled=busy?' disabled aria-disabled="true" title="Недоступно во время апгрейда"':'';const sell=(kind==='source'&&!demoMode)?`<button class="sell-btn"${disabled} onclick="event.stopPropagation();sellInventoryItem(${index})">ПРОДАТЬ · ${Math.floor(Number(item.value)||0).toLocaleString('ru-RU')} ★</button>`:'';return `<div class="skin ${selected?'selected':''}" onclick="selectItem('${kind}',${index})"><div class="skin-icon">${item.icon||'🔹'}</div><div class="skin-name">${escapeHtml(item.name)}</div><div class="skin-price">${Number(item.value).toLocaleString('ru-RU')} ★</div>${kind==='target'?`<button class="buy-btn"${disabled} onclick="event.stopPropagation();buySkin(${index})">КУПИТЬ</button>`:sell}</div>`}
 function renderInventory(){const list=activeInventory();document.getElementById('inventoryGrid').innerHTML=list.map((item,i)=>skinCard(item,'source',i)).join('');document.getElementById('inventoryEmpty').style.display=list.length?'none':'block';document.getElementById('inventoryCount').textContent=list.length+' предметов'+(demoMode?' · демо':'')}
 function renderTargets(){const query=document.getElementById('search').value.toLowerCase();let list=catalog.filter(item=>item.name.toLowerCase().includes(query));const min=Number(document.getElementById('minPrice').value)||0;const max=Number(document.getElementById('maxPrice').value)||Infinity;list=list.filter(item=>item.value>=min&&item.value<=max);list.sort((a,b)=>document.getElementById('sort').value==='asc'?a.value-b.value:b.value-a.value);document.getElementById('targetGrid').innerHTML=list.map(item=>skinCard(item,'target',catalog.indexOf(item))).join('')||'<div class="empty">Предметы не найдены</div>'}
 function selectItem(kind,index){if(busy)return;if(kind==='source')source=activeInventory()[index]||null;else target=catalog[index]||null;updatePanels();renderInventory();renderTargets()}
@@ -71,10 +71,11 @@ function updatePanels(){
 }
 function showStatus(message){const status=document.getElementById('status');status.className='status show';status.textContent=message}
 function toggleDemoMode(){if(busy)return;demoMode=!demoMode;if(demoMode){demoInventory=[];source=null;}else{demoInventory=[];source=null;}updatePanels();renderInventory();renderTargets();showStatus(demoMode?'Демо-режим включён. Тестовые предметы не сохраняются в общем инвентаре.':'Демо-режим выключен. Все временные демо-предметы удалены. Обычный инвентарь сохранён.')}
-function toggleQuickMode(){quickMode=!quickMode;updatePanels();showStatus(quickMode?'Быстрая игра включена: короткое вращение. Нажми «Прокачать», чтобы начать.':'Быстрая игра выключена: обычное медленное вращение.')}
-function addDemoItem(){if(!demoMode)return;const item=catalog[Math.floor(Math.random()*3)];demoInventory.push({...item,id:'demo-'+Date.now()+'-'+Math.random(),demo:true});renderInventory();showStatus('Выдан временный тестовый предмет: '+item.name+'. Он не влияет на обычный инвентарь.')}
-function buySkin(index){if(demoMode){showStatus('Покупка отключена в демо-режиме. Выключи демо для покупок за общий баланс.');return}const item=catalog[index];if(!item)return;if(!window.RagexStore.spendBalance(item.value)){showStatus('Недостаточно средств. Нужно '+item.value.toLocaleString('ru-RU')+' ★.');updatePanels();return}inventory=window.RagexStore.getInventory();inventory.push({...item,id:Date.now()+'-'+Math.random(),demo:false});persistInventory();renderInventory();updatePanels();showStatus('Покупка успешна: '+item.name+' добавлен в общий инвентарь.')}
+function toggleQuickMode(){if(busy){showStatus('Дождись завершения апгрейда, прежде чем менять режим игры.');return}quickMode=!quickMode;updatePanels();showStatus(quickMode?'Быстрая игра включена: короткое вращение. Нажми «Прокачать», чтобы начать.':'Быстрая игра выключена: обычное медленное вращение.')}
+function addDemoItem(){if(busy){showStatus('Нельзя добавлять предметы во время апгрейда.');return}if(!demoMode)return;const item=catalog[Math.floor(Math.random()*3)];demoInventory.push({...item,id:'demo-'+Date.now()+'-'+Math.random(),demo:true});renderInventory();showStatus('Выдан временный тестовый предмет: '+item.name+'. Он не влияет на обычный инвентарь.')}
+function buySkin(index){if(busy){showStatus('Покупка временно заблокирована, пока крутится колесо.');return}if(demoMode){showStatus('Покупка отключена в демо-режиме. Выключи демо для покупок за общий баланс.');return}const item=catalog[index];if(!item)return;if(!window.RagexStore.spendBalance(item.value)){showStatus('Недостаточно средств. Нужно '+item.value.toLocaleString('ru-RU')+' ★.');updatePanels();return}inventory=window.RagexStore.getInventory();inventory.push({...item,id:Date.now()+'-'+Math.random(),demo:false});persistInventory();renderInventory();updatePanels();showStatus('Покупка успешна: '+item.name+' добавлен в общий инвентарь.')}
 function sellInventoryItem(index){
+ if(busy){showStatus('Продажа временно заблокирована, пока крутится колесо.');return}
  if(demoMode){showStatus('Демо-предметы нельзя продавать.');return}
  const item=inventory[index];if(!item)return;
  const latest=window.RagexStore.getInventory();
@@ -96,6 +97,8 @@ function runUpgrade(){
  busy=true;const baseChance=getBaseChance(source,target),successAngle=baseChance*3.6;
  // One sampled landing angle drives both the animation endpoint and its outcome.
  const landingAngle=Math.random()*360;const pointer=document.getElementById('pointer'),btn=document.getElementById('upgradeBtn');const currentAngle=((Number(pointer.dataset.angle||0)%360)+360)%360;const offset=((landingAngle-currentAngle)+360)%360;const fullTurns=quickMode?3:6;const destination=currentAngle+fullTurns*360+offset;const duration=quickMode?1.25:5.2;
+ // Lock inventory transactions for the entire spin so the stake can't be sold, duplicated or replaced mid-upgrade.
+ renderInventory();renderTargets();document.getElementById('addDemoSkinBtn').disabled=true;document.getElementById('demoModeBtn').disabled=true;document.getElementById('quickBtn').disabled=true;
  pointer.style.transition='none';pointer.style.transform='rotate('+currentAngle+'deg)';void pointer.offsetWidth;pointer.style.transition='transform '+duration+'s cubic-bezier(.08,.72,.12,1)';pointer.style.transform='rotate('+destination+'deg)';pointer.dataset.angle=String(landingAngle);
  btn.disabled=true;btn.textContent='⟳ КРУТИТСЯ...';showStatus((quickMode?'Быстрая игра':'Обычная игра')+' · шанс успеха '+baseChance+'%');
  setTimeout(()=>{
@@ -104,7 +107,7 @@ function runUpgrade(){
    list.splice(sourceIndex,1);
    if(demoMode){if(won)demoInventory.push({...target,id:'demo-'+Date.now()+'-'+Math.random(),demo:true});}
    else{if(won)list.push({...target,id:Date.now()+'-'+Math.random(),demo:false});inventory=list;window.RagexStore.setInventory(inventory);}
-   source=null;busy=false;btn.disabled=false;btn.textContent='↗ ПРОКАЧАТЬ';renderInventory();renderTargets();updatePanels();
+   source=null;busy=false;btn.disabled=false;btn.textContent='↗ ПРОКАЧАТЬ';document.getElementById('addDemoSkinBtn').disabled=false;document.getElementById('demoModeBtn').disabled=false;document.getElementById('quickBtn').disabled=false;renderInventory();renderTargets();updatePanels();
    showStatus(won?'✓ УСПЕХ! Получен '+target.name+'. Ставка списана.':'✕ Неудача. Исходный предмет списан из '+(demoMode?'временного демо-инвентаря.':'общего инвентаря.'));
  },duration*1000+120);
 }
