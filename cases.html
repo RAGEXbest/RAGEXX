@@ -1,1 +1,76 @@
 
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Кейсы — RAGEX</title>
+<style>
+*{box-sizing:border-box}
+body{margin:0;background:#090b0a;color:#f5f7f3;font-family:Arial,sans-serif}
+header{padding:22px 6%;display:flex;justify-content:space-between;align-items:center;gap:20px;flex-wrap:wrap;background:#101410;border-bottom:1px solid #293128}
+.logo{font-size:27px;font-weight:900;letter-spacing:2px;color:#b8ff39}
+nav{display:flex;gap:20px;flex-wrap:wrap}
+a{color:#d9dfd6;text-decoration:none}a:hover{color:#b8ff39}
+main{max-width:1200px;margin:auto;padding:48px 22px}
+h1{font-size:clamp(34px,5vw,52px);margin:0 0 12px}
+p{color:#98a195;line-height:1.7}
+.green{color:#b8ff39}
+.grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:18px;margin-top:30px}
+.card{background:#121713;border:1px solid #293329;border-radius:14px;padding:18px;transition:.2s}
+.card:hover{border-color:#b8ff39;transform:translateY(-4px)}
+.art{height:150px;border-radius:10px;background:linear-gradient(135deg,#26351e,#101410);display:grid;place-items:center;font-size:66px}
+h3{margin-bottom:6px}
+.small{font-size:13px;color:#98a195}
+.row{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-top:20px}
+.price{color:#b8ff39;font-weight:bold}
+button{border:0;border-radius:7px;padding:11px 13px;background:#b8ff39;color:#11170a;font-weight:bold;cursor:pointer}
+button:hover{filter:brightness(1.1)}
+.result{margin-top:24px;padding:18px;border:1px solid #293329;border-radius:12px;background:#101410;display:none}
+footer{padding:25px;text-align:center;color:#788276;border-top:1px solid #293128;font-size:12px}
+@media(max-width:850px){.grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:420px){.grid{grid-template-columns:1fr}.art{height:125px}}
+</style>
+</head>
+<body>
+<header>
+  <a class="logo" href="index.html">RAGE<span>X</span></a>
+  <nav>
+    <a href="index.html">Главная</a>
+    <a href="cases.html">Кейсы</a>
+    <a href="upgrade.html">Апгрейд</a>
+    <a href="inventory.html">Инвентарь</a>
+  </nav>
+</header>
+<main>
+  <div class="green">● RAGEX CASES</div>
+  <h1>Выбери свой <span class="green">кейс.</span></h1>
+  <p>Открывай демо-кейсы и собирай коллекцию виртуальных скинов.</p>
+  <div class="grid">
+    <article class="card"><div class="art">🟩</div><h3>Rookie Case</h3><p class="small">Начни свою коллекцию</p><div class="row"><span class="price">100 ★</span><button onclick="openCase('Rookie',100)">Открыть</button></div></article>
+    <article class="card"><div class="art">🟦</div><h3>Phantom Case</h3><p class="small">Стиль из тени</p><div class="row"><span class="price">250 ★</span><button onclick="openCase('Phantom',250)">Открыть</button></div></article>
+    <article class="card"><div class="art">🟪</div><h3>Neon Case</h3><p class="small">Добавь ярких цветов</p><div class="row"><span class="price">500 ★</span><button onclick="openCase('Neon',500)">Открыть</button></div></article>
+    <article class="card"><div class="art">🟨</div><h3>Elite Case</h3><p class="small">Охота за редким</p><div class="row"><span class="price">1000 ★</span><button onclick="openCase('Elite',1000)">Открыть</button></div></article>
+  </div>
+  <div class="result" id="result"></div>
+  <p class="small">Это фанатская демонстрация. Цены и предметы условные, реальные предметы CS2 не выдаются.</p>
+</main>
+<footer>RAGEX © 2026 · Демонстрационный проект · Не связан с Valve</footer>
+<script>
+function openCase(name,cost){
+ const items=[
+  {name:'MP7 | Neon Pulse',icon:'🟢',value:180},
+  {name:'AK-47 | Night Strike',icon:'🔫',value:420},
+  {name:'AWP | Green Phantom',icon:'🎯',value:900},
+  {name:'M4A1-S | Dark Bloom',icon:'🌿',value:650},
+  {name:'Rare Knife | Acid Edge',icon:'🗡️',value:1800}
+ ];
+ const item=items[Math.floor(Math.random()*items.length)];
+ const result=document.getElementById('result');
+ result.style.display='block';
+ result.innerHTML='<div class="green">КЕЙС '+name.toUpperCase()+' ОТКРЫТ!</div><h2>'+item.icon+' '+item.name+'</h2><p>Демо-ценность: <b class="green">'+item.value+' ★</b></p><p class="small">Результат демонстрационный. Предмет не является настоящим скином.</p>';
+ result.scrollIntoView({behavior:'smooth',block:'center'});
+}
+</script>
+</body>
+</html>
