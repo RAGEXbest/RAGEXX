@@ -77,6 +77,10 @@ footer.site-footer{border-top:1px solid #253c28;padding:24px max(5.1vw,24px);dis
     <div class="confirm-actions"><button class="confirm-cancel" type="button" id="upgradeConfirmCancel">ОТМЕНА</button><button class="confirm-accept" type="button" id="upgradeConfirmAccept">ПРОДАТЬ СКИН</button></div>
   </section>
 </div>
+<!-- Upgrade SFX: upload these MP3 files next to upgrade.html in the repository root. -->
+<audio id="spinSound" src="upgrade-spin.mp3" preload="auto"></audio>
+<audio id="winSound" src="upgrade-win.mp3" preload="auto"></audio>
+<audio id="loseSound" src="upgrade-lose.mp3" preload="auto"></audio>
 <script src="ragex-store.js?v=20261011-spinfix-modal-v3"></script>
 <script>
 const catalog=[
@@ -216,6 +220,34 @@ function animatePointerTo(pointer, fromAngle, toAngle, durationMs){
   });
 }
 
+function safePlayAudio(audio, restart=true){
+ if(!audio)return;
+ try{
+  if(restart)audio.currentTime=0;
+  const playback=audio.play();
+  if(playback&&typeof playback.catch==='function')playback.catch(()=>{});
+ }catch(_){/* Audio is optional; the upgrade still works if playback is blocked. */}
+}
+function startUpgradeSpinSound(){
+ const audio=document.getElementById('spinSound');
+ if(!audio)return;
+ audio.loop=true;
+ audio.volume=0.38;
+ safePlayAudio(audio,true);
+}
+function stopUpgradeSpinSound(){
+ const audio=document.getElementById('spinSound');
+ if(!audio)return;
+ try{audio.pause();audio.currentTime=0;}catch(_){}
+}
+function playUpgradeResultSound(won){
+ const audio=document.getElementById(won?'winSound':'loseSound');
+ if(!audio)return;
+ audio.loop=false;
+ audio.volume=0.68;
+ safePlayAudio(audio,true);
+}
+
 async function runUpgrade(){
  if(busy||!document.getElementById('upgradeConfirmBackdrop').hidden)return;
  if(!source||!target){showStatus('Выбери исходный предмет и цель апгрейда.');return}
@@ -252,9 +284,11 @@ async function runUpgrade(){
  renderInventory();
  renderTargets();
  showStatus((isQuick?'Быстрая игра':'Обычная игра')+' · шанс успеха '+baseChance+'%');
+ startUpgradeSpinSound();
 
  try {
    await animatePointerTo(pointer,currentAngle,destination,durationMs);
+   stopUpgradeSpinSound();
    // This final pointer angle is the same angle used to render the wheel arc:
    // zero degrees is 12 o'clock, increasing clockwise.
    const finalAngle=((landingAngle%360)+360)%360;
@@ -281,10 +315,13 @@ async function runUpgrade(){
    showStatus(won
      ? '✓ УСПЕХ! Получен '+targetItem.name+'. Ставка списана.'
      : '✕ Неудача. Исходный предмет списан из '+(isDemo?'временного демо-инвентаря.':'общего инвентаря.'));
+   playUpgradeResultSound(won);
  } catch(error) {
+   stopUpgradeSpinSound();
    console.error('RAGEX upgrade spin failed:',error);
    showStatus('Не удалось завершить анимацию. Попробуй ещё раз.');
  } finally {
+   stopUpgradeSpinSound();
    busy=false;
    syncNavigationLock();
    btn.disabled=false;
