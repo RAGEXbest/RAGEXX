@@ -19,7 +19,7 @@ body.confirm-open{overflow:hidden}.confirm-backdrop{position:fixed;inset:0;z-ind
     <a class="profile" href="inventory.html" aria-label="Открыть инвентарь"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="8" r="4"/><path d="M4 21v-2a8 8 0 0 1 16 0v2z"/></svg></a>
   </div>
 </header>
-<main class="wrap"><div class="eyebrow">RAGEX / PERSONAL COLLECTION</div><h1 class="title">МОЙ <span>ИНВЕНТАРЬ</span></h1><p class="desc">Все обычные скины из апгрейдера хранятся здесь. Продавай ненужные предметы и получай полную стоимость скина обратно на общий баланс.</p><div class="summary"><div class="metric"><small>ОБЩИЙ БАЛАНС</small><strong id="balanceMetric">5 000 ★</strong></div><div class="metric"><small>ПРЕДМЕТОВ</small><strong id="count">0</strong></div><div class="metric"><small>СТОИМОСТЬ ИНВЕНТАРЯ</small><strong id="totalValue">0 ★</strong></div></div><div class="status" id="status" role="status"></div><div id="grid" class="grid"></div><div id="empty" class="empty" style="display:none"><strong>Инвентарь пока пуст</strong>Купи скин в апгрейдере или выиграй улучшение — предметы появятся здесь.</div></main><footer class="foot">Демо-экономика RAGEX · Баланс и инвентарь общие для страниц в этом браузере.</footer>
+<main class="wrap"><div class="eyebrow">RAGEX / PERSONAL COLLECTION</div><h1 class="title">МОЙ <span>ИНВЕНТАРЬ</span></h1><p class="desc">Все обычные скины из апгрейдера хранятся здесь. Продавай ненужные предметы и получай полную стоимость скина обратно на общий баланс.</p><p id="marketPriceStatus" style="margin:-14px 0 4px;color:#9ba99d;font-size:11px;line-height:1.6">Проверяю актуальные цены предметов…</p><p style="margin:0 0 18px;color:#788679;font-size:10px;line-height:1.5">Источники: <a href="https://github.com/17mafo/cs-price-tracker" target="_blank" rel="noopener noreferrer">цены Steam Market</a> · <a href="https://www.cbr-xml-daily.ru/" target="_blank" rel="noopener noreferrer">курс EUR/RUB по данным ЦБ РФ</a>.</p><div class="summary"><div class="metric"><small>ОБЩИЙ БАЛАНС</small><strong id="balanceMetric">5 000 ★</strong></div><div class="metric"><small>ПРЕДМЕТОВ</small><strong id="count">0</strong></div><div class="metric"><small>СТОИМОСТЬ ИНВЕНТАРЯ</small><strong id="totalValue">0 ★</strong></div></div><div class="status" id="status" role="status"></div><div id="grid" class="grid"></div><div id="empty" class="empty" style="display:none"><strong>Инвентарь пока пуст</strong>Купи скин в апгрейдере или выиграй улучшение — предметы появятся здесь.</div></main><footer class="foot">Демо-экономика RAGEX · Баланс и инвентарь общие для страниц в этом браузере.</footer>
 <div class="confirm-backdrop" id="sellConfirmBackdrop" hidden>
   <section class="confirm-modal" role="dialog" aria-modal="true" aria-labelledby="sellConfirmTitle" aria-describedby="sellConfirmMessage">
     <div class="confirm-mark" aria-hidden="true">!</div>
@@ -29,7 +29,7 @@ body.confirm-open{overflow:hidden}.confirm-backdrop{position:fixed;inset:0;z-ind
     <div class="confirm-actions"><button class="confirm-cancel" type="button" id="sellConfirmCancel">ОТМЕНА</button><button class="confirm-accept" type="button" id="sellConfirmAccept">ДА, ПРОДАТЬ</button></div>
   </section>
 </div>
-<script src="ragex-store.js?v=20261011-inventory-modal-v3"></script><script>
+<script src="ragex-store.js?v=20261011-market-prices-v1"></script><script src="ragex-prices.js?v=20261011-market-prices-v1"></script><script>
 const grid=document.getElementById('grid'),empty=document.getElementById('empty'),status=document.getElementById('status');
 function fmt(n){return Number(n||0).toLocaleString('ru-RU')}
 function showStatus(s){status.textContent=s;status.classList.add('show')}
@@ -68,8 +68,33 @@ function itemArtwork(item){
  return `<span class="icon-fallback">${escapeHtml(item.icon||'🔹')}</span>`;
 }
 function render(){const items=window.RagexStore.getInventory();const balance=window.RagexStore.getBalance();document.getElementById('balanceValue').textContent=fmt(balance);document.getElementById('balanceMetric').textContent=fmt(balance)+' ★';document.getElementById('count').textContent=String(items.length);document.getElementById('totalValue').textContent=fmt(items.reduce((s,x)=>s+Number(x.value||0),0))+' ★';grid.innerHTML=items.map(item=>`<article class="card"><div class="icon">${itemArtwork(item)}</div><div class="name">${escapeHtml(item.name)}</div><div class="price">${fmt(item.value)} ★</div><button class="sell" type="button" data-sell-id="${escapeHtml(item.id)}">ПРОДАТЬ ЗА ${fmt(Math.max(0,Math.floor(Number(item.value)||0)))} ★</button></article>`).join('');empty.style.display=items.length?'none':'block'}
+
+async function refreshInventoryMarketPrices(){
+ const initial=window.RagexStore.getInventory();
+ const statusEl=document.getElementById('marketPriceStatus');
+ if(!initial.length){statusEl.textContent='Цены скинов рассчитываются по Steam Market в рублях: 1 ★ = 1 ₽.';return}
+ if(!window.RagexPricing){statusEl.textContent='Источник рыночных цен не подключён; сохранённые цены не изменены.';return}
+ statusEl.textContent='Обновляю цены по Steam Community Market…';
+ const result=await window.RagexPricing.priceInventory(initial);
+ if(!result.marketReady){statusEl.textContent='Не удалось обновить рыночные цены. Сохранённые цены предметов оставлены без изменений.';return}
+ const byId=new Map(result.items.filter(item=>item&&item.marketPrice).map(item=>[String(item.id),item]));
+ const current=window.RagexStore.getInventory();
+ let changed=0;
+ const updated=current.map(item=>{
+  const priced=byId.get(String(item.id));
+  if(!priced)return item;
+  const value=Math.max(1,Math.floor(Number(priced.value)||0));
+  if(Number(item.value)!==value||item.marketHashName!==priced.marketHashName||item.marketPrice!==true)changed++;
+  return {...item,name:priced.name||item.name,value,marketHashName:priced.marketHashName,marketPriceEur:priced.marketPriceEur,marketPriceRub:value,marketPrice:true,priceCurrency:'RUB',priceUpdatedAt:priced.priceUpdatedAt,marketPriceSource:'Steam Community Market',demoPrice:false,wearName:priced.wearName||item.wearName||''};
+ });
+ if(changed)window.RagexStore.setInventory(updated);
+ render();
+ const fx=Number(result.eurRub).toLocaleString('ru-RU',{minimumFractionDigits:2,maximumFractionDigits:2});
+ statusEl.textContent=`Цены Steam Market обновлены: ${changed?changed+' предмет(а) обновлено':'актуальны'} · 1 ★ = 1 ₽ · курс EUR/RUB ${fx} ₽${result.stale?' · сохранённый снимок':''}.`;
+}
+
 grid.addEventListener('click',event=>{const button=event.target.closest('[data-sell-id]');if(button)sell(button.dataset.sellId)});
-window.addEventListener('ragex:change',render);render();
+window.addEventListener('ragex:change',render);render();refreshInventoryMarketPrices();
 </script><div class="ragex-toast" id="ragexToast" role="status" aria-live="polite"></div>
 <script src="ragex-theme.js?v=20261011-no-topup-boost1"></script>
 </body></html>

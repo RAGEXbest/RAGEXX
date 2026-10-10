@@ -13,16 +13,16 @@
     <a class="profile" href="inventory.html" aria-label="Открыть инвентарь"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="8" r="4"/><path d="M4 21v-2a8 8 0 0 1 16 0v2z"/></svg></a>
   </div>
 </header>
-<main class="wrap"><div class="eyebrow">RAGEX / CASE OPENING</div><h1 class="title">ВЫБИРАЙ <span>КЕЙС</span></h1><p class="desc">Открывай демо-кейсы за общий баланс. Выигранные предметы сразу попадают в тот же инвентарь, который используется в апгрейдере.</p>
+<main class="wrap"><div class="eyebrow">RAGEX / CASE OPENING</div><h1 class="title">ВЫБИРАЙ <span>КЕЙС</span></h1><p class="desc">Открывай демо-кейсы за общий баланс. Выигранные предметы сразу попадают в тот же инвентарь, который используется в апгрейдере.</p><p id="marketPriceNotice" style="margin:-14px 0 6px;color:#9ba99d;font-size:11px;line-height:1.6">Подключаю каталог с рыночными ценами…</p><p style="margin:0 0 22px;color:#788679;font-size:10px;line-height:1.5">Источники: <a href="https://github.com/17mafo/cs-price-tracker" target="_blank" rel="noopener noreferrer">цены Steam Market</a> · <a href="https://www.cbr-xml-daily.ru/" target="_blank" rel="noopener noreferrer">курс EUR/RUB по данным ЦБ РФ</a>.</p>
 <div class="cases"><article class="case"><div class="case-icon">📦</div><div><h2>NEON START</h2><p>Стартовые скины и яркие покрытия</p><div class="price">350 ★</div><button class="open" onclick="openCase(0,this)">ОТКРЫТЬ КЕЙС</button></div></article><article class="case"><div class="case-icon">🟩</div><div><h2>TOXIC DROP</h2><p>Зелёные акценты и редкие предметы</p><div class="price">750 ★</div><button class="open" onclick="openCase(1,this)">ОТКРЫТЬ КЕЙС</button></div></article><article class="case"><div class="case-icon">🔒</div><div><h2>ELITE VAULT</h2><p>Дорогие скины для коллекции</p><div class="price">1 500 ★</div><button class="open" onclick="openCase(2,this)">ОТКРЫТЬ КЕЙС</button></div></article></div>
 <div class="status" id="status" role="status"><div class="win-icon" id="winIcon">✨</div><div><strong id="winName">Предмет найден</strong><div id="winValue"></div><a href="inventory.html" style="display:inline-block;margin-top:7px;color:var(--green);font-size:12px;font-weight:800">ОТКРЫТЬ ИНВЕНТАРЬ ↗</a></div></div>
 </main><footer class="foot">Демо-кейсы RAGEX · Баланс и предметы общие для страниц в этом браузере.</footer>
-<script src="ragex-store.js?v=cs2catalog-v1"></script><script>
+<script src="ragex-store.js?v=20261011-market-prices-v1"></script><script src="ragex-prices.js?v=20261011-market-prices-v1"></script><script>
 const fmt=n=>Number(n).toLocaleString('ru-RU');
 function renderBalance(){document.getElementById('balance').textContent=fmt(window.RagexStore.getBalance())}
 window.addEventListener('ragex:change',renderBalance);renderBalance();
 const API_URL='https://raw.githubusercontent.com/ByMykel/CSGO-API/main/public/api/en/skins.json';
-const CATALOG_CACHE_KEY='ragexCs2CatalogCacheV1';
+const CATALOG_CACHE_KEY='ragexCs2CatalogBaseCacheV2';
 const fallbackItems=[
 {name:'MP7 | Neon Pulse',value:180,icon:'🟢',rarity:'Restricted'},
 {name:'USP-S | Cybershade',value:300,icon:'🔷',rarity:'Classified'},
@@ -40,7 +40,7 @@ function demoValue(skin){const rarity=String(skin.rarity&&skin.rarity.name||'').
 function normalizeSkin(skin){if(!skin||!skin.name||typeof skin.image!=='string'||!/^https:\/\//i.test(skin.image))return null;const id=String(skin.id||skin.name);return{id:'cs2-'+id,catalogId:id,name:String(skin.name),value:demoValue(skin),image:skin.image,icon:'🔹',weaponName:String(skin.weapon&&skin.weapon.name||''),category:String(skin.category&&skin.category.name||''),rarity:String(skin.rarity&&skin.rarity.name||'Unknown'),rarityColor:skin.rarity&&skin.rarity.color||'#91a18e',wears:Array.isArray(skin.wears)?skin.wears.map(w=>w.name).filter(Boolean):[],stattrak:!!skin.stattrak,souvenir:!!skin.souvenir,demoPrice:true}}
 function safeImage(item){const url=String(item&&item.image||'');return /^https:\/\/[a-z0-9.-]+\//i.test(url)?url:''}
 function renderArtwork(item){const url=safeImage(item);if(url)return `<img src="${url.replace(/&/g,'&amp;').replace(/"/g,'&quot;')}" alt="${String(item.name||'Скин').replace(/[&<>"']/g,'')}" onerror="this.style.display='none';this.nextElementSibling.hidden=false"><span class="icon-fallback" hidden>${item.icon||'🔹'}</span>`;return `<span class="icon-fallback">${item.icon||'🔹'}</span>`}
-function updateRewardDisplay(item){document.getElementById('winIcon').innerHTML=renderArtwork(item);document.getElementById('winName').textContent='Выпал '+item.name;document.getElementById('winValue').textContent='Демо-стоимость: '+fmt(item.value)+' ★'}
+function updateRewardDisplay(item){document.getElementById('winIcon').innerHTML=renderArtwork(item);document.getElementById('winName').textContent='Выпал '+item.name;document.getElementById('winValue').textContent=(item.marketPrice?'Рыночная стоимость: ':'Демо-стоимость: ')+fmt(item.value)+' ★'}
 function rarityWeight(rarity){const r=String(rarity||'').toLowerCase();if(r.includes('consumer')||r.includes('base'))return 12;if(r.includes('industrial'))return 9;if(r.includes('mil-spec'))return 7;if(r.includes('high grade'))return 6;if(r.includes('restricted'))return 4.2;if(r.includes('classified'))return 2.2;if(r.includes('covert'))return 0.9;if(r.includes('extraordinary')||r.includes('contraband'))return 0.22;return 3}
 function pickForCase(index){
  const box=cases[index];
@@ -58,10 +58,42 @@ function pickForCase(index){
  return eligible[0]||fallbackItems[0];
 }
 async function loadCaseCatalog(){
- try{const cached=JSON.parse(localStorage.getItem(CATALOG_CACHE_KEY)||'null');if(Array.isArray(cached)&&cached.length>100){items=cached;catalogLoaded=true}}
- catch(_){}
- try{const response=await fetch(API_URL,{mode:'cors',cache:'force-cache',credentials:'omit'});if(!response.ok)throw new Error('HTTP '+response.status);const data=await response.json();if(!Array.isArray(data))throw new Error('invalid response');const normalized=data.map(normalizeSkin).filter(Boolean);if(normalized.length<100)throw new Error('catalog too small');items=normalized;catalogLoaded=true;try{localStorage.setItem(CATALOG_CACHE_KEY,JSON.stringify(items))}catch(_){} }
- catch(error){console.warn('CS2 catalog unavailable on cases page; fallback remains active.',error)}
+ let baseItems=null;
+ try{
+  const cached=JSON.parse(localStorage.getItem(CATALOG_CACHE_KEY)||'null');
+  if(Array.isArray(cached)&&cached.length>100)baseItems=cached;
+ }catch(_){}
+ try{
+  const response=await fetch(API_URL,{mode:'cors',cache:'force-cache',credentials:'omit'});
+  if(!response.ok)throw new Error('HTTP '+response.status);
+  const data=await response.json();
+  if(!Array.isArray(data))throw new Error('invalid response');
+  const normalized=data.map(normalizeSkin).filter(Boolean);
+  if(normalized.length<100)throw new Error('catalog too small');
+  baseItems=normalized;
+  try{localStorage.setItem(CATALOG_CACHE_KEY,JSON.stringify(baseItems))}catch(_){}
+ }catch(error){console.warn('RAGEX base case catalog refresh failed:',error)}
+ if(!baseItems){
+  document.getElementById('marketPriceNotice').textContent='Каталог временно недоступен — используются резервные демо-предметы и цены.';
+  return;
+ }
+ try{
+  if(!window.RagexPricing)throw new Error('ragex-prices.js not loaded');
+  const priced=await window.RagexPricing.priceCatalog(baseItems);
+  if(priced.marketReady&&Array.isArray(priced.items)&&priced.items.length>=50){
+   items=priced.items;catalogLoaded=true;
+   const fxText=Number(priced.eurRub).toLocaleString('ru-RU',{minimumFractionDigits:2,maximumFractionDigits:2});
+   const date=priced.updatedAt?new Date(priced.updatedAt).toLocaleDateString('ru-RU'):'последняя выгрузка';
+   document.getElementById('marketPriceNotice').textContent=`Рыночные цены Steam Market · 1 ★ = 1 ₽ · данные до ${date} · курс EUR/RUB: ${fxText} ₽. Награды учитывают износ${priced.stale?' · сохранённый снимок цен':''}.`;
+  }else{
+   items=baseItems;catalogLoaded=true;
+   document.getElementById('marketPriceNotice').textContent='Рыночные цены сейчас недоступны; временно используются резервные демо-значения.';
+  }
+ }catch(error){
+  console.warn('RAGEX market pricing for cases unavailable:',error);
+  items=baseItems;
+  document.getElementById('marketPriceNotice').textContent='Не удалось загрузить рыночные цены; временно используются резервные демо-значения.';
+ }
 }
 function openCase(index,button){const box=cases[index];if(!window.RagexStore.spendBalance(box.price)){const status=document.getElementById('status');status.classList.add('show');document.getElementById('winIcon').textContent='⚠️';document.getElementById('winName').textContent='Недостаточно средств';document.getElementById('winValue').textContent='Для открытия нужно '+fmt(box.price)+' ★';return}button.disabled=true;button.textContent='ОТКРЫВАЕТСЯ…';const chosen=pickForCase(index);window.setTimeout(()=>{const owned={...chosen,id:Date.now()+'-'+Math.random(),demo:false,source:'case'};window.RagexStore.addItem(owned);updateRewardDisplay(chosen);document.getElementById('status').classList.add('show');button.disabled=false;button.textContent='ОТКРЫТЬ ЕЩЁ';},850)}
 loadCaseCatalog();
