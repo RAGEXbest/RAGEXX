@@ -41,7 +41,7 @@ footer{border-top:1px solid var(--line);padding:23px 5%;display:flex;justify-con
 <p style="color:var(--muted);font-size:11px;line-height:1.7;margin-top:22px">Все цены, скины и результаты условные. Это демонстрация: нет настоящего Steam-входа, денежных операций или выдачи предметов CS2.</p>
 </main>
 <footer><a class="logo" href="index.html">RAGE<span>X</span></a><span>Демо-апгрейдер · Не связан с Valve или Counter-Strike 2</span><span>© 2026 RAGEX</span></footer>
-<script src="ragex-store.js"></script>
+<script src="ragex-store.js?v=20261011-full-price-fix"></script>
 <script>
 const catalog=[
 {name:'MP7 | Neon Pulse',value:180,icon:'🟢'},{name:'USP-S | Cybershade',value:300,icon:'🔷'},{name:'AK-47 | Night Strike',value:420,icon:'🔫'},{name:'M4A1-S | Dark Bloom',value:650,icon:'🌿'},{name:'AWP | Green Phantom',value:900,icon:'🎯'},{name:'Desert Eagle | Acid',value:1200,icon:'🟩'},{name:'Knife | Acid Edge',value:1800,icon:'🗡️'},{name:'Gloves | Toxic',value:2600,icon:'🧤'},{name:'AWP | Neon Storm',value:4000,icon:'⚡'}];
@@ -77,7 +77,22 @@ function toggleDemoMode(){if(busy)return;demoMode=!demoMode;if(demoMode){demoInv
 function toggleQuickMode(){quickMode=!quickMode;updatePanels();showStatus(quickMode?'Быстрая игра включена: короткое вращение. Нажми «Прокачать», чтобы начать.':'Быстрая игра выключена: обычное медленное вращение.')}
 function addDemoItem(){if(!demoMode)return;const item=catalog[Math.floor(Math.random()*3)];demoInventory.push({...item,id:'demo-'+Date.now()+'-'+Math.random(),demo:true});renderInventory();showStatus('Выдан временный тестовый предмет: '+item.name+'. Он не влияет на обычный инвентарь.')}
 function buySkin(index){if(demoMode){showStatus('Покупка отключена в демо-режиме. Выключи демо для покупок за общий баланс.');return}const item=catalog[index];if(!item)return;if(!window.RagexStore.spendBalance(item.value)){showStatus('Недостаточно средств. Нужно '+item.value.toLocaleString('ru-RU')+' ★.');updatePanels();return}inventory=window.RagexStore.getInventory();inventory.push({...item,id:Date.now()+'-'+Math.random(),demo:false});persistInventory();renderInventory();updatePanels();showStatus('Покупка успешна: '+item.name+' добавлен в общий инвентарь.')}
-function sellInventoryItem(index){if(demoMode){showStatus('Демо-предметы нельзя продавать.');return}const item=inventory[index];if(!item)return;const result=window.RagexStore.sellItem(item.id);if(!result.ok){inventory=window.RagexStore.getInventory();renderInventory();showStatus('Этот предмет уже отсутствует в инвентаре.');return}inventory=window.RagexStore.getInventory();if(source&&String(source.id)===String(item.id))source=null;renderInventory();updatePanels();showStatus('Продан '+item.name+' за '+result.payout.toLocaleString('ru-RU')+' ★. Баланс обновлён на всех страницах.')}
+function sellInventoryItem(index){
+ if(demoMode){showStatus('Демо-предметы нельзя продавать.');return}
+ const item=inventory[index];if(!item)return;
+ const latest=window.RagexStore.getInventory();
+ const realIndex=latest.findIndex(x=>String(x.id)===String(item.id));
+ if(realIndex<0){inventory=latest;renderInventory();showStatus('Этот предмет уже отсутствует в инвентаре.');return}
+ // Pay the full item's listed value. This bypasses older cached 70%-sale handlers.
+ const payout=Math.max(0,Math.floor(Number(latest[realIndex].value)||0));
+ latest.splice(realIndex,1);
+ window.RagexStore.setInventory(latest);
+ window.RagexStore.setBalance(window.RagexStore.getBalance()+payout);
+ inventory=window.RagexStore.getInventory();
+ if(source&&String(source.id)===String(item.id))source=null;
+ renderInventory();updatePanels();
+ showStatus('Продан '+item.name+' за '+payout.toLocaleString('ru-RU')+' ★. Начислена полная стоимость предмета.');
+}
 function runUpgrade(){
  if(busy)return;if(!source||!target){showStatus('Выбери исходный предмет и цель апгрейда.');return}if(Number(target.value)<=Number(source.value)){showStatus('Выбери цель дороже исходного предмета.');return}
  const list=activeInventory(),sourceIndex=list.findIndex(item=>String(item.id)===String(source.id));if(sourceIndex<0){source=null;renderInventory();updatePanels();showStatus('Предмет уже отсутствует в инвентаре. Выбери другой.');return}
