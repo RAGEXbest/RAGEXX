@@ -8,9 +8,9 @@
 
   function readJSON(key, fallback) {
     try {
-      const value = localStorage.getItem(key);
-      return value === null ? fallback : JSON.parse(value);
-    } catch (error) {
+      const raw = localStorage.getItem(key);
+      return raw === null ? fallback : JSON.parse(raw);
+    } catch {
       return fallback;
     }
   }
@@ -28,7 +28,7 @@
       return Number.isFinite(value) && value >= 0
         ? Math.floor(value)
         : 0;
-    } catch (error) {
+    } catch {
       return START_BALANCE;
     }
   }
@@ -39,7 +39,7 @@
 
     let changed = false;
 
-    const normalized = items
+    const inventory = items
       .filter(item =>
         item &&
         item.demo !== true &&
@@ -52,7 +52,6 @@
         }
 
         changed = true;
-
         return {
           ...item,
           id: `legacy-${Date.now()}-${index}-${Math.random()
@@ -62,52 +61,38 @@
 
     if (changed) {
       try {
-        localStorage.setItem(
-          INVENTORY_KEY,
-          JSON.stringify(normalized)
-        );
-      } catch (error) {}
+        localStorage.setItem(INVENTORY_KEY, JSON.stringify(inventory));
+      } catch {}
     }
 
-    return normalized;
+    return inventory;
   }
 
   function notify() {
-    window.dispatchEvent(
-      new CustomEvent('ragex:change', {
-        detail: {
-          balance: getBalance(),
-          inventory: getInventory()
-        }
-      })
-    );
+    window.dispatchEvent(new CustomEvent('ragex:change', {
+      detail: {
+        balance: getBalance(),
+        inventory: getInventory()
+      }
+    }));
   }
 
   function setBalance(amount) {
-    const value = Math.max(
-      0,
-      Math.floor(Number(amount) || 0)
-    );
+    const value = Math.max(0, Math.floor(Number(amount) || 0));
 
     localStorage.setItem(BALANCE_KEY, String(value));
     notify();
+
     return value;
   }
 
   function addBalance(amount) {
-    const value = Math.max(
-      0,
-      Math.floor(Number(amount) || 0)
-    );
-
+    const value = Math.max(0, Math.floor(Number(amount) || 0));
     return setBalance(getBalance() + value);
   }
 
   function spendBalance(amount) {
-    const cost = Math.max(
-      0,
-      Math.floor(Number(amount) || 0)
-    );
+    const cost = Math.max(0, Math.floor(Number(amount) || 0));
 
     if (getBalance() < cost) return false;
 
@@ -116,7 +101,7 @@
   }
 
   function setInventory(items) {
-    const normalized = (Array.isArray(items) ? items : [])
+    const inventory = (Array.isArray(items) ? items : [])
       .filter(item =>
         item &&
         item.demo !== true &&
@@ -125,20 +110,14 @@
       )
       .map(item => ({
         ...item,
-        id: item.id ?? (
-          `item-${Date.now()}-${Math.random()
-            .toString(36).slice(2, 9)}`
-        ),
-        demo: false
+        id: item.id ?? `item-${Date.now()}-${Math.random()
+          .toString(36).slice(2, 9)}`
       }));
 
-    localStorage.setItem(
-      INVENTORY_KEY,
-      JSON.stringify(normalized)
-    );
-
+    localStorage.setItem(INVENTORY_KEY, JSON.stringify(inventory));
     notify();
-    return normalized;
+
+    return inventory;
   }
 
   function addItem(item) {
@@ -154,10 +133,8 @@
 
     inventory.push({
       ...item,
-      id: item.id ?? (
-        `item-${Date.now()}-${Math.random()
-          .toString(36).slice(2, 9)}`
-      ),
+      id: item.id ?? `item-${Date.now()}-${Math.random()
+        .toString(36).slice(2, 9)}`,
       demo: false
     });
 
@@ -177,15 +154,14 @@
     return true;
   }
 
-  // Продажа по полной стоимости предмета.
+  // Продажа по полной стоимости предмета — без коэффициента 0.7.
   function sellItem(id) {
     const inventory = getInventory();
-
     const index = inventory.findIndex(
       item => String(item.id) === String(id)
     );
 
-    if (index === -1) {
+    if (index < 0) {
       return { ok: false, reason: 'not-found' };
     }
 
@@ -195,25 +171,21 @@
       Math.floor(Number(item.value) || 0)
     );
 
-    // Сначала удаляем предмет и сохраняем инвентарь.
+    // Удаляем предмет и начисляем деньги.
     inventory.splice(index, 1);
-    localStorage.setItem(
-      INVENTORY_KEY,
-      JSON.stringify(inventory)
-    );
 
-    // Затем начисляем полную стоимость.
-    localStorage.setItem(
-      BALANCE_KEY,
-      String(getBalance() + payout)
-    );
+    const newBalance = getBalance() + payout;
+
+    localStorage.setItem(INVENTORY_KEY, JSON.stringify(inventory));
+    localStorage.setItem(BALANCE_KEY, String(newBalance));
 
     notify();
 
     return {
       ok: true,
       item,
-      payout
+      payout,
+      balance: newBalance
     };
   }
 
