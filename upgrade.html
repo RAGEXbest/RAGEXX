@@ -1,220 +1,106 @@
-
-<!DOCTYPE html>
+<!doctype html>
 <html lang="ru">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Upgrade — RAGEX</title>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>RAGEX — Upgrade</title>
 <style>
 :root{--bg:#090b0a;--panel:#151815;--panel2:#1d211e;--green:#b8ff39;--muted:#8c958b;--line:#30372f}
-*{box-sizing:border-box}
-body{margin:0;background:var(--bg);color:#f5f7f3;font-family:Arial,Helvetica,sans-serif}
-a{color:inherit;text-decoration:none}
-button,input,select{font:inherit}
-button{cursor:pointer}
-header{height:72px;padding:0 5%;display:flex;align-items:center;justify-content:space-between;gap:20px;border-bottom:1px solid var(--line);background:#0b0d0b}
-.logo{font-weight:950;font-size:27px;letter-spacing:2px;color:var(--green)}
-.logo span{color:white}
-nav{display:flex;gap:25px;flex-wrap:wrap}
-nav a{font-size:14px;color:#c5ccc1}
-nav a:hover,nav a.active{color:var(--green)}
-.wrap{max-width:1200px;margin:auto;padding:25px 20px 45px}
-.page-title{text-align:center;margin:0 0 26px;font-size:26px;letter-spacing:1px}
-.page-title span{color:var(--green)}
-.toolbar{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-bottom:12px;color:var(--muted);font-size:13px}
-.pill{border:1px solid var(--line);background:var(--panel);border-radius:8px;padding:9px 12px;color:#e8eee5}
-.top-grid{display:grid;grid-template-columns:minmax(0,1fr) 330px minmax(0,1fr);gap:22px;align-items:center}
-.item-panel{height:285px;background:radial-gradient(ellipse at 50% 55%,#293c1d 0,transparent 60%),var(--panel);border:1px solid #202620;border-radius:13px;padding:20px;display:flex;flex-direction:column;align-items:center;justify-content:space-between;text-align:center;min-width:0}
-.panel-title{font-weight:700;font-size:14px}
-.panel-sub{font-size:12px;color:var(--muted);margin-top:7px}
-.weapon{height:135px;display:grid;place-items:center;font-size:80px;text-shadow:0 0 30px #b8ff3930}
-.item-name{font-weight:700}
-.item-value{color:var(--green);font-size:13px;margin-top:5px}
-.placeholder{color:#747e71;font-size:14px}
-.dial-wrap{display:flex;flex-direction:column;align-items:center;gap:20px}
-.dial{width:280px;height:280px;border-radius:50%;display:grid;place-items:center;position:relative;background:conic-gradient(from 220deg,var(--green) 0deg,#e4ff8c 110deg,#3b4b31 111deg,#222720 250deg,#b8ff39 360deg);padding:8px;box-shadow:0 0 30px #b8ff3910}
-.dial:before{content:"";position:absolute;inset:8px;border-radius:50%;background:var(--bg);border:2px solid #242b22}
-.dial:after{content:"";position:absolute;top:-9px;left:calc(50% - 2px);height:22px;width:4px;background:var(--green);border-radius:5px;z-index:2;box-shadow:0 0 12px var(--green)}
-.dial-inner{z-index:1;width:78%;height:78%;border-radius:50%;background:radial-gradient(circle,#252d21,#101310 72%);border:1px solid #394333;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center}
-.dial-symbol{font-size:61px;color:var(--green);line-height:1.2}
-.chance{font-size:27px;font-weight:900;color:var(--green);margin-top:5px}
-.chance-label{font-size:11px;color:var(--muted);margin-top:4px}
-.spin{animation:spin 1.8s cubic-bezier(.15,.7,.2,1) infinite}
-@keyframes spin{to{transform:rotate(720deg)}}
-.primary{border:0;background:var(--green);color:#10150b;font-weight:900;padding:16px 22px;border-radius:10px;width:100%;font-size:17px;transition:.2s}
-.primary:hover{filter:brightness(1.08);transform:translateY(-1px)}
-.primary:disabled{opacity:.55;cursor:wait;transform:none}
-.lower{display:grid;grid-template-columns:minmax(0,.95fr) minmax(0,1fr);gap:12px;margin-top:24px}
-.box{background:var(--panel);border:1px solid #242b23;border-radius:12px;overflow:hidden;min-width:0}
-.box-head{background:var(--panel2);padding:15px 17px;display:flex;justify-content:space-between;align-items:center;gap:12px;font-weight:700;font-size:14px}
-.box-head small{font-size:11px;color:var(--muted);font-weight:400}
-.box-body{padding:15px}
-.controls{display:flex;gap:7px;margin-bottom:13px;flex-wrap:wrap}
-.controls input,.controls select{min-width:0;width:100%;background:#0b0e0b;color:#e8eee5;border:1px solid #333a31;border-radius:7px;padding:10px;font-size:12px}
-.controls .search{flex:1}
-.item-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
-.skin{border:1px solid #343b31;border-radius:8px;background:#111511;min-width:0;text-align:center;padding:10px 5px;cursor:pointer;transition:.15s}
-.skin:hover,.skin.selected{border-color:var(--green);background:#20291a}
-.skin-icon{height:55px;display:grid;place-items:center;font-size:32px}
-.skin-name{font-size:11px;font-weight:700;overflow-wrap:anywhere;line-height:1.4}
-.skin-price{font-size:11px;color:var(--green);margin-top:5px}
-.empty{padding:35px 12px;text-align:center;color:var(--muted);font-size:13px;line-height:1.8}
-.status{display:none;margin-top:15px;padding:12px;border-radius:8px;background:#111710;border:1px solid #39452f;color:#cde9b3;font-size:13px;line-height:1.6}
-.status.show{display:block}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:#f5f7f3;font-family:Arial,sans-serif}a{color:inherit;text-decoration:none}button,input,select{font:inherit}button{cursor:pointer}
+header{min-height:72px;padding:16px 5%;display:flex;align-items:center;justify-content:space-between;gap:20px;border-bottom:1px solid var(--line);background:#0b0d0b}.logo{font-weight:950;font-size:27px;letter-spacing:2px;color:var(--green)}.logo span{color:white}nav{display:flex;gap:22px;flex-wrap:wrap}nav a{font-size:14px;color:#c5ccc1}nav a:hover,nav a.active{color:var(--green)}
+.wrap{max-width:1200px;margin:auto;padding:25px 20px 45px}.page-title{text-align:center;margin:0 0 26px;font-size:26px;letter-spacing:1px}.page-title span{color:var(--green)}.toolbar{display:flex;justify-content:flex-end;align-items:center;gap:10px;margin-bottom:12px;color:var(--muted);font-size:13px}.mode-controls{display:flex;gap:7px;align-items:center;flex-wrap:wrap;justify-content:flex-end}.balance-pill,.mode-btn{border:1px solid var(--line);background:#121612;border-radius:7px;padding:7px 10px;font-size:10px;font-weight:800;letter-spacing:.3px;color:#dce5d7}.balance-pill b{color:var(--green);margin-left:5px}.mode-btn{cursor:pointer;color:#b8c1b4}.mode-btn.active{border-color:var(--green);color:var(--green);background:#1b2614}.small-hint{font-size:11px;color:var(--muted);margin-top:9px;line-height:1.5}.buy-btn{margin-top:7px;width:100%;padding:6px 4px;border:1px solid #46533b;border-radius:6px;background:#20291a;color:var(--green);font-size:10px;font-weight:800}.buy-btn:hover{background:#2c3b20}.pill{border:1px solid var(--line);background:var(--panel);border-radius:8px;padding:9px 12px;color:#e8eee5}
+.top-grid{display:grid;grid-template-columns:minmax(0,1fr) 300px minmax(0,1fr);gap:20px;align-items:center}.item-panel{height:270px;background:radial-gradient(ellipse at 50% 55%,#293c1d 0,transparent 60%),var(--panel);border:1px solid #202620;border-radius:13px;padding:18px;display:flex;flex-direction:column;align-items:center;justify-content:space-between;text-align:center;min-width:0}.panel-title{font-weight:700;font-size:14px}.panel-sub{font-size:12px;color:var(--muted);margin-top:7px}.weapon{height:120px;display:grid;place-items:center;font-size:72px;text-shadow:0 0 30px #b8ff3930}.item-name{font-weight:700}.item-value{color:var(--green);font-size:13px;margin-top:5px}
+.dial-wrap{display:flex;flex-direction:column;align-items:center;gap:18px}.dial{width:270px;height:270px;border-radius:50%;display:grid;place-items:center;position:relative;isolation:isolate;box-shadow:0 0 30px #b8ff3910}.dial-svg{position:absolute;inset:0;width:100%;height:100%;overflow:visible;pointer-events:none}.dial-track{fill:none;stroke:#252a24;stroke-width:11}.dial-success{fill:none;stroke:var(--green);stroke-width:11;stroke-linecap:butt;transition:stroke-dasharray .18s ease}.dial-center{fill:#090b0a;stroke:#242b22;stroke-width:1.4}.dial.blank{box-shadow:none}.dial.blank .pointer{display:none}.dial.blank .dial-inner{display:none}.dial-inner{z-index:1;width:78%;height:78%;border-radius:50%;background:radial-gradient(circle,#252d21,#101310 72%);border:1px solid #394333;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center}.pointer{position:absolute;z-index:5;inset:0;width:100%;height:100%;border-radius:50%;pointer-events:none;transform:rotate(0deg);transition:transform 1.95s cubic-bezier(.12,.72,.15,1);will-change:transform}.pointer:before{content:"";position:absolute;top:11px;left:calc(50% - 8px);width:0;height:0;border-left:8px solid transparent;border-right:8px solid transparent;border-bottom:15px solid var(--green);filter:drop-shadow(0 0 5px #b8ff3980)}.dial-symbol{display:none}.chance{font-size:27px;font-weight:900;color:var(--green);margin-top:5px}.chance-label{font-size:11px;color:var(--muted);margin-top:4px}
+.secondary{border:1px solid var(--line);background:#1b2118;color:var(--green);font-weight:800;padding:13px 18px;border-radius:8px;width:100%;max-width:270px}.secondary:hover{background:#26301f}.primary{border:0;background:var(--green);color:#10150b;font-weight:900;padding:15px 20px;border-radius:10px;width:100%;font-size:16px;transition:.2s}.primary:hover{filter:brightness(1.08);transform:translateY(-1px)}.primary:disabled{opacity:.55;cursor:wait;transform:none}
+.lower{display:grid;grid-template-columns:minmax(0,.95fr) minmax(0,1fr);gap:12px;margin-top:24px}.box{background:var(--panel);border:1px solid #242b23;border-radius:12px;overflow:hidden;min-width:0}.box-head{background:var(--panel2);padding:15px 17px;display:flex;justify-content:space-between;align-items:center;gap:12px;font-weight:700;font-size:14px}.box-head small{font-size:11px;color:var(--muted);font-weight:400}.box-body{padding:15px}.controls{display:flex;gap:7px;margin-bottom:13px;flex-wrap:wrap}.controls input,.controls select{min-width:0;width:100%;background:#0b0e0b;color:#e8eee5;border:1px solid #333a31;border-radius:7px;padding:10px;font-size:12px}.controls .search{flex:1}.item-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}.skin{border:1px solid #343b31;border-radius:8px;background:#111511;min-width:0;text-align:center;padding:10px 5px;cursor:pointer;transition:.15s}.skin:hover,.skin.selected{border-color:var(--green);background:#20291a}.skin-icon{height:52px;display:grid;place-items:center;font-size:30px}.skin-name{font-size:11px;font-weight:700;overflow-wrap:anywhere;line-height:1.4}.skin-price{font-size:11px;color:var(--green);margin-top:5px}.empty{padding:28px 12px;text-align:center;color:var(--muted);font-size:13px;line-height:1.8}.status{display:none;margin-top:15px;padding:12px;border-radius:8px;background:#111710;border:1px solid #39452f;color:#cde9b3;font-size:13px;line-height:1.6}.status.show{display:block}
 footer{border-top:1px solid var(--line);padding:23px 5%;display:flex;justify-content:space-between;gap:15px;flex-wrap:wrap;color:var(--muted);font-size:12px}
-@media(max-width:920px){.top-grid{grid-template-columns:1fr 250px 1fr;gap:12px}.dial{width:230px;height:230px}.item-panel{height:260px;padding:14px}.weapon{font-size:65px}.lower{grid-template-columns:1fr}}
-@media(max-width:650px){header{height:auto;padding:17px 5%;align-items:flex-start;flex-direction:column}nav{gap:15px}.wrap{padding:22px 12px 35px}.top-grid{grid-template-columns:1fr 1fr;gap:10px}.dial-wrap{grid-column:1/-1;grid-row:2}.dial{width:225px;height:225px}.item-panel{height:220px;padding:12px 6px}.panel-title{font-size:12px}.panel-sub{font-size:10px}.weapon{height:90px;font-size:55px}.item-name{font-size:12px}.item-value{font-size:11px}.lower{margin-top:18px}.item-grid{grid-template-columns:repeat(3,minmax(0,1fr))}.box-head{padding:13px;font-size:13px}}
+@media(max-width:900px){.top-grid{grid-template-columns:minmax(0,1fr) 220px minmax(0,1fr);gap:10px}.dial{width:215px;height:215px}.pointer{height:100%;top:0}.item-panel{height:245px;padding:12px}.weapon{font-size:58px}.lower{grid-template-columns:1fr}}
+@media(max-width:650px){header{align-items:flex-start;flex-direction:column}nav{gap:14px}.wrap{padding:22px 12px 35px}.top-grid{grid-template-columns:1fr 1fr;gap:10px}.dial-wrap{grid-column:1/-1;grid-row:2}.dial{width:225px;height:225px}.pointer{height:100%;top:0}.item-panel{height:215px;padding:12px 6px}.panel-title{font-size:12px}.panel-sub{font-size:10px}.weapon{height:85px;font-size:52px}.item-name{font-size:12px}.lower{margin-top:18px}.box-head{padding:13px;font-size:13px}}
 </style>
 </head>
 <body>
-<header>
-  <a class="logo" href="index.html">RAGE<span>X</span></a>
-  <nav>
-    <a href="index.html">Главная</a>
-    <a href="cases.html">Кейсы</a>
-    <a class="active" href="upgrade.html">Апгрейд</a>
-    <a href="inventory.html">Инвентарь</a>
-  </nav>
-</header>
-
+<header><a class="logo" href="index.html">RAGE<span>X</span></a><nav><a href="index.html">Главная</a><a href="cases.html">Кейсы</a><a class="active" href="upgrade.html">Апгрейд</a><a href="inventory.html">Инвентарь</a></nav></header>
 <main class="wrap">
-  <h1 class="page-title">RAGEX <span>UPGRADE</span></h1>
-  <div class="toolbar">
-    <span>◈ ДЕМО-СТАНЦИЯ АПГРЕЙДА</span>
-    <span class="pill">● СИМУЛЯТОР</span>
-  </div>
-
-  <div class="top-grid">
-    <section class="item-panel">
-      <div><div class="panel-title">Выбери предмет для ставки</div><div class="panel-sub">Выбери скин в нижнем каталоге</div></div>
-      <div class="weapon" id="sourceIcon">🔫</div>
-      <div><div class="item-name" id="sourceName">Предмет не выбран</div><div class="item-value" id="sourceValue">— ★</div></div>
-    </section>
-
-    <div class="dial-wrap">
-      <div class="dial" id="dial"><div class="dial-inner">
-        <div class="dial-symbol" id="dialSymbol">↗</div>
-        <div class="chance" id="chance">—%</div>
-        <div class="chance-label">ШАНС УСПЕХА</div>
-      </div></div>
-      <button class="primary" id="upgradeBtn" onclick="runUpgrade()">↗ &nbsp; ПРОКАЧАТЬ</button>
-    </div>
-
-    <section class="item-panel">
-      <div><div class="panel-title">Выбери цель апгрейда</div><div class="panel-sub">Предмет, который хочешь получить</div></div>
-      <div class="weapon" id="targetIcon">🎯</div>
-      <div><div class="item-name" id="targetName">Цель не выбрана</div><div class="item-value" id="targetValue">— ★</div></div>
-    </section>
-  </div>
-
-  <div class="status" id="status"></div>
-
-  <div class="lower">
-    <section class="box">
-      <div class="box-head"><span>▰ Мой инвентарь</span><small id="inventoryCount">0 предметов</small></div>
-      <div class="box-body">
-        <p style="font-size:12px;color:var(--muted);line-height:1.6;margin-top:0">Выбери предмет, который используешь для апгрейда. Инвентарь демо-режима хранится в этом браузере.</p>
-        <div class="item-grid" id="inventoryGrid"></div>
-        <div class="empty" id="inventoryEmpty">Инвентарь пока пуст.<br>Добавь демонстрационный предмет:</div>
-        <button class="primary" style="font-size:13px;padding:12px;margin-top:12px" onclick="addDemoItem()">＋ ДОБАВИТЬ ДЕМО-СКИН</button>
-      </div>
-    </section>
-
-    <section class="box">
-      <div class="box-head"><span>⌁ Выбрать цель</span><small>Каталог демо-скинов</small></div>
-      <div class="box-body">
-        <div class="controls">
-          <input class="search" id="search" placeholder="Поиск предмета..." oninput="renderTargets()">
-          <select id="sort" onchange="renderTargets()"><option value="asc">Цена ↑</option><option value="desc">Цена ↓</option></select>
-        </div>
-        <div class="controls">
-          <input id="minPrice" type="number" min="0" placeholder="Цена от" oninput="renderTargets()">
-          <input id="maxPrice" type="number" min="0" placeholder="Цена до" oninput="renderTargets()">
-        </div>
-        <div class="item-grid" id="targetGrid"></div>
-      </div>
-    </section>
-  </div>
-  <p style="color:var(--muted);font-size:11px;line-height:1.7;margin-top:22px">Все цены, скины и результаты условные. Это независимая демонстрация: нет настоящего Steam-входа, денежных операций или выдачи предметов CS2.</p>
+<h1 class="page-title">RAGEX <span>UPGRADE</span></h1>
+<div class="toolbar"><div class="mode-controls"><span class="balance-pill">БАЛАНС <b id="balance">5 000 ★</b></span><button class="mode-btn" id="demoModeBtn" onclick="toggleDemoMode()">ДЕМО: ВЫКЛ</button><button class="mode-btn" id="quickBtn" onclick="toggleQuickMode()">БЫСТРАЯ ИГРА: ВЫКЛ</button></div></div>
+<div class="top-grid">
+<section class="item-panel"><div><div class="panel-title">Выбери предмет для ставки</div><div class="panel-sub">Выбери скин в нижнем каталоге</div></div><div class="weapon" id="sourceIcon">🔫</div><div><div class="item-name" id="sourceName">Предмет не выбран</div><div class="item-value" id="sourceValue">— ★</div></div></section>
+<div class="dial-wrap"><div class="dial blank" id="dial"><svg class="dial-svg" viewBox="0 0 270 270" aria-hidden="true"><circle class="dial-track" cx="135" cy="135" r="123"></circle><circle class="dial-success" id="successArc" cx="135" cy="135" r="123" transform="rotate(-90 135 135)"></circle><circle class="dial-center" cx="135" cy="135" r="98"></circle></svg><div class="pointer" id="pointer"></div><div class="dial-inner" id="dialInner"><div class="chance" id="chance"></div><div class="chance-label">ШАНС УСПЕХА</div></div></div><button class="primary" id="upgradeBtn" onclick="runUpgrade(false)">↗ &nbsp; ПРОКАЧАТЬ</button></div>
+<section class="item-panel"><div><div class="panel-title">Выбери цель апгрейда</div><div class="panel-sub">Предмет, который хочешь получить</div></div><div class="weapon" id="targetIcon">🎯</div><div><div class="item-name" id="targetName">Цель не выбрана</div><div class="item-value" id="targetValue">— ★</div></div></section>
+</div>
+<div class="status" id="status"></div>
+<div class="lower">
+<section class="box"><div class="box-head"><span>▰ Мой инвентарь</span><small id="inventoryCount">0 предметов</small></div><div class="box-body"><p style="font-size:12px;color:var(--muted);line-height:1.6;margin-top:0">Выбери предмет для ставки. Баланс и инвентарь сохраняются в этом браузере.</p><div class="item-grid" id="inventoryGrid"></div><div class="empty" id="inventoryEmpty">Инвентарь пока пуст.</div><button class="primary" id="addDemoSkinBtn" style="display:none;font-size:12px;padding:10px;margin-top:12px" onclick="addDemoItem()">＋ ВЫДАТЬ ДЕМО-СКИН</button><div id="demoHint" class="small-hint">Включи демо-режим, чтобы выдавать тестовые предметы.</div></div></section>
+<section class="box"><div class="box-head"><span>⌁ Выбрать цель</span><small>Маркет · покупка за баланс</small></div><div class="box-body"><div class="controls"><input class="search" id="search" placeholder="Поиск предмета..." oninput="renderTargets()"><select id="sort" onchange="renderTargets()"><option value="asc">Цена ↑</option><option value="desc">Цена ↓</option></select></div><div class="controls"><input id="minPrice" type="number" min="0" placeholder="Цена от" oninput="renderTargets()"><input id="maxPrice" type="number" min="0" placeholder="Цена до" oninput="renderTargets()"></div><div class="item-grid" id="targetGrid"></div></div></section>
+</div>
+<p style="color:var(--muted);font-size:11px;line-height:1.7;margin-top:22px">Все цены, скины и результаты условные. Это демонстрация: нет настоящего Steam-входа, денежных операций или выдачи предметов CS2.</p>
 </main>
-
 <footer><a class="logo" href="index.html">RAGE<span>X</span></a><span>Демо-апгрейдер · Не связан с Valve или Counter-Strike 2</span><span>© 2026 RAGEX</span></footer>
-
 <script>
 const catalog=[
- {name:'MP7 | Neon Pulse',value:180,icon:'🟢'},
- {name:'USP-S | Cybershade',value:300,icon:'🔷'},
- {name:'AK-47 | Night Strike',value:420,icon:'🔫'},
- {name:'M4A1-S | Dark Bloom',value:650,icon:'🌿'},
- {name:'AWP | Green Phantom',value:900,icon:'🎯'},
- {name:'Desert Eagle | Acid',value:1200,icon:'🟩'},
- {name:'Knife | Acid Edge',value:1800,icon:'🗡️'},
- {name:'Gloves | Toxic',value:2600,icon:'🧤'},
- {name:'AWP | Neon Storm',value:4000,icon:'⚡'}
-];
-let inventory=[];
-let source=null,target=null,busy=false;
+{name:'MP7 | Neon Pulse',value:180,icon:'🟢'},{name:'USP-S | Cybershade',value:300,icon:'🔷'},{name:'AK-47 | Night Strike',value:420,icon:'🔫'},{name:'M4A1-S | Dark Bloom',value:650,icon:'🌿'},{name:'AWP | Green Phantom',value:900,icon:'🎯'},{name:'Desert Eagle | Acid',value:1200,icon:'🟩'},{name:'Knife | Acid Edge',value:1800,icon:'🗡️'},{name:'Gloves | Toxic',value:2600,icon:'🧤'},{name:'AWP | Neon Storm',value:4000,icon:'⚡'}];
+let inventory=[],source=null,target=null,busy=false,demoMode=false,quickMode=false,balance=5000;
 try{inventory=JSON.parse(localStorage.getItem('ragexInventory')||'[]');if(!Array.isArray(inventory))inventory=[]}catch(e){inventory=[]}
-function saveInventory(){try{localStorage.setItem('ragexInventory',JSON.stringify(inventory))}catch(e){}}
+try{balance=Number(localStorage.getItem('ragexBalance')||5000);if(!Number.isFinite(balance)||balance<0)balance=5000}catch(e){}
+function saveInventory(){try{localStorage.setItem('ragexInventory',JSON.stringify(inventory));localStorage.setItem('ragexBalance',String(balance))}catch(e){}}
+ // Demo-issued items must never leak into the regular inventory after a page reload.
+ inventory=inventory.filter(item=>item.demo!==true);
 function escapeHtml(s){return String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
-function skinCard(item,kind,index){
- const selected=(kind==='source'&&source&&source.name===item.name)||(kind==='target'&&target&&target.name===item.name);
- return `<div class="skin ${selected?'selected':''}" onclick="selectItem('${kind}',${index})"><div class="skin-icon">${item.icon}</div><div class="skin-name">${escapeHtml(item.name)}</div><div class="skin-price">${item.value.toLocaleString('ru-RU')} ★</div></div>`;
+function skinCard(item,kind,index){const selected=(kind==='source'&&source===item)||(kind==='target'&&target===item);return `<div class="skin ${selected?'selected':''}" onclick="selectItem('${kind}',${index})"><div class="skin-icon">${item.icon}</div><div class="skin-name">${escapeHtml(item.name)}</div><div class="skin-price">${item.value.toLocaleString('ru-RU')} ★</div>${kind==='target'?`<button class="buy-btn" onclick="event.stopPropagation();buySkin(${index})">КУПИТЬ</button>`:''}</div>`}
+function renderInventory(){document.getElementById('inventoryGrid').innerHTML=inventory.map((item,i)=>skinCard(item,'source',i)).join('');document.getElementById('inventoryEmpty').style.display=inventory.length?'none':'block';document.getElementById('inventoryCount').textContent=inventory.length+' предметов'}
+function renderTargets(){const q=document.getElementById('search').value.toLowerCase();let list=catalog.filter(x=>x.name.toLowerCase().includes(q));const min=Number(document.getElementById('minPrice').value)||0;const max=Number(document.getElementById('maxPrice').value)||Infinity;list=list.filter(x=>x.value>=min&&x.value<=max);list.sort((a,b)=>document.getElementById('sort').value==='asc'?a.value-b.value:b.value-a.value);document.getElementById('targetGrid').innerHTML=list.map(item=>skinCard(item,'target',catalog.indexOf(item))).join('')||'<div class="empty">Предметы не найдены</div>'}
+function selectItem(kind,index){if(kind==='source')source=inventory[index];else target=catalog[index];updatePanels();renderInventory();renderTargets()}
+function getChancePercent(from,to){if(!from||!to||to.value<=0)return 0;return Math.min(95,Math.max(1,Math.round((from.value/to.value)*80)));}
+function updatePanels(){document.getElementById('sourceIcon').textContent=source?source.icon:'🔫';document.getElementById('sourceName').textContent=source?source.name:'Предмет не выбран';document.getElementById('sourceValue').textContent=source?source.value.toLocaleString('ru-RU')+' ★':'— ★';document.getElementById('targetIcon').textContent=target?target.icon:'🎯';document.getElementById('targetName').textContent=target?target.name:'Цель не выбрана';document.getElementById('targetValue').textContent=target?target.value.toLocaleString('ru-RU')+' ★':'— ★';const pct=source&&target?getChancePercent(source,target):0;const dial=document.getElementById('dial');dial.classList.toggle('blank',!(source&&target));document.getElementById('chance').textContent=source&&target?pct+'%':'';const arc=document.getElementById('successArc');const circumference=2*Math.PI*123;const arcLength=circumference*pct/100;arc.setAttribute('stroke-dasharray',arcLength+' '+circumference);arc.style.opacity=source&&target?'1':'0';document.getElementById('balance').textContent=balance.toLocaleString('ru-RU')+' ★';document.getElementById('demoModeBtn').textContent='ДЕМО: '+(demoMode?'ВКЛ':'ВЫКЛ');document.getElementById('demoModeBtn').classList.toggle('active',demoMode);document.getElementById('quickBtn').textContent='БЫСТРАЯ ИГРА: '+(quickMode?'ВКЛ':'ВЫКЛ');document.getElementById('quickBtn').classList.toggle('active',quickMode);document.getElementById('addDemoSkinBtn').style.display=demoMode?'block':'none';document.getElementById('demoHint').textContent=demoMode?'Демо включено: можно выдавать тестовые скины.':'Обычный режим: используй инвентарь и покупай скины в маркете.'}
+function toggleDemoMode(){
+ demoMode=!demoMode;
+ if(!demoMode){
+   const selectedWasDemo=source&&source.demo===true;
+   inventory=inventory.filter(item=>item.demo!==true);
+   if(selectedWasDemo) source=null;
+   if(source&&!inventory.includes(source)) source=null;
+   saveInventory();renderInventory();
+ }
+ updatePanels();renderTargets();
+ const s=document.getElementById('status');s.className='status show';
+ s.textContent=demoMode?'Демо-режим включён. Выданные тестовые скины будут удалены при выключении режима.':'Демо-режим выключен. Все тестовые скины удалены из инвентаря.';
 }
-function renderInventory(){
- const grid=document.getElementById('inventoryGrid');
- grid.innerHTML=inventory.map((item,i)=>skinCard(item,'source',i)).join('');
- document.getElementById('inventoryEmpty').style.display=inventory.length?'none':'block';
- document.getElementById('inventoryCount').textContent=inventory.length+' предметов';
-}
-function renderTargets(){
- let list=catalog.filter(x=>x.name.toLowerCase().includes(document.getElementById('search').value.toLowerCase()));
- const min=Number(document.getElementById('minPrice').value)||0;
- const max=Number(document.getElementById('maxPrice').value)||Infinity;
- list=list.filter(x=>x.value>=min&&x.value<=max);
- list.sort((a,b)=>document.getElementById('sort').value==='asc'?a.value-b.value:b.value-a.value);
- document.getElementById('targetGrid').innerHTML=list.map(item=>skinCard(item,'target',catalog.indexOf(item))).join('')||'<div class="empty">Предметы не найдены</div>';
-}
-function selectItem(kind,index){
- if(kind==='source'){source=inventory[index];}
- else{target=catalog[index];}
- updatePanels();renderInventory();renderTargets();
-}
-function updatePanels(){
- document.getElementById('sourceIcon').textContent=source?source.icon:'🔫';
- document.getElementById('sourceName').textContent=source?source.name:'Предмет не выбран';
- document.getElementById('sourceValue').textContent=source?source.value.toLocaleString('ru-RU')+' ★':'— ★';
- document.getElementById('targetIcon').textContent=target?target.icon:'🎯';
- document.getElementById('targetName').textContent=target?target.name:'Цель не выбрана';
- document.getElementById('targetValue').textContent=target?target.value.toLocaleString('ru-RU')+' ★':'— ★';
- let pct=source&&target?Math.min(95,Math.max(1,Math.round(source.value/target.value*80))):null;
- document.getElementById('chance').textContent=pct===null?'—%':pct+'%';
-}
-function addDemoItem(){
- const item=catalog[Math.floor(Math.random()*3)];
- inventory.push({...item});
- saveInventory();renderInventory();
- const status=document.getElementById('status');status.className='status show';status.textContent='Добавлен демонстрационный предмет: '+item.name+'. Выбери его слева и цель справа.';
-}
+function toggleQuickMode(){quickMode=!quickMode;updatePanels();const s=document.getElementById('status');s.className='status show';s.textContent=quickMode?'Быстрая игра включена: вращение будет коротким. Нажми «Прокачать», чтобы начать.':'Быстрая игра выключена: обычное медленное вращение.'}
+function addDemoItem(){if(!demoMode){return}const item=catalog[Math.floor(Math.random()*3)];inventory.push({...item,id:Date.now()+Math.random(),demo:true});saveInventory();renderInventory();document.getElementById('status').className='status show';document.getElementById('status').textContent='Выдан тестовый предмет: '+item.name+'. Он исчезнет при выключении демо-режима.'}
+function buySkin(index){if(demoMode){const s=document.getElementById('status');s.className='status show';s.textContent='Покупка недоступна в демо-режиме. Выключи демо, чтобы покупать скины за баланс.';return}const item=catalog[index];if(!item)return;if(balance<item.value){const s=document.getElementById('status');s.className='status show';s.textContent='Недостаточно средств. Нужно '+item.value.toLocaleString('ru-RU')+' ★.';return}balance-=item.value;inventory.push({...item,id:Date.now()+Math.random()});saveInventory();renderInventory();updatePanels();const s=document.getElementById('status');s.className='status show';s.textContent='Покупка успешна: '+item.name+' добавлен в инвентарь.'}
 function runUpgrade(){
  if(busy)return;
- const status=document.getElementById('status');
- if(!source||!target){status.className='status show';status.textContent='Сначала выбери предмет в инвентаре слева и целевой скин справа.';return}
- if(target.value<=source.value){status.className='status show';status.textContent='Выбери цель дороже исходного предмета, чтобы выполнить апгрейд.';return}
+ const status=document.getElementById('status'),btn=document.getElementById('upgradeBtn'),pointer=document.getElementById('pointer');
+ if(!source||!target){status.className='status show';status.textContent='Выбери исходный предмет и цель апгрейда.';return}
+ if(target.value<=source.value){status.className='status show';status.textContent='Выбери цель дороже исходного предмета.';return}
+ const sourceIndex=inventory.indexOf(source);
+ if(sourceIndex<0){status.className='status show';status.textContent='Предмет уже отсутствует в инвентаре. Выбери другой.';source=null;updatePanels();renderInventory();return}
  busy=true;
- const btn=document.getElementById('upgradeBtn'),dial=document.getElementById('dial');
- btn.disabled=true;btn.textContent='⟳ ПРОВЕРКА...';dial.classList.add('spin');
- status.className='status show';status.textContent='Запущена демонстрационная рулетка...';
- const chance=Math.min(.95,source.value/target.value*.8);
+ // Single source of truth: the same integer percentage controls both the SVG arc and the roll.
+ const chancePercent=getChancePercent(source,target);
+ const chanceAngle=chancePercent*3.6;
+ // Angle zero is exactly 12 o'clock. Angles increase clockwise, matching the SVG arc and pointer.
+ const landingAngle=Math.random()*360;
+ const currentAngle=((Number(pointer.dataset.angle||0)%360)+360)%360;
+ const offset=((landingAngle-currentAngle)+360)%360;
+ const fullTurns=quickMode?3:6;
+ const destination=currentAngle+fullTurns*360+offset;
+ const duration=quickMode?1.25:5.2;
+ pointer.style.transition='none';
+ pointer.style.transform='rotate('+currentAngle+'deg)';
+ void pointer.offsetWidth;
+ pointer.style.transition='transform '+duration+'s cubic-bezier(.08,.72,.12,1)';
+ pointer.style.transform='rotate('+destination+'deg)';
+ pointer.dataset.angle=String(landingAngle);
+ btn.disabled=true;btn.textContent='⟳ КРУТИТСЯ...';status.className='status show';status.textContent=(quickMode?'Быстрая игра':'Обычная игра')+' · шанс успеха '+chancePercent+'%';
  setTimeout(()=>{
-  dial.classList.remove('spin');busy=false;btn.disabled=false;btn.textContent='↗ ПРОКАЧАТЬ';
-  if(Math.random()<chance){
-   status.textContent='✓ УСПЕХ! Получен демо-предмет: '+target.name+'. Исходный предмет не списывается.';
-   inventory.push({...target});saveInventory();renderInventory();
-  }else{
-   status.textContent='✕ Не повезло! Демо-попытка не удалась. Исходный предмет сохранён.';
-  }
- },1900);
+   // Verify success against the pointer's actual final normalized angle, not a separate random boolean.
+   const finalAngle=((destination%360)+360)%360;
+   const landedInSuccessArc=finalAngle<chanceAngle;
+   inventory.splice(sourceIndex,1);
+   if(landedInSuccessArc){inventory.push({...target,id:Date.now()+Math.random()});status.textContent='✓ УСПЕХ! Получен '+target.name+'. Ставка списана.'}
+   else status.textContent='✕ Неудача. Ставка списана из инвентаря.';
+   source=null;busy=false;btn.disabled=false;btn.textContent='↗ ПРОКАЧАТЬ';saveInventory();renderInventory();renderTargets();updatePanels();
+ },duration*1000+100);
 }
 renderInventory();renderTargets();updatePanels();
 </script>
