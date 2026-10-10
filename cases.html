@@ -2,6 +2,7 @@
 <html lang="ru"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="theme-color" content="#050906"><title>RAGEX — Кейсы</title>
 <style>
 :root{--bg:#050906;--panel:#0c120d;--green:#a8ff2e;--muted:#9ba99d;--line:#2c402b;--text:#f3f7f1}*{box-sizing:border-box}body{margin:0;background:radial-gradient(ellipse at 50% 0,#102215 0,transparent 48%),var(--bg);color:var(--text);font-family:Inter,Arial,sans-serif;min-height:100vh}a{color:inherit;text-decoration:none}.header{height:76px;padding:0 max(5vw,20px);display:flex;align-items:center;gap:25px;border-bottom:1px solid #243926;background:#050a07e8;position:sticky;top:0;z-index:4;backdrop-filter:blur(16px)}.logo{font-size:31px;font-weight:1000;font-style:italic;letter-spacing:-2px}.logo span{color:var(--green)}nav{display:flex;gap:24px;margin:auto}nav a{font-size:12px;font-weight:800;color:#c6d0c6}nav a:hover,nav a.active{color:var(--green)}.balance{padding:11px 15px;border:1px solid #3b5a30;border-radius:10px;color:var(--green);white-space:nowrap;font-weight:900}.wrap{max-width:1200px;padding:48px 22px 72px;margin:auto}.eyebrow{font-size:11px;letter-spacing:4px;color:#b9e99d}.title{font-size:clamp(30px,5vw,48px);margin:12px 0 8px;font-weight:1000}.title span{color:var(--green)}.desc{color:var(--muted);line-height:1.6;margin-bottom:28px;max-width:680px}.cases{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:17px}.case{position:relative;overflow:hidden;border:1px solid #2d442a;border-radius:16px;padding:25px 20px 20px;background:radial-gradient(ellipse at 50% 35%,#24432070,transparent 58%),linear-gradient(160deg,#121b13,#080d09);text-align:center;transition:transform .22s,border-color .22s,box-shadow .22s}.case:hover{transform:translateY(-5px);border-color:#8ccf3e;box-shadow:0 14px 40px #79ff2715}.case-icon{height:116px;display:grid;place-items:center;font-size:67px;filter:drop-shadow(0 0 24px #73ff3d2d);animation:float 4.5s ease-in-out infinite}.case:nth-child(2) .case-icon{animation-delay:-1s}.case:nth-child(3) .case-icon{animation-delay:-2s}.case h2{font-size:20px;margin:6px 0}.case p{font-size:12px;color:var(--muted);line-height:1.5;min-height:36px}.price{color:var(--green);font-size:15px;font-weight:900;margin:15px 0}.open{width:100%;padding:13px;border:0;border-radius:9px;background:linear-gradient(110deg,#8bed2b,#b6ff3e);color:#081006;font-size:12px;font-weight:1000;cursor:pointer;transition:filter .2s,transform .2s}.open:hover{filter:brightness(1.08);transform:translateY(-2px)}.open:disabled{opacity:.5;cursor:wait;transform:none}.status{display:none;margin:18px 0;padding:16px;border:1px solid #38502f;border-radius:10px;background:#0a140b;color:#d9f8c7;align-items:center;gap:15px}.status.show{display:flex;animation:appear .3s ease}.win-icon{font-size:35px}.status strong{color:var(--green)}.foot{border-top:1px solid #253826;color:#849286;text-align:center;padding:23px;font-size:11px}@keyframes float{0%,100%{transform:translateY(0) rotate(-2deg)}50%{transform:translateY(-7px) rotate(2deg)}}@keyframes appear{from{opacity:0;transform:translateY(7px)}to{opacity:1;transform:none}}@media(max-width:780px){.cases{grid-template-columns:1fr}.case{display:grid;grid-template-columns:100px 1fr;gap:0 15px;text-align:left;align-items:center;padding:14px}.case-icon{grid-row:span 4;height:120px;font-size:53px}.case h2{margin:4px 0}.case p{min-height:0;margin:2px 0}.price{margin:7px 0}.open{grid-column:2}.header{height:auto;min-height:72px;flex-wrap:wrap;padding:14px 5%;gap:12px}.logo{font-size:25px}nav{order:3;width:100%;justify-content:space-between;gap:10px;overflow:auto}nav a{white-space:nowrap;font-size:10px}.balance{margin-left:auto;font-size:12px;padding:9px 10px}.wrap{padding-top:30px}}
+.win-icon{width:120px;min-width:120px;height:90px;display:flex;align-items:center;justify-content:center}.win-icon img{max-width:100%;max-height:100%;object-fit:contain;filter:drop-shadow(0 6px 12px #0009)}.win-icon .icon-fallback{font-size:35px}
 </style>  <link rel="stylesheet" href="ragex-theme.css?v=20261011-no-topup-boost1">
 </head><body>
 <header class="site-header">
@@ -16,19 +17,54 @@
 <div class="cases"><article class="case"><div class="case-icon">📦</div><div><h2>NEON START</h2><p>Стартовые скины и яркие покрытия</p><div class="price">350 ★</div><button class="open" onclick="openCase(0,this)">ОТКРЫТЬ КЕЙС</button></div></article><article class="case"><div class="case-icon">🟩</div><div><h2>TOXIC DROP</h2><p>Зелёные акценты и редкие предметы</p><div class="price">750 ★</div><button class="open" onclick="openCase(1,this)">ОТКРЫТЬ КЕЙС</button></div></article><article class="case"><div class="case-icon">🔒</div><div><h2>ELITE VAULT</h2><p>Дорогие скины для коллекции</p><div class="price">1 500 ★</div><button class="open" onclick="openCase(2,this)">ОТКРЫТЬ КЕЙС</button></div></article></div>
 <div class="status" id="status" role="status"><div class="win-icon" id="winIcon">✨</div><div><strong id="winName">Предмет найден</strong><div id="winValue"></div><a href="inventory.html" style="display:inline-block;margin-top:7px;color:var(--green);font-size:12px;font-weight:800">ОТКРЫТЬ ИНВЕНТАРЬ ↗</a></div></div>
 </main><footer class="foot">Демо-кейсы RAGEX · Баланс и предметы общие для страниц в этом браузере.</footer>
-<script src="ragex-store.js"></script><script>
-const items=[
-{name:'MP7 | Neon Pulse',value:180,icon:'🟢'},{name:'USP-S | Cybershade',value:300,icon:'🔷'},{name:'AK-47 | Night Strike',value:420,icon:'🔫'},{name:'M4A1-S | Dark Bloom',value:650,icon:'🌿'},{name:'AWP | Green Phantom',value:900,icon:'🎯'},{name:'Desert Eagle | Acid',value:1200,icon:'🟩'},{name:'Knife | Acid Edge',value:1800,icon:'🗡️'},{name:'Gloves | Toxic',value:2600,icon:'🧤'},{name:'AWP | Neon Storm',value:4000,icon:'⚡'}];
-// Probabilities are intentionally weighted so the average item value is below the case price.
-// Individual rare wins can exceed the opening cost, but cases are not reliably profitable.
-const cases=[
- {price:350,weights:[55,30,8,3,1.5,1,0.7,0.5,0.3]},
- {price:750,weights:[35,28,16,9,5,3,2,1,1]},
- {price:1500,weights:[15,18,18,14,10,8,7,5,5]}
+<script src="ragex-store.js?v=cs2catalog-v1"></script><script>
+const fmt=n=>Number(n).toLocaleString('ru-RU');
+function renderBalance(){document.getElementById('balance').textContent=fmt(window.RagexStore.getBalance())}
+window.addEventListener('ragex:change',renderBalance);renderBalance();
+const API_URL='https://raw.githubusercontent.com/ByMykel/CSGO-API/main/public/api/en/skins.json';
+const CATALOG_CACHE_KEY='ragexCs2CatalogCacheV1';
+const fallbackItems=[
+{name:'MP7 | Neon Pulse',value:180,icon:'🟢',rarity:'Restricted'},
+{name:'USP-S | Cybershade',value:300,icon:'🔷',rarity:'Classified'},
+{name:'AK-47 | Night Strike',value:420,icon:'🔫',rarity:'Restricted'},
+{name:'M4A1-S | Dark Bloom',value:650,icon:'🌿',rarity:'Classified'},
+{name:'AWP | Green Phantom',value:900,icon:'🎯',rarity:'Covert'},
+{name:'Desert Eagle | Acid',value:1200,icon:'🟩',rarity:'Covert'},
+{name:'Knife | Acid Edge',value:1800,icon:'🗡️',rarity:'Extraordinary'},
+{name:'Gloves | Toxic',value:2600,icon:'🧤',rarity:'Extraordinary'},
+{name:'AWP | Neon Storm',value:4000,icon:'⚡',rarity:'Covert'}
 ];
-const fmt=n=>Number(n).toLocaleString('ru-RU');function renderBalance(){document.getElementById('balance').textContent=fmt(window.RagexStore.getBalance())}window.addEventListener('ragex:change',renderBalance);renderBalance();
-function pick(weight){let n=Math.random()*weight.reduce((a,b)=>a+b,0);for(let i=0;i<weight.length;i++){n-=weight[i];if(n<0)return items[i]}return items[0]}
-function openCase(index,button){const box=cases[index];if(!window.RagexStore.spendBalance(box.price)){const s=document.getElementById('status');s.classList.add('show');document.getElementById('winIcon').textContent='⚠️';document.getElementById('winName').textContent='Недостаточно средств';document.getElementById('winValue').textContent='Для открытия нужно '+fmt(box.price)+' ★';return}button.disabled=true;button.textContent='ОТКРЫВАЕТСЯ…';const chosen=pick(box.weights);window.setTimeout(()=>{const owned={...chosen,id:Date.now()+'-'+Math.random(),demo:false,source:'case'};window.RagexStore.addItem(owned);document.getElementById('winIcon').textContent=chosen.icon;document.getElementById('winName').textContent='Выпал '+chosen.name;document.getElementById('winValue').textContent='Стоимость: '+fmt(chosen.value)+' ★';document.getElementById('status').classList.add('show');button.disabled=false;button.textContent='ОТКРЫТЬ ЕЩЁ';},850)}
+let items=fallbackItems.slice(), catalogLoaded=false;
+const cases=[{price:350,label:'NEON START'},{price:750,label:'TOXIC DROP'},{price:1500,label:'ELITE VAULT'}];
+function demoValue(skin){const rarity=String(skin.rarity&&skin.rarity.name||'').toLowerCase();const tiers=[['contraband',8000],['extraordinary',6500],['covert',3200],['classified',1700],['exotic',1400],['exceptional',950],['restricted',700],['remarkable',450],['mil-spec grade',320],['high grade',300],['industrial grade',160],['consumer grade',100],['base grade',90]];let value=220;for(const [label,price] of tiers){if(rarity.includes(label)){value=price;break}}const weapon=String(skin.weapon&&skin.weapon.name||'');if(/knife|glove|перчат|нож/i.test(weapon))value=Math.max(value,6500);if(skin.stattrak)value=Math.round(value*1.25);if(skin.souvenir)value=Math.round(value*1.15);return Math.max(50,Math.round(value/10)*10)}
+function normalizeSkin(skin){if(!skin||!skin.name||typeof skin.image!=='string'||!/^https:\/\//i.test(skin.image))return null;const id=String(skin.id||skin.name);return{id:'cs2-'+id,catalogId:id,name:String(skin.name),value:demoValue(skin),image:skin.image,icon:'🔹',weaponName:String(skin.weapon&&skin.weapon.name||''),category:String(skin.category&&skin.category.name||''),rarity:String(skin.rarity&&skin.rarity.name||'Unknown'),rarityColor:skin.rarity&&skin.rarity.color||'#91a18e',wears:Array.isArray(skin.wears)?skin.wears.map(w=>w.name).filter(Boolean):[],stattrak:!!skin.stattrak,souvenir:!!skin.souvenir,demoPrice:true}}
+function safeImage(item){const url=String(item&&item.image||'');return /^https:\/\/[a-z0-9.-]+\//i.test(url)?url:''}
+function renderArtwork(item){const url=safeImage(item);if(url)return `<img src="${url.replace(/&/g,'&amp;').replace(/"/g,'&quot;')}" alt="${String(item.name||'Скин').replace(/[&<>"']/g,'')}" onerror="this.style.display='none';this.nextElementSibling.hidden=false"><span class="icon-fallback" hidden>${item.icon||'🔹'}</span>`;return `<span class="icon-fallback">${item.icon||'🔹'}</span>`}
+function updateRewardDisplay(item){document.getElementById('winIcon').innerHTML=renderArtwork(item);document.getElementById('winName').textContent='Выпал '+item.name;document.getElementById('winValue').textContent='Демо-стоимость: '+fmt(item.value)+' ★'}
+function rarityWeight(rarity){const r=String(rarity||'').toLowerCase();if(r.includes('consumer')||r.includes('base'))return 12;if(r.includes('industrial'))return 9;if(r.includes('mil-spec'))return 7;if(r.includes('high grade'))return 6;if(r.includes('restricted'))return 4.2;if(r.includes('classified'))return 2.2;if(r.includes('covert'))return 0.9;if(r.includes('extraordinary')||r.includes('contraband'))return 0.22;return 3}
+function pickForCase(index){
+ const box=cases[index];
+ // Value-sensitive weighting makes cheap items common and expensive skins rarer.
+ const power=[1.65,1.35,1.05][index]||1.3;
+ const eligible=items.filter(item=>Number(item.value)>0);
+ const weights=eligible.map(item=>{
+  const ratio=Math.max(0.1,Number(item.value)/box.price);
+  const valueWeight=1/Math.pow(Math.max(0.25,ratio),power);
+  const rarity=rarityWeight(item.rarity);
+  return valueWeight*rarity;
+ });
+ const total=weights.reduce((a,b)=>a+b,0);let roll=Math.random()*total;
+ for(let i=0;i<eligible.length;i++){roll-=weights[i];if(roll<=0)return eligible[i]}
+ return eligible[0]||fallbackItems[0];
+}
+async function loadCaseCatalog(){
+ try{const cached=JSON.parse(localStorage.getItem(CATALOG_CACHE_KEY)||'null');if(Array.isArray(cached)&&cached.length>100){items=cached;catalogLoaded=true}}
+ catch(_){}
+ try{const response=await fetch(API_URL,{mode:'cors',cache:'force-cache',credentials:'omit'});if(!response.ok)throw new Error('HTTP '+response.status);const data=await response.json();if(!Array.isArray(data))throw new Error('invalid response');const normalized=data.map(normalizeSkin).filter(Boolean);if(normalized.length<100)throw new Error('catalog too small');items=normalized;catalogLoaded=true;try{localStorage.setItem(CATALOG_CACHE_KEY,JSON.stringify(items))}catch(_){} }
+ catch(error){console.warn('CS2 catalog unavailable on cases page; fallback remains active.',error)}
+}
+function openCase(index,button){const box=cases[index];if(!window.RagexStore.spendBalance(box.price)){const status=document.getElementById('status');status.classList.add('show');document.getElementById('winIcon').textContent='⚠️';document.getElementById('winName').textContent='Недостаточно средств';document.getElementById('winValue').textContent='Для открытия нужно '+fmt(box.price)+' ★';return}button.disabled=true;button.textContent='ОТКРЫВАЕТСЯ…';const chosen=pickForCase(index);window.setTimeout(()=>{const owned={...chosen,id:Date.now()+'-'+Math.random(),demo:false,source:'case'};window.RagexStore.addItem(owned);updateRewardDisplay(chosen);document.getElementById('status').classList.add('show');button.disabled=false;button.textContent='ОТКРЫТЬ ЕЩЁ';},850)}
+loadCaseCatalog();
 </script><div class="ragex-toast" id="ragexToast" role="status" aria-live="polite"></div>
 <script src="ragex-theme.js?v=20261011-no-topup-boost1"></script>
 </body></html>
