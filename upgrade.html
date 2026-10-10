@@ -21,10 +21,37 @@ footer{border-top:1px solid var(--line);padding:23px 5%;display:flex;justify-con
 .sell-btn:hover{background:#382117;border-color:#ff9f65}.buy-btn:disabled,.sell-btn:disabled{opacity:.38;cursor:not-allowed;filter:grayscale(1);pointer-events:none}
 @media(max-width:760px){.toolbar{justify-content:center}.mode-controls{justify-content:center}}
 
+
+/* RAGEX neon landing-page visual system applied to the upgrader */
+:root{--bg:#050906;--panel:#0b120d;--panel2:#101a12;--green:#a8ff2e;--muted:#a1aaa5;--line:#263b29;--text:#f5f8f4}
+body{min-height:100vh;font-family:Inter,Arial,Helvetica,sans-serif;background:radial-gradient(ellipse at 50% -8%,#12351c 0,transparent 45%),radial-gradient(ellipse at 78% 34%,#05260f 0,transparent 32%),#050906;color:var(--text);overflow-x:hidden}
+body:before{content:"";position:fixed;inset:0;pointer-events:none;z-index:-1;opacity:.28;background-image:radial-gradient(circle at 12% 18%,#76ff3c88 0 1.5px,transparent 2px),radial-gradient(circle at 76% 62%,#76ff3c66 0 1.5px,transparent 2px),radial-gradient(circle at 46% 84%,#76ff3c55 0 1px,transparent 2px);background-size:240px 210px,310px 280px,400px 330px;animation:upgradeParticles 24s linear infinite}
+@keyframes upgradeParticles{from{background-position:0 0,0 0,0 0}to{background-position:240px -210px,-310px 280px,400px 330px}}
+header.site-header{height:82px;min-height:82px;padding:0 max(5.1vw,24px);display:flex;align-items:center;justify-content:space-between;gap:28px;position:sticky;top:0;z-index:30;border-bottom:1px solid #263c29;background:rgba(4,9,6,.9);backdrop-filter:blur(18px);box-shadow:0 6px 35px #0004}
+.logo{font-size:34px;line-height:1;font-weight:1000;font-style:italic;letter-spacing:-2.2px;white-space:nowrap;color:#f0f8ec;text-shadow:0 0 24px #79ff3533}
+.logo span{color:var(--green);display:inline-block;position:relative}.logo span:after{content:"";position:absolute;height:3px;width:24px;background:var(--green);right:0;bottom:-4px;transform:rotate(-43deg);box-shadow:0 0 12px #adff39}
+nav.nav{display:flex;align-items:stretch;gap:clamp(12px,2vw,30px);margin:auto;height:100%;flex-wrap:nowrap}
+nav.nav a{position:relative;display:flex;align-items:center;color:#cbd4d1;font-size:13px;font-weight:800;letter-spacing:.2px;padding:0 3px;transition:color .2s ease,opacity .2s ease}
+nav.nav a:hover,nav.nav a.active{color:var(--green)}nav.nav a.active:after{content:"";position:absolute;height:3px;bottom:0;left:-12px;right:-12px;background:var(--green);box-shadow:0 0 16px #9cff2f;border-radius:4px 4px 0 0}
+nav a.nav-locked{opacity:.27!important;cursor:not-allowed!important;text-decoration:none!important;pointer-events:auto!important}
+.header-tag{font-size:9px;letter-spacing:1.4px;color:#849487;white-space:nowrap}.header-tag span{color:var(--green);margin-left:8px}
+.wrap{max-width:1400px;padding:34px max(3vw,20px) 56px}
+.page-title{text-align:left;margin:0 0 22px;font-size:clamp(30px,3vw,42px);letter-spacing:-1.4px;font-weight:1000;text-shadow:0 0 26px #72ff2b15}.page-title span{color:var(--green);text-shadow:0 0 25px #84ff2720}
+.toolbar{margin-bottom:18px}.balance-pill,.mode-btn{background:#08110a;border-color:#35562e;border-radius:10px;padding:10px 13px;box-shadow:inset 0 0 18px #8bff1610}.mode-btn{transition:background .2s,border-color .2s,color .2s}.mode-btn:hover,.mode-btn.active{background:#142412;border-color:#80c83d;color:var(--green)}
+.top-grid{gap:22px}.item-panel{height:292px;padding:22px;border:1px solid #2d492e;border-radius:17px;background:radial-gradient(ellipse at 50% 46%,#17381b 0,transparent 62%),linear-gradient(145deg,#0f1a12e8,#07100adf);box-shadow:inset 0 0 36px #67ff1b08,0 12px 42px #0003;transition:transform .25s,border-color .25s}.item-panel:hover{border-color:#5f943a;transform:translateY(-2px)}.panel-title{font-size:15px;font-weight:900}.panel-sub{font-size:12px;line-height:1.55}
+.weapon{filter:drop-shadow(0 0 18px #9cff3228);animation:weaponPulse 4s ease-in-out infinite}@keyframes weaponPulse{0%,100%{transform:translateY(0) scale(1)}50%{transform:translateY(-4px) scale(1.035)}}
+.dial-wrap{gap:16px}.dial{box-shadow:0 0 50px #4dff2713,0 0 0 1px #6aff2a0b}.dial-inner{background:radial-gradient(circle,#142416,#071009 75%);border-color:#335132;box-shadow:inset 0 0 30px #63ff200b}.dial-center{fill:#071009;stroke:#2b492c}.dial-track{stroke:#1b2b1d}.dial-success{filter:drop-shadow(0 0 5px #a8ff2e44)}
+.primary{background:linear-gradient(105deg,#8bed2b,#b6ff3e);box-shadow:0 10px 30px #8aff321c;border-radius:11px}.primary:hover{box-shadow:0 14px 38px #8aff323d}.secondary{border-color:#466e35;background:#08110a;border-radius:10px}.box{border-color:#29442c;border-radius:16px;background:linear-gradient(145deg,#0d160f,#060b07);box-shadow:0 16px 35px #0002}.box-head{background:linear-gradient(105deg,#101d12,#09110b);border-bottom:1px solid #203624;padding:17px 19px}.box-body{padding:18px}.controls input,.controls select{background:#060b07;border-color:#2c452c;border-radius:9px;padding:12px}.controls input:focus,.controls select:focus{outline:1px solid #74b73a;border-color:#74b73a}.skin{border-color:#243b27;background:linear-gradient(150deg,#101a12,#080e09);border-radius:11px;padding:12px 7px}.skin:hover,.skin.selected{border-color:var(--green);background:linear-gradient(150deg,#1a2a18,#0c170d);box-shadow:0 0 18px #92ff2510}.skin-icon{filter:drop-shadow(0 0 14px #83ff2525)}.status{border-color:#3f6733;background:#0a160b;color:#d9f8c7;border-radius:10px;box-shadow:0 0 28px #78ff2608}
+footer.site-footer{border-top:1px solid #253c28;padding:24px max(5.1vw,24px);display:flex;justify-content:space-between;align-items:center;gap:14px;flex-wrap:wrap;color:#7e8d82;font-size:11px}footer.site-footer .logo{font-size:24px}
+.confirm-backdrop{position:fixed;inset:0;z-index:1000;display:flex;align-items:center;justify-content:center;padding:20px;background:rgba(1,5,2,.78);backdrop-filter:blur(9px);opacity:0;transition:opacity .18s ease}.confirm-backdrop[hidden]{display:none!important}.confirm-backdrop.is-open{opacity:1}.confirm-modal{width:min(100%,440px);padding:28px;border-radius:18px;border:1px solid #52783e;background:radial-gradient(ellipse at 50% 0,#172d17,transparent 62%),linear-gradient(145deg,#101811,#070c08);box-shadow:0 25px 100px #000b,0 0 35px #8bff2510;transform:translateY(8px) scale(.985);transition:transform .18s ease}.confirm-backdrop.is-open .confirm-modal{transform:translateY(0) scale(1)}.confirm-mark{width:39px;height:39px;display:grid;place-items:center;border:1px solid #78b83d;border-radius:12px;background:#152713;color:var(--green);font-size:22px;font-weight:900;box-shadow:0 0 22px #8bff2514}.confirm-eyebrow{margin-top:17px;color:#9fcf86;font-size:9px;letter-spacing:2px;font-weight:800}.confirm-modal h2{margin:8px 0 9px;font-size:27px;letter-spacing:-.5px}.confirm-modal p{margin:0;color:#b4c1b3;font-size:14px;line-height:1.65;overflow-wrap:anywhere}.confirm-actions{display:flex;justify-content:flex-end;gap:10px;margin-top:25px}.confirm-actions button{border-radius:9px;padding:12px 15px;font-size:11px;font-weight:900;letter-spacing:.3px;transition:transform .18s,filter .18s}.confirm-actions button:hover{transform:translateY(-2px);filter:brightness(1.1)}.confirm-cancel{border:1px solid #354a35;background:#0a100b;color:#d7e2d4}.confirm-accept{border:1px solid #99ec48;background:linear-gradient(110deg,#86e42a,#b6ff3e);color:#081006}
+@media(max-width:900px){header.site-header{padding:0 20px;gap:15px}.header-tag{display:none}.top-grid{grid-template-columns:minmax(0,1fr) 220px minmax(0,1fr);gap:10px}.item-panel{height:260px}.dial{width:215px;height:215px}}
+@media(max-width:650px){header.site-header{height:auto;min-height:75px;flex-wrap:wrap;padding:14px 5%;gap:12px}.logo{font-size:28px}nav.nav{order:3;width:100%;height:42px;justify-content:space-between;gap:12px;overflow-x:auto;margin:0}nav.nav a{white-space:nowrap;font-size:11px}.wrap{padding:25px 12px 35px}.page-title{text-align:center}.top-grid{grid-template-columns:1fr 1fr;gap:10px}.dial-wrap{grid-column:1/-1;grid-row:2}.dial{width:225px;height:225px}.item-panel{height:220px;padding:14px 8px}.panel-title{font-size:12px}.panel-sub{font-size:10px}.weapon{height:85px;font-size:52px}.item-name{font-size:12px}.lower{margin-top:18px}.box-head{padding:13px;font-size:13px}.confirm-modal{padding:22px}.confirm-actions button{flex:1}}
+@media(prefers-reduced-motion:reduce){*,*:before,*:after{animation-duration:.01ms!important;animation-iteration-count:1!important;scroll-behavior:auto!important;transition-duration:.01ms!important}}
+
 </style>
 </head>
 <body>
-<header><a class="logo" href="index.html">RAGE<span>X</span></a><nav><a href="index.html">Главная</a><a href="cases.html">Кейсы</a><a class="active" href="upgrade.html">Апгрейд</a><a href="inventory.html" id="inventoryNavLink" onclick="return guardInventoryNavigation(event)">Инвентарь</a></nav></header>
+<header class="site-header"><a class="logo" href="index.html" aria-label="RAGEX — главная">RAGE<span>X</span></a><nav class="nav" aria-label="Основная навигация"><a href="index.html">Главная</a><a href="cases.html">Кейсы</a><a class="active" href="upgrade.html">Апгрейдер</a><a href="inventory.html">Инвентарь</a></nav><div class="header-tag">SKIN PLATFORM <span>● ONLINE</span></div></header>
 <main class="wrap">
 <h1 class="page-title">RAGEX <span>UPGRADE</span></h1>
 <div class="toolbar"><div class="mode-controls"><span class="balance-pill">ОБЩИЙ БАЛАНС <b id="balance">5 000 ★</b></span><button class="mode-btn" id="demoModeBtn" onclick="toggleDemoMode()">ДЕМО: ВЫКЛ</button><button class="mode-btn" id="quickBtn" onclick="toggleQuickMode()">БЫСТРАЯ ИГРА: ВЫКЛ</button></div></div>
@@ -40,14 +67,56 @@ footer{border-top:1px solid var(--line);padding:23px 5%;display:flex;justify-con
 </div>
 <p style="color:var(--muted);font-size:11px;line-height:1.7;margin-top:22px">Все цены, скины и результаты условные. Это демонстрация: нет настоящего Steam-входа, денежных операций или выдачи предметов CS2.</p>
 </main>
-<footer><a class="logo" href="index.html">RAGE<span>X</span></a><span>Демо-апгрейдер · Не связан с Valve или Counter-Strike 2</span><span>© 2026 RAGEX</span></footer>
-<script src="ragex-store.js?v=20261011-full-price-fix"></script>
+<footer class="site-footer"><a class="logo" href="index.html">RAGE<span>X</span></a><span>Демо-апгрейдер · Не связан с Valve или Counter-Strike 2</span><span>© 2026 RAGEX</span></footer>
+<div class="confirm-backdrop" id="upgradeConfirmBackdrop" hidden>
+  <section class="confirm-modal" role="dialog" aria-modal="true" aria-labelledby="upgradeConfirmTitle" aria-describedby="upgradeConfirmMessage">
+    <div class="confirm-mark" aria-hidden="true">!</div>
+    <div class="confirm-eyebrow">RAGEX / ПОДТВЕРЖДЕНИЕ</div>
+    <h2 id="upgradeConfirmTitle">Ты уверен?</h2>
+    <p id="upgradeConfirmMessage">Подтверди действие.</p>
+    <div class="confirm-actions"><button class="confirm-cancel" type="button" id="upgradeConfirmCancel">ОТМЕНА</button><button class="confirm-accept" type="button" id="upgradeConfirmAccept">ПРОДАТЬ СКИН</button></div>
+  </section>
+</div>
+<script src="ragex-store.js?v=20261011-confirm-lock-redesign"></script>
 <script>
 const catalog=[
 {name:'MP7 | Neon Pulse',value:180,icon:'🟢'},{name:'USP-S | Cybershade',value:300,icon:'🔷'},{name:'AK-47 | Night Strike',value:420,icon:'🔫'},{name:'M4A1-S | Dark Bloom',value:650,icon:'🌿'},{name:'AWP | Green Phantom',value:900,icon:'🎯'},{name:'Desert Eagle | Acid',value:1200,icon:'🟩'},{name:'Knife | Acid Edge',value:1800,icon:'🗡️'},{name:'Gloves | Toxic',value:2600,icon:'🧤'},{name:'AWP | Neon Storm',value:4000,icon:'⚡'}];
 let inventory=window.RagexStore.getInventory(),demoInventory=[],source=null,target=null,busy=false,demoMode=false,quickMode=false,lastBaseChance=0;
-function syncInventoryNavigation(){const link=document.getElementById('inventoryNavLink');if(!link)return;link.classList.toggle('nav-locked',busy);link.setAttribute('aria-disabled',busy?'true':'false');if(busy){link.setAttribute('title','Нельзя открыть инвентарь, пока крутится колесо');link.setAttribute('tabindex','-1')}else{link.removeAttribute('title');link.removeAttribute('tabindex')}}
-function guardInventoryNavigation(event){if(busy){if(event)event.preventDefault();showStatus('Дождись завершения апгрейда, прежде чем открывать инвентарь.');return false}return true;}
+function syncNavigationLock(){
+ document.querySelectorAll('a[href]').forEach(link=>{
+  link.classList.toggle('nav-locked',busy);
+  if(busy){link.setAttribute('aria-disabled','true');link.setAttribute('tabindex','-1');link.setAttribute('title','Навигация временно заблокирована на время апгрейда')}
+  else{link.removeAttribute('aria-disabled');link.removeAttribute('tabindex');link.removeAttribute('title')}
+ });
+}
+function guardNavigationDuringUpgrade(event){
+ if(!busy)return;
+ const link=event.target.closest&&event.target.closest('a[href]');
+ if(!link)return;
+ event.preventDefault();event.stopImmediatePropagation();
+ showStatus('⏳ Дождись завершения апгрейда — все разделы временно заблокированы.');
+}
+document.addEventListener('click',guardNavigationDuringUpgrade,true);
+document.addEventListener('auxclick',guardNavigationDuringUpgrade,true);
+window.addEventListener('beforeunload',event=>{if(busy){event.preventDefault();event.returnValue='';}});
+let pendingUpgradeConfirm=null;
+function openUpgradeConfirm(message,onAccept){
+ if(busy)return;
+ pendingUpgradeConfirm=onAccept;
+ document.getElementById('upgradeConfirmMessage').textContent=message;
+ const backdrop=document.getElementById('upgradeConfirmBackdrop');backdrop.hidden=false;
+ requestAnimationFrame(()=>backdrop.classList.add('is-open'));
+ document.getElementById('upgradeConfirmCancel').focus();
+}
+function closeUpgradeConfirm(accept){
+ const backdrop=document.getElementById('upgradeConfirmBackdrop');backdrop.classList.remove('is-open');backdrop.hidden=true;
+ const action=pendingUpgradeConfirm;pendingUpgradeConfirm=null;
+ if(accept&&typeof action==='function')action();
+}
+document.getElementById('upgradeConfirmCancel').addEventListener('click',()=>closeUpgradeConfirm(false));
+document.getElementById('upgradeConfirmAccept').addEventListener('click',()=>closeUpgradeConfirm(true));
+document.getElementById('upgradeConfirmBackdrop').addEventListener('click',event=>{if(event.target.id==='upgradeConfirmBackdrop')closeUpgradeConfirm(false)});
+document.addEventListener('keydown',event=>{if(event.key==='Escape'&&!document.getElementById('upgradeConfirmBackdrop').hidden)closeUpgradeConfirm(false)});
 function activeInventory(){return demoMode?demoInventory:inventory}
 function persistInventory(){inventory=window.RagexStore.setInventory(inventory)}
 function escapeHtml(s){return String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
@@ -75,28 +144,36 @@ function showStatus(message){const status=document.getElementById('status');stat
 function toggleDemoMode(){if(busy)return;demoMode=!demoMode;if(demoMode){demoInventory=[];source=null;}else{demoInventory=[];source=null;}updatePanels();renderInventory();renderTargets();showStatus(demoMode?'Демо-режим включён. Тестовые предметы не сохраняются в общем инвентаре.':'Демо-режим выключен. Все временные демо-предметы удалены. Обычный инвентарь сохранён.')}
 function toggleQuickMode(){if(busy){showStatus('Дождись завершения апгрейда, прежде чем менять режим игры.');return}quickMode=!quickMode;updatePanels();showStatus(quickMode?'Быстрая игра включена: короткое вращение. Нажми «Прокачать», чтобы начать.':'Быстрая игра выключена: обычное медленное вращение.')}
 function addDemoItem(){if(busy){showStatus('Нельзя добавлять предметы во время апгрейда.');return}if(!demoMode)return;const item=catalog[Math.floor(Math.random()*3)];demoInventory.push({...item,id:'demo-'+Date.now()+'-'+Math.random(),demo:true});renderInventory();showStatus('Выдан временный тестовый предмет: '+item.name+'. Он не влияет на обычный инвентарь.')}
-function buySkin(index){if(busy){showStatus('Покупка временно заблокирована, пока крутится колесо.');return}if(demoMode){showStatus('Покупка отключена в демо-режиме. Выключи демо для покупок за общий баланс.');return}const item=catalog[index];if(!item)return;if(!window.RagexStore.spendBalance(item.value)){showStatus('Недостаточно средств. Нужно '+item.value.toLocaleString('ru-RU')+' ★.');updatePanels();return}inventory=window.RagexStore.getInventory();inventory.push({...item,id:Date.now()+'-'+Math.random(),demo:false});persistInventory();renderInventory();updatePanels();showStatus('Покупка успешна: '+item.name+' добавлен в общий инвентарь.')}
+function buySkin(index){
+ if(busy||!document.getElementById('upgradeConfirmBackdrop').hidden){showStatus('Покупка временно недоступна. Закрой подтверждение или дождись окончания апгрейда.');return}
+ if(demoMode){showStatus('Покупка отключена в демо-режиме. Выключи демо для покупок за общий баланс.');return}
+ const item=catalog[index];if(!item)return;
+ if(!window.RagexStore.spendBalance(item.value)){showStatus('Недостаточно средств. Нужно '+item.value.toLocaleString('ru-RU')+' ★.');updatePanels();return}
+ inventory=window.RagexStore.getInventory();inventory.push({...item,id:Date.now()+'-'+Math.random(),demo:false});persistInventory();renderInventory();updatePanels();showStatus('Покупка успешна: '+item.name+' добавлен в общий инвентарь.');
+}
 function sellInventoryItem(index){
- if(busy){showStatus('Продажа временно заблокирована, пока крутится колесо.');return}
+ if(busy){showStatus('Продажа заблокирована, пока крутится колесо.');return}
  if(demoMode){showStatus('Демо-предметы нельзя продавать.');return}
  const item=inventory[index];if(!item)return;
  const latest=window.RagexStore.getInventory();
  const realIndex=latest.findIndex(x=>String(x.id)===String(item.id));
  if(realIndex<0){inventory=latest;renderInventory();showStatus('Этот предмет уже отсутствует в инвентаре.');return}
- // Pay the full item's listed value. This bypasses older cached 70%-sale handlers.
- const payout=Math.max(0,Math.floor(Number(latest[realIndex].value)||0));
- latest.splice(realIndex,1);
- window.RagexStore.setInventory(latest);
- window.RagexStore.setBalance(window.RagexStore.getBalance()+payout);
- inventory=window.RagexStore.getInventory();
- if(source&&String(source.id)===String(item.id))source=null;
- renderInventory();updatePanels();
- showStatus('Продан '+item.name+' за '+payout.toLocaleString('ru-RU')+' ★. Начислена полная стоимость предмета.');
+ const current=latest[realIndex],payout=Math.max(0,Math.floor(Number(current.value)||0));
+ openUpgradeConfirm('Продать '+current.name+' за '+payout.toLocaleString('ru-RU')+' ★? Деньги будут зачислены на общий баланс.',()=>{
+  if(busy){showStatus('Продажа отменена: апгрейд уже запущен.');return}
+  const result=window.RagexStore.sellItem(current.id);
+  if(!result||!result.ok){inventory=window.RagexStore.getInventory();renderInventory();updatePanels();showStatus('Предмет уже отсутствует в инвентаре.');return}
+  inventory=window.RagexStore.getInventory();
+  if(source&&String(source.id)===String(current.id))source=null;
+  renderInventory();updatePanels();
+  showStatus('✓ Продан '+current.name+' за '+Number(result.payout).toLocaleString('ru-RU')+' ★. Начислена полная стоимость.');
+ });
 }
+
 function runUpgrade(){
- if(busy)return;if(!source||!target){showStatus('Выбери исходный предмет и цель апгрейда.');return}if(Number(target.value)<=Number(source.value)){showStatus('Выбери цель дороже исходного предмета.');return}
+ if(busy||!document.getElementById('upgradeConfirmBackdrop').hidden)return;if(!source||!target){showStatus('Выбери исходный предмет и цель апгрейда.');return}if(Number(target.value)<=Number(source.value)){showStatus('Выбери цель дороже исходного предмета.');return}
  const list=activeInventory(),sourceIndex=list.findIndex(item=>String(item.id)===String(source.id));if(sourceIndex<0){source=null;renderInventory();updatePanels();showStatus('Предмет уже отсутствует в инвентаре. Выбери другой.');return}
- busy=true;syncInventoryNavigation();const baseChance=getBaseChance(source,target),successAngle=baseChance*3.6;
+ busy=true;syncNavigationLock();const baseChance=getBaseChance(source,target),successAngle=baseChance*3.6;
  // One sampled landing angle drives both the animation endpoint and its outcome.
  const landingAngle=Math.random()*360;const pointer=document.getElementById('pointer'),btn=document.getElementById('upgradeBtn');const currentAngle=((Number(pointer.dataset.angle||0)%360)+360)%360;const offset=((landingAngle-currentAngle)+360)%360;const fullTurns=quickMode?3:6;const destination=currentAngle+fullTurns*360+offset;const duration=quickMode?1.25:5.2;
  // Lock inventory transactions for the entire spin so the stake can't be sold, duplicated or replaced mid-upgrade.
@@ -109,12 +186,12 @@ function runUpgrade(){
    list.splice(sourceIndex,1);
    if(demoMode){if(won)demoInventory.push({...target,id:'demo-'+Date.now()+'-'+Math.random(),demo:true});}
    else{if(won)list.push({...target,id:Date.now()+'-'+Math.random(),demo:false});inventory=list;window.RagexStore.setInventory(inventory);}
-   source=null;busy=false;syncInventoryNavigation();btn.disabled=false;btn.textContent='↗ ПРОКАЧАТЬ';document.getElementById('addDemoSkinBtn').disabled=false;document.getElementById('demoModeBtn').disabled=false;document.getElementById('quickBtn').disabled=false;renderInventory();renderTargets();updatePanels();
+   source=null;busy=false;syncNavigationLock();btn.disabled=false;btn.textContent='↗ ПРОКАЧАТЬ';document.getElementById('addDemoSkinBtn').disabled=false;document.getElementById('demoModeBtn').disabled=false;document.getElementById('quickBtn').disabled=false;renderInventory();renderTargets();updatePanels();
    showStatus(won?'✓ УСПЕХ! Получен '+target.name+'. Ставка списана.':'✕ Неудача. Исходный предмет списан из '+(demoMode?'временного демо-инвентаря.':'общего инвентаря.'));
  },duration*1000+120);
 }
 window.addEventListener('ragex:change',()=>{const currentSourceId=source&&source.id;inventory=window.RagexStore.getInventory();if(!demoMode&&currentSourceId&&!inventory.some(item=>String(item.id)===String(currentSourceId)))source=null;renderInventory();updatePanels()});
-renderInventory();renderTargets();updatePanels();syncInventoryNavigation();
+renderInventory();renderTargets();updatePanels();syncNavigationLock();
 </script>
 </body>
 </html>
