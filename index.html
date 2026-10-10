@@ -100,7 +100,7 @@ h1 span{display:block;color:var(--green);text-shadow:0 0 24px #85ff2520}
     <a href="inventory.html"><svg viewBox="0 0 24 24"><rect x="3" y="7" width="18" height="14" rx="2"/><path d="M8 7V5a4 4 0 0 1 8 0v2M3 12h18"/></svg>ИНВЕНТАРЬ</a>
   </nav>
   <div class="header-actions">
-    <div class="balance" aria-label="Демо-баланс"><span class="star">★</span><strong id="balanceValue">5 000</strong><button type="button" id="addBalance" aria-label="Пополнить демо-баланс" title="Демо-пополнение">+</button></div>
+    <div class="balance" aria-label="Общий демо-баланс сайта"><span class="star">★</span><strong id="balanceValue">5 000</strong><button type="button" id="addBalance" aria-label="Пополнить демо-баланс" title="Демо-пополнение">+</button></div>
     <a class="profile" href="inventory.html" aria-label="Открыть инвентарь"><svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 21v-2a8 8 0 0 1 16 0v2z"/></svg></a>
   </div>
 </header>
@@ -132,17 +132,21 @@ h1 span{display:block;color:var(--green);text-shadow:0 0 24px #85ff2520}
 </main>
 <footer class="site-footer"><a class="logo" href="index.html">RAGE<span class="x">X</span></a><span>Демонстрационный фан-проект. Не связан с Valve или Counter-Strike 2.</span><span>© 2026 RAGEX</span></footer>
 <div class="toast" id="toast" role="status" aria-live="polite"></div>
+<script src="ragex-store.js"></script>
 <script>
 (() => {
  const btn=document.getElementById('addBalance');
  const value=document.getElementById('balanceValue');
  const toast=document.getElementById('toast');
  let timer;
- // This is only a visual demo balance; it is not shared or used for real purchases.
- let balance=5000;
- try { const saved=Number(sessionStorage.getItem('ragex-home-demo-balance')); if(Number.isFinite(saved)&&saved>=0) balance=saved; } catch(e){}
- const render=()=>{value.textContent=balance.toLocaleString('ru-RU');};
- btn.addEventListener('click',()=>{balance+=1000;try{sessionStorage.setItem('ragex-home-demo-balance',String(balance));}catch(e){}render();toast.textContent='+1 000 ★ добавлено к демо-балансу';toast.classList.add('show');clearTimeout(timer);timer=setTimeout(()=>toast.classList.remove('show'),2200);});
+ const render=()=>{value.textContent=window.RagexStore.getBalance().toLocaleString('ru-RU');};
+ btn.addEventListener('click',()=>{
+   window.RagexStore.addBalance(1000);
+   toast.textContent='+1 000 ★ добавлено к общему демо-балансу';
+   toast.classList.add('show'); clearTimeout(timer);
+   timer=setTimeout(()=>toast.classList.remove('show'),2200);
+ });
+ window.addEventListener('ragex:change', render);
  render();
 })();
 </script>
