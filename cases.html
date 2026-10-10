@@ -11,7 +11,13 @@
 <script src="ragex-store.js"></script><script>
 const items=[
 {name:'MP7 | Neon Pulse',value:180,icon:'🟢'},{name:'USP-S | Cybershade',value:300,icon:'🔷'},{name:'AK-47 | Night Strike',value:420,icon:'🔫'},{name:'M4A1-S | Dark Bloom',value:650,icon:'🌿'},{name:'AWP | Green Phantom',value:900,icon:'🎯'},{name:'Desert Eagle | Acid',value:1200,icon:'🟩'},{name:'Knife | Acid Edge',value:1800,icon:'🗡️'},{name:'Gloves | Toxic',value:2600,icon:'🧤'},{name:'AWP | Neon Storm',value:4000,icon:'⚡'}];
-const cases=[{price:350,weights:[28,24,17,12,8,5,3,2,1]},{price:750,weights:[8,10,18,18,16,12,8,6,4]},{price:1500,weights:[2,4,7,10,13,16,18,16,14]}];
+// Probabilities are intentionally weighted so the average item value is below the case price.
+// Individual rare wins can exceed the opening cost, but cases are not reliably profitable.
+const cases=[
+ {price:350,weights:[55,30,8,3,1.5,1,0.7,0.5,0.3]},
+ {price:750,weights:[35,28,16,9,5,3,2,1,1]},
+ {price:1500,weights:[15,18,18,14,10,8,7,5,5]}
+];
 const fmt=n=>Number(n).toLocaleString('ru-RU');function renderBalance(){document.getElementById('balance').textContent=fmt(window.RagexStore.getBalance())}window.addEventListener('ragex:change',renderBalance);renderBalance();
 function pick(weight){let n=Math.random()*weight.reduce((a,b)=>a+b,0);for(let i=0;i<weight.length;i++){n-=weight[i];if(n<0)return items[i]}return items[0]}
 function openCase(index,button){const box=cases[index];if(!window.RagexStore.spendBalance(box.price)){const s=document.getElementById('status');s.classList.add('show');document.getElementById('winIcon').textContent='⚠️';document.getElementById('winName').textContent='Недостаточно средств';document.getElementById('winValue').textContent='Для открытия нужно '+fmt(box.price)+' ★';return}button.disabled=true;button.textContent='ОТКРЫВАЕТСЯ…';const chosen=pick(box.weights);window.setTimeout(()=>{const owned={...chosen,id:Date.now()+'-'+Math.random(),demo:false,source:'case'};window.RagexStore.addItem(owned);document.getElementById('winIcon').textContent=chosen.icon;document.getElementById('winName').textContent='Выпал '+chosen.name;document.getElementById('winValue').textContent='Стоимость: '+fmt(chosen.value)+' ★';document.getElementById('status').classList.add('show');button.disabled=false;button.textContent='ОТКРЫТЬ ЕЩЁ';},850)}
