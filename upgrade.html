@@ -20,6 +20,8 @@ footer{border-top:1px solid var(--line);padding:23px 5%;display:flex;justify-con
 .sell-btn{margin-top:5px;width:100%;padding:5px 4px;border:1px solid #634638;border-radius:6px;background:#211711;color:#ffbe8b;font-size:10px;font-weight:800;cursor:pointer}
 .sell-btn:hover{background:#382117;border-color:#ff9f65}.buy-btn:disabled,.sell-btn:disabled{opacity:.38;cursor:not-allowed;filter:grayscale(1);pointer-events:none}
 @media(max-width:760px){.toolbar{justify-content:center}.mode-controls{justify-content:center}}
+.sound-toggle{border-color:#45653c;color:#dfffc8;white-space:nowrap}.sound-toggle.active{border-color:var(--green);color:var(--green);background:#1b2614}.sound-toggle:not(.active){color:#9ba49a;border-color:#343a33;background:#111411}
+
 
 
 /* RAGEX neon landing-page visual system applied to the upgrader */
@@ -54,7 +56,7 @@ footer.site-footer{border-top:1px solid #253c28;padding:24px max(5.1vw,24px);dis
 <header class="site-header"><a class="logo" href="index.html" aria-label="RAGEX — главная">RAGE<span>X</span></a><nav class="nav" aria-label="Основная навигация"><a href="index.html">Главная</a><a href="cases.html">Кейсы</a><a class="active" href="upgrade.html">Апгрейдер</a><a href="inventory.html">Инвентарь</a></nav><div class="header-tag">SKIN PLATFORM <span>● ONLINE</span></div></header>
 <main class="wrap">
 <h1 class="page-title">RAGEX <span>UPGRADE</span></h1>
-<div class="toolbar"><div class="mode-controls"><span class="balance-pill">ОБЩИЙ БАЛАНС <b id="balance">5 000 ★</b></span><button class="mode-btn" id="demoModeBtn" onclick="toggleDemoMode()">ДЕМО: ВЫКЛ</button><button class="mode-btn" id="quickBtn" onclick="toggleQuickMode()">БЫСТРАЯ ИГРА: ВЫКЛ</button></div></div>
+<div class="toolbar"><div class="mode-controls"><span class="balance-pill">ОБЩИЙ БАЛАНС <b id="balance">5 000 ★</b></span><button class="mode-btn" id="demoModeBtn" onclick="toggleDemoMode()">ДЕМО: ВЫКЛ</button><button class="mode-btn" id="quickBtn" onclick="toggleQuickMode()">БЫСТРАЯ ИГРА: ВЫКЛ</button><button class="mode-btn sound-toggle" id="soundBtn" type="button" onclick="toggleSound()" aria-pressed="true" title="Включить или выключить звуки апгрейдера">🔊 ЗВУК: ВКЛ</button></div></div>
 <div class="top-grid">
 <section class="item-panel"><div><div class="panel-title">Выбери предмет для ставки</div><div class="panel-sub">Выбери скин в нижнем каталоге</div></div><div class="weapon" id="sourceIcon">🔫</div><div><div class="item-name" id="sourceName">Предмет не выбран</div><div class="item-value" id="sourceValue">— ★</div></div></section>
 <div class="dial-wrap"><div class="dial blank" id="dial"><svg class="dial-svg" viewBox="0 0 270 270" aria-hidden="true"><circle class="dial-track" cx="135" cy="135" r="123"></circle><circle class="dial-success" id="successArc" cx="135" cy="135" r="123" transform="rotate(-90 135 135)"></circle><circle class="dial-center" cx="135" cy="135" r="98"></circle></svg><div class="pointer" id="pointer"></div><div class="dial-inner" id="dialInner"><div class="chance" id="chance"></div><div class="chance-label" id="chanceLabel">ШАНС УСПЕХА</div></div></div><button class="primary" id="upgradeBtn" onclick="runUpgrade(false)">↗ &nbsp; ПРОКАЧАТЬ</button></div>
@@ -86,6 +88,8 @@ footer.site-footer{border-top:1px solid #253c28;padding:24px max(5.1vw,24px);dis
 const catalog=[
 {name:'MP7 | Neon Pulse',value:180,icon:'🟢'},{name:'USP-S | Cybershade',value:300,icon:'🔷'},{name:'AK-47 | Night Strike',value:420,icon:'🔫'},{name:'M4A1-S | Dark Bloom',value:650,icon:'🌿'},{name:'AWP | Green Phantom',value:900,icon:'🎯'},{name:'Desert Eagle | Acid',value:1200,icon:'🟩'},{name:'Knife | Acid Edge',value:1800,icon:'🗡️'},{name:'Gloves | Toxic',value:2600,icon:'🧤'},{name:'AWP | Neon Storm',value:4000,icon:'⚡'}];
 let inventory=window.RagexStore.getInventory(),demoInventory=[],source=null,target=null,busy=false,demoMode=false,quickMode=false,lastBaseChance=0;
+let soundEnabled=true;
+try{soundEnabled=localStorage.getItem('ragexSoundEnabled')!=='false'}catch(_){soundEnabled=true}
 function syncNavigationLock(){
  document.querySelectorAll('a[href]').forEach(link=>{
   link.classList.toggle('nav-locked',busy);
@@ -142,7 +146,18 @@ function updatePanels(){
  // The ring and the result use the same percentage shown in the center.
  arc.setAttribute('stroke-dasharray',(circumference*base/100)+' '+circumference);arc.style.opacity=selected?'1':'0';
  document.getElementById('balance').textContent=window.RagexStore.getBalance().toLocaleString('ru-RU')+' ★';
- document.getElementById('demoModeBtn').textContent='ДЕМО: '+(demoMode?'ВКЛ':'ВЫКЛ');document.getElementById('demoModeBtn').classList.toggle('active',demoMode);document.getElementById('quickBtn').textContent='БЫСТРАЯ ИГРА: '+(quickMode?'ВКЛ':'ВЫКЛ');document.getElementById('quickBtn').classList.toggle('active',quickMode);document.getElementById('addDemoSkinBtn').style.display=demoMode?'block':'none';document.getElementById('demoHint').textContent=demoMode?'Демо включено: выдаваемые предметы существуют только до выключения режима и не попадают в обычный инвентарь.':'Обычный режим: общий инвентарь и баланс. Предметы можно улучшать или продавать.';
+ document.getElementById('demoModeBtn').textContent='ДЕМО: '+(demoMode?'ВКЛ':'ВЫКЛ');document.getElementById('demoModeBtn').classList.toggle('active',demoMode);document.getElementById('quickBtn').textContent='БЫСТРАЯ ИГРА: '+(quickMode?'ВКЛ':'ВЫКЛ');document.getElementById('quickBtn').classList.toggle('active',quickMode);const soundBtn=document.getElementById('soundBtn');soundBtn.textContent=(soundEnabled?'🔊 ЗВУК: ВКЛ':'🔇 ЗВУК: ВЫКЛ');soundBtn.classList.toggle('active',soundEnabled);soundBtn.setAttribute('aria-pressed',String(soundEnabled));soundBtn.title=soundEnabled?'Звуки апгрейдера включены':'Звуки апгрейдера выключены';document.getElementById('addDemoSkinBtn').style.display=demoMode?'block':'none';document.getElementById('demoHint').textContent=demoMode?'Демо включено: выдаваемые предметы существуют только до выключения режима и не попадают в обычный инвентарь.':'Обычный режим: общий инвентарь и баланс. Предметы можно улучшать или продавать.';
+}
+function toggleSound(){
+ soundEnabled=!soundEnabled;
+ try{localStorage.setItem('ragexSoundEnabled',String(soundEnabled))}catch(_){}
+ if(!soundEnabled){
+  ['spinSound','winSound','loseSound'].forEach(id=>{const audio=document.getElementById(id);if(audio){try{audio.pause();audio.currentTime=0}catch(_){}}});
+  showStatus('🔇 Звуки апгрейдера выключены. Колесо продолжит работать без звука.');
+ }else{
+  showStatus('🔊 Звуки апгрейдера включены.');
+ }
+ updatePanels();
 }
 function showStatus(message){const status=document.getElementById('status');status.className='status show';status.textContent=message}
 function toggleDemoMode(){if(busy)return;demoMode=!demoMode;if(demoMode){demoInventory=[];source=null;}else{demoInventory=[];source=null;}updatePanels();renderInventory();renderTargets();showStatus(demoMode?'Демо-режим включён. Тестовые предметы не сохраняются в общем инвентаре.':'Демо-режим выключен. Все временные демо-предметы удалены. Обычный инвентарь сохранён.')}
@@ -221,7 +236,7 @@ function animatePointerTo(pointer, fromAngle, toAngle, durationMs){
 }
 
 function safePlayAudio(audio, restart=true){
- if(!audio)return;
+ if(!audio||!soundEnabled)return;
  try{
   if(restart)audio.currentTime=0;
   const playback=audio.play();
@@ -230,7 +245,7 @@ function safePlayAudio(audio, restart=true){
 }
 function startUpgradeSpinSound(){
  const audio=document.getElementById('spinSound');
- if(!audio)return;
+ if(!audio||!soundEnabled)return;
  audio.loop=true;
  audio.volume=0.38;
  safePlayAudio(audio,true);
@@ -241,6 +256,7 @@ function stopUpgradeSpinSound(){
  try{audio.pause();audio.currentTime=0;}catch(_){}
 }
 function playUpgradeResultSound(won){
+ if(!soundEnabled)return;
  const audio=document.getElementById(won?'winSound':'loseSound');
  if(!audio)return;
  audio.loop=false;
