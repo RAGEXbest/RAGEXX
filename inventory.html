@@ -5,12 +5,25 @@
 </style></head><body>
 <header class="header"><a class="logo" href="index.html">RAGE<span>X</span></a><nav><a href="index.html">Главная</a><a href="upgrade.html">Апгрейдер</a><a href="cases.html">Кейсы</a><a class="active" href="inventory.html">Инвентарь</a></nav><div class="balance">★ <span id="balanceValue">5 000</span></div></header>
 <main class="wrap"><div class="eyebrow">RAGEX / PERSONAL COLLECTION</div><h1 class="title">МОЙ <span>ИНВЕНТАРЬ</span></h1><p class="desc">Все обычные скины из апгрейдера хранятся здесь. Продавай ненужные предметы и получай полную стоимость скина обратно на общий баланс.</p><div class="summary"><div class="metric"><small>ОБЩИЙ БАЛАНС</small><strong id="balanceMetric">5 000 ★</strong></div><div class="metric"><small>ПРЕДМЕТОВ</small><strong id="count">0</strong></div><div class="metric"><small>СТОИМОСТЬ ИНВЕНТАРЯ</small><strong id="totalValue">0 ★</strong></div></div><div class="status" id="status" role="status"></div><div id="grid" class="grid"></div><div id="empty" class="empty" style="display:none"><strong>Инвентарь пока пуст</strong>Купи скин в апгрейдере или выиграй улучшение — предметы появятся здесь.</div></main><footer class="foot">Демо-экономика RAGEX · Баланс и инвентарь общие для страниц в этом браузере.</footer>
-<script src="ragex-store.js"></script><script>
+<script src="ragex-store.js?v=20261011-full-price-fix"></script><script>
 const grid=document.getElementById('grid'),empty=document.getElementById('empty'),status=document.getElementById('status');
 function fmt(n){return Number(n||0).toLocaleString('ru-RU')}
 function showStatus(s){status.textContent=s;status.classList.add('show')}
 function escapeHtml(value){return String(value).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
-function sell(id){const item=window.RagexStore.getInventory().find(x=>String(x.id)===String(id));if(!item){render();showStatus('Предмет уже отсутствует в инвентаре.');return}const sale=Math.max(0,Math.floor(Number(item.value)||0));if(!confirm(`Продать ${item.name} за ${fmt(sale)} ★?`))return;const result=window.RagexStore.sellItem(id);if(result.ok){render();showStatus(`${result.item.name} продан за ${fmt(result.payout)} ★. Общий баланс обновлён.`)}else{render();showStatus('Не удалось продать предмет. Обнови страницу и попробуй ещё раз.')}}
+function sell(id){
+ const items=window.RagexStore.getInventory();
+ const index=items.findIndex(x=>String(x.id)===String(id));
+ if(index<0){render();showStatus('Предмет уже отсутствует в инвентаре.');return}
+ const item=items[index];
+ // Always use the item's full listed value; do not call a cached legacy sellItem(id, 0.7).
+ const payout=Math.max(0,Math.floor(Number(item.value)||0));
+ if(!confirm(`Продать ${item.name} за ${fmt(payout)} ★?`))return;
+ items.splice(index,1);
+ window.RagexStore.setInventory(items);
+ window.RagexStore.setBalance(window.RagexStore.getBalance()+payout);
+ render();
+ showStatus(`${item.name} продан за ${fmt(payout)} ★. Начислена полная стоимость предмета.`);
+}
 function render(){const items=window.RagexStore.getInventory();const balance=window.RagexStore.getBalance();document.getElementById('balanceValue').textContent=fmt(balance);document.getElementById('balanceMetric').textContent=fmt(balance)+' ★';document.getElementById('count').textContent=String(items.length);document.getElementById('totalValue').textContent=fmt(items.reduce((s,x)=>s+Number(x.value||0),0))+' ★';grid.innerHTML=items.map(item=>`<article class="card"><div class="icon">${escapeHtml(item.icon||'🔹')}</div><div class="name">${escapeHtml(item.name)}</div><div class="price">${fmt(item.value)} ★</div><button class="sell" type="button" data-sell-id="${escapeHtml(item.id)}">ПРОДАТЬ ЗА ${fmt(Math.max(0,Math.floor(Number(item.value)||0)))} ★</button></article>`).join('');empty.style.display=items.length?'none':'block'}
 grid.addEventListener('click',event=>{const button=event.target.closest('[data-sell-id]');if(button)sell(button.dataset.sellId)});
 window.addEventListener('ragex:change',render);render();
