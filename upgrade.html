@@ -65,7 +65,10 @@ function updatePanels(){
  const dial=document.getElementById('dial');dial.classList.toggle('blank',!selected);document.getElementById('chance').textContent=selected?base+'%':'';
  document.getElementById('chanceLabel').textContent=selected?'БАЗОВЫЙ ШАНС':'';
  document.getElementById('actualOddsNote').textContent=selected?`Фактический шанс победы: ${actual}%` : '';
- const arc=document.getElementById('successArc'),circumference=2*Math.PI*123;arc.setAttribute('stroke-dasharray',(circumference*actual/100)+' '+circumference);arc.style.opacity=selected?'1':'0';
+ const arc=document.getElementById('successArc'),circumference=2*Math.PI*123;
+ // The ring visualizes the prominently displayed base chance. The actual adjusted
+ // probability is separately disclosed in actualOddsNote and used for the outcome.
+ arc.setAttribute('stroke-dasharray',(circumference*base/100)+' '+circumference);arc.style.opacity=selected?'1':'0';
  document.getElementById('balance').textContent=window.RagexStore.getBalance().toLocaleString('ru-RU')+' ★';
  document.getElementById('demoModeBtn').textContent='ДЕМО: '+(demoMode?'ВКЛ':'ВЫКЛ');document.getElementById('demoModeBtn').classList.toggle('active',demoMode);document.getElementById('quickBtn').textContent='БЫСТРАЯ ИГРА: '+(quickMode?'ВКЛ':'ВЫКЛ');document.getElementById('quickBtn').classList.toggle('active',quickMode);document.getElementById('addDemoSkinBtn').style.display=demoMode?'block':'none';document.getElementById('demoHint').textContent=demoMode?'Демо включено: выдаваемые предметы существуют только до выключения режима и не попадают в обычный инвентарь.':'Обычный режим: общий инвентарь и баланс. Предметы можно улучшать или продавать.';
 }
