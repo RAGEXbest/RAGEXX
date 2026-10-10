@@ -1,5 +1,4 @@
-
-/* RAGEX shared demo economy */
+/* RAGEX — единый баланс и инвентарь */
 (() => {
   'use strict';
 
@@ -7,16 +6,16 @@
   const INVENTORY_KEY = 'ragexInventory';
   const START_BALANCE = 5000;
 
-  const safeRead = (key, fallback) => {
+  function readJSON(key, fallback) {
     try {
-      const raw = localStorage.getItem(key);
-      return raw == null ? fallback : JSON.parse(raw);
-    } catch (_) {
+      const value = localStorage.getItem(key);
+      return value === null ? fallback : JSON.parse(value);
+    } catch (error) {
       return fallback;
     }
-  };
+  }
 
-  const readBalance = () => {
+  function getBalance() {
     try {
       const raw = localStorage.getItem(BALANCE_KEY);
 
@@ -29,125 +28,201 @@
       return Number.isFinite(value) && value >= 0
         ? Math.floor(value)
         : 0;
-    } catch (_) {
+    } catch (error) {
       return START_BALANCE;
     }
-  };
+  }
 
-  const readInventory = () => {
-    const value = safeRead(INVENTORY_KEY, []);
+  function getInventory() {
+    const items = readJSON(INVENTORY_KEY, []);
+    if (!Array.isArray(items)) return [];
 
-    return Array.isArray(value)
-      ? value.filter(item =>
-          item &&
-          item.demo !== true &&
-          typeof item.name === 'string' &&
-          Number.isFinite(Number(item.value))
-        )
-      : [];
-  };
+    let changed = false;
 
-  const emit = () => {
+    const normalized = items
+      .filter(item =>
+        item &&
+        item.demo !== true &&
+        typeof item.name === 'string' &&
+        Number.isFinite(Number(item.value))
+      )
+      .map((item, index) => {
+        if (item.id !== undefined && item.id !== null) {
+          return item;
+        }
+
+        changed = true;
+
+        return {
+          ...item,
+          id: `legacy-${Date.now()}-${index}-${Math.random()
+            .toString(36).slice(2, 8)}`
+        };
+      });
+
+    if (changed) {
+      try {
+        localStorage.setItem(
+          INVENTORY_KEY,
+          JSON.stringify(normalized)
+        );
+      } catch (error) {}
+    }
+
+    return normalized;
+  }
+
+  function notify() {
     window.dispatchEvent(
       new CustomEvent('ragex:change', {
         detail: {
-          balance: readBalance(),
-          inventory: readInventory()
+          balance: getBalance(),
+          inventory: getInventory()
         }
       })
     );
-  };
+  }
 
-  const setBalance = amount => {
-    const value = Math.max(0, Math.floor(Number(amount) || 0));
+  function setBalance(amount) {
+    const value = Math.max(
+      0,
+      Math.floor(Number(amount) || 0)
+    );
 
-    try {
-      localStorage.setItem(BALANCE_KEY, String(value));
-    } catch (_) {}
-
-    emit();
+    localStorage.setItem(BALANCE_KEY, String(value));
+    notify();
     return value;
-  };
+  }
 
-  const addBalance = amount =>
-    setBalance(
-      readBalance() + Math.max(0, Math.floor(Number(amount) || 0))
+  function addBalance(amount) {
+    const value = Math.max(
+      0,
+      Math.floor(Number(amount) || 0)
     );
 
-  const spendBalance = amount => {
-    const cost = Math.max(0, Math.floor(Number(amount) || 0));
+    return setBalance(getBalance() + value);
+  }
 
-    if (readBalance() < cost) return false;
+  function spendBalance(amount) {
+    const cost = Math.max(
+      0,
+      Math.floor(Number(amount) || 0)
+    );
 
-    setBalance(readBalance() - cost);
+    if (getBalance() < cost) return false;
+
+    setBalance(getBalance() - cost);
     return true;
-  };
+  }
 
-  const setInventory = items => {
-    const cleaned = (Array.isArray(items) ? items : []).filter(item =>
-      item &&
-      item.demo !== true &&
-      typeof item.name === 'string' &&
-      Number.isFinite(Number(item.value))
+  function setInventory(items) {
+    const normalized = (Array.isArray(items) ? items : [])
+      .filter(item =>
+        item &&
+        item.demo !== true &&
+        typeof item.name === 'string' &&
+        Number.isFinite(Number(item.value))
+      )
+      .map(item => ({
+        ...item,
+        id: item.id ?? (
+          `item-${Date.now()}-${Math.random()
+            .toString(36).slice(2, 9)}`
+        ),
+        demo: false
+      }));
+
+    localStorage.setItem(
+      INVENTORY_KEY,
+      JSON.stringify(normalized)
     );
 
-    try {
-      localStorage.setItem(INVENTORY_KEY, JSON.stringify(cleaned));
-    } catch (_) {}
+    notify();
+    return normalized;
+  }
 
-    emit();
-    return cleaned;
-  };
+  function addItem(item) {
+    if (
+      !item ||
+      typeof item.name !== 'string' ||
+      !Number.isFinite(Number(item.value))
+    ) {
+      return false;
+    }
 
-  const addItem = item => {
-    const items = readInventory();
+    const inventory = getInventory();
 
-    items.push({
+    inventory.push({
       ...item,
-      demo: false,
-      id: item.id ?? (Date.now() + Math.random())
+      id: item.id ?? (
+        `item-${Date.now()}-${Math.random()
+          .toString(36).slice(2, 9)}`
+      ),
+      demo: false
     });
 
-    return setInventory(items);
-  };
+    setInventory(inventory);
+    return true;
+  }
 
-  const removeItem = id =>
-    setInventory(
-      readInventory().filter(item => String(item.id) !== String(id))
+  function removeItem(id) {
+    const inventory = getInventory();
+    const filtered = inventory.filter(
+      item => String(item.id) !== String(id)
     );
 
-  const sellItem = (id, rate = 0.7) => {
-    const items = readInventory();
-    const index = items.findIndex(
+    if (filtered.length === inventory.length) return false;
+
+    setInventory(filtered);
+    return true;
+  }
+
+  // Продажа по полной стоимости предмета.
+  function sellItem(id) {
+    const inventory = getInventory();
+
+    const index = inventory.findIndex(
       item => String(item.id) === String(id)
     );
 
-    if (index < 0) {
+    if (index === -1) {
       return { ok: false, reason: 'not-found' };
     }
 
-    const [item] = items.splice(index, 1);
-
+    const item = inventory[index];
     const payout = Math.max(
       0,
-      Math.floor(
-        Number(item.value) *
-        Math.max(0, Math.min(1, Number(rate) || 0))
-      )
+      Math.floor(Number(item.value) || 0)
     );
 
-    setInventory(items);
-    setBalance(readBalance() + payout);
+    // Сначала удаляем предмет и сохраняем инвентарь.
+    inventory.splice(index, 1);
+    localStorage.setItem(
+      INVENTORY_KEY,
+      JSON.stringify(inventory)
+    );
 
-    return { ok: true, item, payout };
-  };
+    // Затем начисляем полную стоимость.
+    localStorage.setItem(
+      BALANCE_KEY,
+      String(getBalance() + payout)
+    );
+
+    notify();
+
+    return {
+      ok: true,
+      item,
+      payout
+    };
+  }
 
   window.RagexStore = {
-    getBalance: readBalance,
+    getBalance,
     setBalance,
     addBalance,
     spendBalance,
-    getInventory: readInventory,
+    getInventory,
     setInventory,
     addItem,
     removeItem,
@@ -158,9 +233,10 @@
   window.addEventListener('storage', event => {
     if (
       !event.key ||
-      [BALANCE_KEY, INVENTORY_KEY].includes(event.key)
+      event.key === BALANCE_KEY ||
+      event.key === INVENTORY_KEY
     ) {
-      emit();
+      notify();
     }
   });
 })();
