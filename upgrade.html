@@ -269,14 +269,16 @@ async function runUpgrade(){
  if(!source||!target){showStatus('Выбери исходный предмет и цель апгрейда.');return}
  if(Number(target.value)<=Number(source.value)){showStatus('Выбери цель дороже исходного предмета.');return}
 
- const list=activeInventory();
+ const isDemo=demoMode;
+ // Always read the latest persisted inventory before accepting a stake.
+ const list=isDemo?demoInventory:window.RagexStore.getInventory();
+ if(!isDemo)inventory=list;
  const sourceId=String(source.id);
  const sourceIndex=list.findIndex(item=>String(item.id)===sourceId);
  if(sourceIndex<0){source=null;renderInventory();updatePanels();showStatus('Предмет уже отсутствует в инвентаре. Выбери другой.');return}
 
  const sourceItem={...list[sourceIndex]};
  const targetItem={...target};
- const isDemo=demoMode;
  const isQuick=quickMode;
  const baseChance=getBaseChance(sourceItem,targetItem);
  const successAngle=baseChance*3.6;
@@ -288,8 +290,9 @@ async function runUpgrade(){
  const fullTurns=isQuick?3:6;
  const destination=currentAngle+fullTurns*360+offset;
  const durationMs=(isQuick?1.25:5.2)*1000;
+ let stakeConsumed=false;
 
- // Lock all navigation and inventory transactions throughout the complete spin.
+ // Lock navigation and every inventory transaction before changing the stake.
  busy=true;
  syncNavigationLock();
  document.getElementById('addDemoSkinBtn').disabled=true;
@@ -297,31 +300,53 @@ async function runUpgrade(){
  document.getElementById('quickBtn').disabled=true;
  btn.disabled=true;
  btn.textContent='⟳ КРУТИТСЯ...';
+
+ // IMPORTANT: consume and persist the source item BEFORE animation starts.
+ // If the user closes/reloads the page mid-spin, the stake cannot reappear.
+ const latestList=isDemo?demoInventory:window.RagexStore.getInventory();
+ const latestIndex=latestList.findIndex(item=>String(item.id)===sourceId);
+ if(latestIndex<0){
+   busy=false;
+   syncNavigationLock();
+   btn.disabled=false;
+   btn.textContent='↗ ПРОКАЧАТЬ';
+   document.getElementById('addDemoSkinBtn').disabled=false;
+   document.getElementById('demoModeBtn').disabled=false;
+   document.getElementById('quickBtn').disabled=false;
+   inventory=window.RagexStore.getInventory();
+   source=null;
+   renderInventory();updatePanels();
+   showStatus('Предмет уже отсутствует в инвентаре. Ставка не принята.');
+   return;
+ }
+ latestList.splice(latestIndex,1);
+ if(isDemo){
+   demoInventory=latestList;
+ }else{
+   inventory=window.RagexStore.setInventory(latestList);
+ }
+ stakeConsumed=true;
  renderInventory();
  renderTargets();
- showStatus((isQuick?'Быстрая игра':'Обычная игра')+' · шанс успеха '+baseChance+'%');
+ showStatus('Ставка списана. '+(isQuick?'Быстрая игра':'Обычная игра')+' · шанс успеха '+baseChance+'%');
  startUpgradeSpinSound();
 
  try {
    await animatePointerTo(pointer,currentAngle,destination,durationMs);
    stopUpgradeSpinSound();
-   // This final pointer angle is the same angle used to render the wheel arc:
-   // zero degrees is 12 o'clock, increasing clockwise.
+   // The ring and the outcome use the same clockwise angle from 12 o'clock.
    const finalAngle=((landingAngle%360)+360)%360;
    const won=finalAngle<successAngle;
 
-   const liveList=isDemo?demoInventory:window.RagexStore.getInventory();
-   const liveIndex=liveList.findIndex(item=>String(item.id)===sourceId);
-   if(liveIndex<0){
-     showStatus('Предмет больше не найден в инвентаре — результат отменён.');
-     return;
-   }
-   liveList.splice(liveIndex,1);
-   if(isDemo){
-     if(won)demoInventory.push({...targetItem,id:'demo-'+Date.now()+'-'+Math.random(),demo:true});
-   }else{
-     if(won)liveList.push({...targetItem,id:Date.now()+'-'+Math.random(),demo:false});
-     inventory=window.RagexStore.setInventory(liveList);
+   if(won){
+     if(isDemo){
+       demoInventory.push({...targetItem,id:'demo-'+Date.now()+'-'+Math.random(),demo:true});
+     }else{
+       // Preserve any inventory changes made in another same-origin tab.
+       const currentInventory=window.RagexStore.getInventory();
+       currentInventory.push({...targetItem,id:Date.now()+'-'+Math.random(),demo:false});
+       inventory=window.RagexStore.setInventory(currentInventory);
+     }
    }
 
    source=null;
@@ -329,13 +354,18 @@ async function runUpgrade(){
    renderTargets();
    updatePanels();
    showStatus(won
-     ? '✓ УСПЕХ! Получен '+targetItem.name+'. Ставка списана.'
+     ? '✓ УСПЕХ! Получен '+targetItem.name+'. Ставка уже списана.'
      : '✕ Неудача. Исходный предмет списан из '+(isDemo?'временного демо-инвентаря.':'общего инвентаря.'));
    playUpgradeResultSound(won);
  } catch(error) {
    stopUpgradeSpinSound();
    console.error('RAGEX upgrade spin failed:',error);
-   showStatus('Не удалось завершить анимацию. Попробуй ещё раз.');
+   source=null;
+   renderInventory();
+   updatePanels();
+   showStatus(stakeConsumed
+     ? 'Апгрейд прерван. Ставка уже списана и не возвращается.'
+     : 'Не удалось запустить апгрейд. Ставка не списана.');
  } finally {
    stopUpgradeSpinSound();
    busy=false;
@@ -350,7 +380,7 @@ async function runUpgrade(){
    updatePanels();
  }
 }
-window.addEventListener('ragex:change',()=>{const currentSourceId=source&&source.id;inventory=window.RagexStore.getInventory();if(!demoMode&&currentSourceId&&!inventory.some(item=>String(item.id)===String(currentSourceId)))source=null;renderInventory();updatePanels()});
+window.addEventListener('ragex:change',()=>{const currentSourceId=source&&source.id;inventory=window.RagexStore.getInventory();if(!busy&&!demoMode&&currentSourceId&&!inventory.some(item=>String(item.id)===String(currentSourceId)))source=null;renderInventory();updatePanels()});
 renderInventory();renderTargets();updatePanels();syncNavigationLock();
 </script>
 </body>
