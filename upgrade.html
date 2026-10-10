@@ -51,12 +51,20 @@ footer.site-footer{border-top:1px solid #253c28;padding:24px max(5.1vw,24px);dis
 @media(prefers-reduced-motion:reduce){*,*:before,*:after{animation-duration:.01ms!important;animation-iteration-count:1!important;scroll-behavior:auto!important;transition-duration:.01ms!important}}
 
 </style>
+  <link rel="stylesheet" href="ragex-theme.css?v=20261011-unified1">
 </head>
 <body>
-<header class="site-header"><a class="logo" href="index.html" aria-label="RAGEX — главная">RAGE<span>X</span></a><nav class="nav" aria-label="Основная навигация"><a href="index.html">Главная</a><a href="cases.html">Кейсы</a><a class="active" href="upgrade.html">Апгрейдер</a><a href="inventory.html">Инвентарь</a></nav><div class="header-tag">SKIN PLATFORM <span>● ONLINE</span></div></header>
+<header class="site-header">
+  <a class="logo" href="index.html" aria-label="RAGEX — главная">RAGE<span class="x">X</span></a>
+  <nav class="nav" aria-label="Основная навигация"><a href="index.html"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m3 10 9-7 9 7v10a1 1 0 0 1-1 1h-5v-7h-6v7H4a1 1 0 0 1-1-1z" fill="currentColor" stroke="none"/></svg>ГЛАВНАЯ</a><a class="active" href="upgrade.html" aria-current="page"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2 20 7v10l-8 5-8-5V7z"/><path d="M12 2v20M8.5 9 12 7l3.5 2M8.5 15 12 17l3.5-2"/></svg>АПГРЕЙДЕР</a><a href="cases.html"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m12 2 9 5-9 5-9-5zM3 7v10l9 5 9-5V7M12 12v10"/></svg>КЕЙСЫ</a><a href="inventory.html"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="7" width="18" height="14" rx="2"/><path d="M8 7V5a4 4 0 0 1 8 0v2M3 12h18"/></svg>ИНВЕНТАРЬ</a></nav>
+  <div class="header-actions">
+    <div class="balance" aria-label="Общий демо-баланс сайта"><span class="star">★</span><strong id="balance">5 000</strong><button type="button" id="addBalance" aria-label="Пополнить демо-баланс" title="Демо-пополнение">+</button></div>
+    <a class="profile" href="inventory.html" aria-label="Открыть инвентарь"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="8" r="4"/><path d="M4 21v-2a8 8 0 0 1 16 0v2z"/></svg></a>
+  </div>
+</header>
 <main class="wrap">
 <h1 class="page-title">RAGEX <span>UPGRADE</span></h1>
-<div class="toolbar"><div class="mode-controls"><span class="balance-pill">ОБЩИЙ БАЛАНС <b id="balance">5 000 ★</b></span><button class="mode-btn" id="demoModeBtn" onclick="toggleDemoMode()">ДЕМО: ВЫКЛ</button><button class="mode-btn" id="quickBtn" onclick="toggleQuickMode()">БЫСТРАЯ ИГРА: ВЫКЛ</button><button class="mode-btn sound-toggle" id="soundBtn" type="button" onclick="toggleSound()" aria-pressed="true" title="Включить или выключить звуки апгрейдера">🔊 ЗВУК: ВКЛ</button></div></div>
+<div class="toolbar"><div class="mode-controls"><button class="mode-btn" id="demoModeBtn" onclick="toggleDemoMode()">ДЕМО: ВЫКЛ</button><button class="mode-btn" id="quickBtn" onclick="toggleQuickMode()">БЫСТРАЯ ИГРА: ВЫКЛ</button><button class="mode-btn sound-toggle" id="soundBtn" type="button" onclick="toggleSound()" aria-pressed="true" title="Включить или выключить звуки апгрейдера">🔊 ЗВУК: ВКЛ</button></div></div>
 <div class="top-grid">
 <section class="item-panel"><div><div class="panel-title">Выбери предмет для ставки</div><div class="panel-sub">Выбери скин в нижнем каталоге</div></div><div class="weapon" id="sourceIcon">🔫</div><div><div class="item-name" id="sourceName">Предмет не выбран</div><div class="item-value" id="sourceValue">— ★</div></div></section>
 <div class="dial-wrap"><div class="dial blank" id="dial"><svg class="dial-svg" viewBox="0 0 270 270" aria-hidden="true"><circle class="dial-track" cx="135" cy="135" r="123"></circle><circle class="dial-success" id="successArc" cx="135" cy="135" r="123" transform="rotate(-90 135 135)"></circle><circle class="dial-center" cx="135" cy="135" r="98"></circle></svg><div class="pointer" id="pointer"></div><div class="dial-inner" id="dialInner"><div class="chance" id="chance"></div><div class="chance-label" id="chanceLabel">ШАНС УСПЕХА</div></div></div><button class="primary" id="upgradeBtn" onclick="runUpgrade(false)">↗ &nbsp; ПРОКАЧАТЬ</button></div>
@@ -91,6 +99,7 @@ let inventory=window.RagexStore.getInventory(),demoInventory=[],source=null,targ
 let soundEnabled=true;
 try{soundEnabled=localStorage.getItem('ragexSoundEnabled')!=='false'}catch(_){soundEnabled=true}
 function syncNavigationLock(){
+ const topUpButton=document.getElementById('addBalance'); if(topUpButton)topUpButton.disabled=busy;
  document.querySelectorAll('a[href]').forEach(link=>{
   link.classList.toggle('nav-locked',busy);
   if(busy){link.setAttribute('aria-disabled','true');link.setAttribute('tabindex','-1');link.setAttribute('title','Навигация временно заблокирована на время апгрейда')}
@@ -145,7 +154,7 @@ function updatePanels(){
  const arc=document.getElementById('successArc'),circumference=2*Math.PI*123;
  // The ring and the result use the same percentage shown in the center.
  arc.setAttribute('stroke-dasharray',(circumference*base/100)+' '+circumference);arc.style.opacity=selected?'1':'0';
- document.getElementById('balance').textContent=window.RagexStore.getBalance().toLocaleString('ru-RU')+' ★';
+ document.getElementById('balance').textContent=window.RagexStore.getBalance().toLocaleString('ru-RU');
  document.getElementById('demoModeBtn').textContent='ДЕМО: '+(demoMode?'ВКЛ':'ВЫКЛ');document.getElementById('demoModeBtn').classList.toggle('active',demoMode);document.getElementById('quickBtn').textContent='БЫСТРАЯ ИГРА: '+(quickMode?'ВКЛ':'ВЫКЛ');document.getElementById('quickBtn').classList.toggle('active',quickMode);const soundBtn=document.getElementById('soundBtn');soundBtn.textContent=(soundEnabled?'🔊 ЗВУК: ВКЛ':'🔇 ЗВУК: ВЫКЛ');soundBtn.classList.toggle('active',soundEnabled);soundBtn.setAttribute('aria-pressed',String(soundEnabled));soundBtn.title=soundEnabled?'Звуки апгрейдера включены':'Звуки апгрейдера выключены';document.getElementById('addDemoSkinBtn').style.display=demoMode?'block':'none';document.getElementById('demoHint').textContent=demoMode?'Демо включено: выдаваемые предметы существуют только до выключения режима и не попадают в обычный инвентарь.':'Обычный режим: общий инвентарь и баланс. Предметы можно улучшать или продавать.';
 }
 function toggleSound(){
@@ -383,5 +392,7 @@ async function runUpgrade(){
 window.addEventListener('ragex:change',()=>{const currentSourceId=source&&source.id;inventory=window.RagexStore.getInventory();if(!busy&&!demoMode&&currentSourceId&&!inventory.some(item=>String(item.id)===String(currentSourceId)))source=null;renderInventory();updatePanels()});
 renderInventory();renderTargets();updatePanels();syncNavigationLock();
 </script>
+<div class="ragex-toast" id="ragexToast" role="status" aria-live="polite"></div>
+<script src="ragex-theme.js?v=20261011-unified1"></script>
 </body>
 </html>
