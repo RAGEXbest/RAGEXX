@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="theme-color" content="#050906">
 <title>RAGEX — Открытие кейса</title>
-<link rel="stylesheet" href="ragex-theme.css?v=20261011-case-spin-v3">
+<link rel="stylesheet" href="ragex-theme.css?v=20261011-case-spin-audio-v4">
 <style>
 :root{--bg:#050906;--green:#a8ff2e;--muted:#98a99a;--line:#293c2c;--text:#f3f7f1;--accent:#a8ff2e}
 *{box-sizing:border-box}html{background:var(--bg);scroll-behavior:smooth}body{margin:0;min-height:100vh;background:radial-gradient(ellipse at 52% -7%,color-mix(in srgb,var(--accent) 15%,transparent),transparent 44%),var(--bg);color:var(--text);font-family:Inter,Arial,sans-serif}a{color:inherit;text-decoration:none}button,input{font:inherit}
@@ -70,9 +70,11 @@
   <div class="bottom-note">RAGEX — демо-экономика. Награда и стоимость открытия фиксируются в момент нажатия, а прокрутка показывает уже выбранный результат. Цена предмета ориентируется на доступные рыночные данные и не гарантирует цену реальной продажи.</div>
 </main>
 <audio id="caseSpinSound" src="upgrade-spin.mp3" preload="auto"></audio>
-<script src="ragex-store.js?v=20261011-case-spin-v3"></script>
-<script src="ragex-prices.js?v=20261011-case-spin-v3"></script>
-<script src="ragex-cases.js?v=20261011-case-spin-v3"></script>
+<audio id="caseWinSound" src="https://assets.mixkit.co/active_storage/sfx/3057/3057-preview.mp3" preload="auto"></audio>
+<audio id="caseLoseSound" src="https://assets.mixkit.co/active_storage/sfx/3116/3116-preview.mp3" preload="auto"></audio>
+<script src="ragex-store.js?v=20261011-case-spin-audio-v4"></script>
+<script src="ragex-prices.js?v=20261011-case-spin-audio-v4"></script>
+<script src="ragex-cases.js?v=20261011-case-spin-audio-v4"></script>
 <script>
 'use strict';
 const system = window.RagexCaseSystem;
@@ -102,9 +104,11 @@ function renderDropPool(){if(!dropTable){$('dropGrid').innerHTML='';$('dropLoadi
 function randomFrom(pool){return pool[Math.floor(Math.random()*pool.length)]}
 function buildCell(item,isWinner=false){return `<div class="reel-cell${isWinner?' winner':''}" style="--rarity:${rarityCss(item)}" ${isWinner?'data-winner="true"':''}>${imageHTML(item)}<small>${safe(item.name)}</small></div>`}
 function buildReel(reward,index){const pool=allDrops.length?allDrops:system.getCatalog();const track=document.createElement('div');track.className='reel-track';let html='';for(let i=0;i<22;i++)html+=buildCell(randomFrom(pool),false);html+=buildCell(reward,true);for(let i=0;i<6;i++)html+=buildCell(randomFrom(pool),false);track.innerHTML=html;const row=document.createElement('div');row.className='reel-row';const win=safe(reward.name);row.innerHTML=`<div class="reel-window" aria-label="Прокрутка награды ${win}"></div>`;row.querySelector('.reel-window').appendChild(track);$('reelList').appendChild(row);return{row,window:row.querySelector('.reel-window'),track,target:track.querySelector('[data-winner="true"]'),index}}
+const REEL_DURATION = 5150;
+const REEL_STAGGER = 115;
 function animateReel(reel,delay){return new Promise(resolve=>{
   let finished=false,animation=null,failSafe=null;
-  const duration=5150;
+  const duration=REEL_DURATION;
   let finalX=0;
   const finish=()=>{
     if(finished)return;finished=true;
@@ -149,21 +153,52 @@ function animateReel(reel,delay){return new Promise(resolve=>{
   };
   setTimeout(()=>requestAnimationFrame(()=>requestAnimationFrame(start)),Math.max(0,delay||0));
 })}
-function startCaseSpinSound(){const audio=$('caseSpinSound');if(!audio)return;try{audio.pause();audio.currentTime=0;audio.loop=true;audio.volume=0.65;const p=audio.play();if(p&&typeof p.catch==='function')p.catch(()=>{setMessage('Звук недоступен: проверь, что upgrade-spin.mp3 загружен в корень сайта.','error')})}catch(error){console.warn('Case spin sound unavailable',error)}}
-function stopCaseSpinSound(){const audio=$('caseSpinSound');if(!audio)return;try{audio.pause();audio.currentTime=0;audio.loop=false}catch(_){}}
+function soundsEnabled(){try{return localStorage.getItem('ragexSoundEnabled')!=='false'}catch(_){return true}}
+function startCaseSpinSound(totalDuration){
+  const audio=$('caseSpinSound');
+  if(!audio||!soundsEnabled())return;
+  try{
+    audio.pause();audio.currentTime=0;audio.loop=false;audio.volume=0.58;
+    // The spin cue is shorter than the reel by default. Slow the file down to match
+    // the complete visual animation, including the stagger between multiple reels.
+    const sourceDuration=(Number.isFinite(audio.duration)&&audio.duration>0)?audio.duration:3.68325;
+    const setRate=()=>{try{const d=(Number.isFinite(audio.duration)&&audio.duration>0)?audio.duration:sourceDuration;audio.playbackRate=Math.max(.5,Math.min(1.5,d/Math.max(1000,totalDuration)*1000));}catch(_){}};
+    setRate();
+    if(!Number.isFinite(audio.duration)||audio.duration===Infinity){audio.addEventListener('loadedmetadata',setRate,{once:true});}
+    const p=audio.play();if(p&&typeof p.catch==='function')p.catch(()=>console.warn('Case spin audio playback was blocked'));
+  }catch(error){console.warn('Case spin sound unavailable',error)}
+}
+function stopCaseSpinSound(){const audio=$('caseSpinSound');if(!audio)return;try{audio.pause();audio.currentTime=0;audio.loop=false;audio.playbackRate=1}catch(_){}}
+function playCaseOutcomeSound(rewards,totalCost){
+  if(!soundsEnabled()||!Array.isArray(rewards)||!rewards.length)return;
+  const rewardTotal=rewards.reduce((sum,item)=>sum+Math.max(0,Number(item.value)||0),0);
+  const won=rewardTotal>=totalCost;
+  const audio=$(won?'caseWinSound':'caseLoseSound');
+  if(!audio)return;
+  try{
+    ['caseWinSound','caseLoseSound'].forEach(id=>{const a=$(id);if(a){a.pause();a.currentTime=0}});
+    audio.loop=false;audio.volume=.7;
+    const p=audio.play();if(p&&typeof p.catch==='function')p.catch(()=>console.warn('Case result audio playback was blocked'));
+  }catch(error){console.warn('Case result sound unavailable',error)}
+}
 function showResult(rewards){$('reelTitle').textContent=rewards.length===1?'ПРЕДМЕТ ВЫПАЛ':'ВЫПАЛО ПРЕДМЕТОВ: '+rewards.length;$('reelStatus').textContent='Результат зачислен в инвентарь';$('resultGrid').innerHTML=rewards.map(item=>`<div class="result-card" style="--rarity:${rarityCss(item)}">${imageHTML(item)}<strong>${safe(item.name)}</strong><span>${fmt(item.value)} ★</span></div>`).join('');$('resultSummary').classList.add('show');$('openAgainButton').textContent='ОТКРЫТЬ ЕЩЁ';$('openAgainButton').disabled=false}
 async function openCases(){if(opening||!catalogReady||!dropTable)return;const qty=getQty();const total=qty*box.price;const store=window.RagexStore;if(!store){setMessage('Общая логика баланса не загрузилась. Обнови страницу.','error');return}if(store.getBalance()<total){setMessage(`Не хватает ${fmt(total-store.getBalance())} ★ для открытия выбранного количества.`,'error');updateOpenButton();return}const rewards=[];for(let i=0;i<qty;i++){const chosen=system.pickReward(box,dropTable);if(!chosen){setMessage('Не удалось выбрать награду из доступного пула. Попробуй позже.','error');return}rewards.push(chosen)}
   // Commit the transaction before animation to prevent refreshing the page from refunding the opening.
   if(!store.spendBalance(total)){setMessage('Баланс изменился. Проверь сумму и попробуй снова.','error');updateOpenButton();return}
   const now=Date.now();const owned=rewards.map((item,index)=>({...item,id:`case-${box.id}-${now}-${index}-${Math.random().toString(36).slice(2,8)}`,demo:false,source:'case',caseName:box.name,caseCost:box.price,openedAt:now}));
   const inv=store.getInventory();store.setInventory([...inv,...owned]);lastRewards=rewards;opening=true;$('reelPanel').classList.add('show');$('resultSummary').classList.remove('show');$('reelList').innerHTML='';$('reelTitle').textContent=qty===1?'ПРОКРУТКА ДРОПА':`ПРОКРУТКА ДРОПА · ${qty} КЕЙСОВ`;$('reelStatus').textContent='Определяем, что выпало…';setMessage('Ставка списана, результаты уже сохранены. Прокрутка показывает полученные предметы.','ready');updateOpenButton();
-  const reels=rewards.map((reward,index)=>buildReel(reward,index));startCaseSpinSound();try{await Promise.all(reels.map((reel,index)=>animateReel(reel,index*115)));}finally{stopCaseSpinSound();}showResult(rewards);opening=false;updateOpenButton();$('reelStatus').textContent='Готово';setMessage(`Открытие завершено. ${qty===1?'Предмет добавлен':`Все ${qty} предметов добавлены`} в общий инвентарь.`,'ready');$('reelPanel').scrollIntoView({behavior:'smooth',block:'center'});
+  const reels=rewards.map((reward,index)=>buildReel(reward,index));
+  const spinDuration=REEL_DURATION+Math.max(0,reels.length-1)*REEL_STAGGER;
+  startCaseSpinSound(spinDuration);
+  try{await Promise.all(reels.map((reel,index)=>animateReel(reel,index*REEL_STAGGER)));}
+  finally{stopCaseSpinSound();}
+  showResult(rewards);playCaseOutcomeSound(rewards,total);opening=false;updateOpenButton();$('reelStatus').textContent='Готово';setMessage(`Открытие завершено. ${qty===1?'Предмет добавлен':`Все ${qty} предметов добавлены`} в общий инвентарь.`,'ready');$('reelPanel').scrollIntoView({behavior:'smooth',block:'center'});
 }
 function setup(){document.title=`RAGEX — ${box.name}`;document.documentElement.style.setProperty('--accent',box.accent);$('detailPage').style.setProperty('--accent',box.accent);$('caseImage').src=box.image;$('caseImage').alt=box.name;$('caseTag').textContent=box.tag;$('caseName').textContent=box.name;$('caseDescription').textContent=box.desc;$('totalCost').textContent=`${fmt(box.price)} ★`;setQty(1);$('qtyMinus').addEventListener('click',()=>setQty(getQty()-1));$('qtyPlus').addEventListener('click',()=>setQty(getQty()+1));$('qtyInput').addEventListener('input',()=>setQty($('qtyInput').value));document.querySelectorAll('.qty-chip').forEach(button=>button.addEventListener('click',()=>setQty(button.dataset.qty)));$('openButton').addEventListener('click',openCases);$('openAgainButton').addEventListener('click',()=>{if(opening)return;openCases();});window.addEventListener('ragex:change',updateOpenButton);}
 setup();
 setMessage('Подключаем каталог скинов и подтверждаем цены…');
 system.loadCatalog().then(result=>{if(!result.ok){catalogReady=false;setMessage('Каталог цен временно недоступен. Открытие выключено, фиктивные награды не используются.','error');$('dropLoading').textContent='Каталог временно недоступен. Попробуй обновить страницу позже.';updateOpenButton();return}catalogReady=true;dropTable=system.makeDropTable(box);allDrops=system.allDropItems(dropTable);if(!dropTable||!allDrops.length){catalogReady=false;setMessage('Для этого кейса пока не удалось сформировать пул наград дешевле цены открытия.','error');updateOpenButton();renderDropPool();return}setMessage(`Каталог готов · ${fmt(allDrops.length)} возможных предметов в этом кейсе.`,'ready');renderDropPool();updateOpenButton();});
 </script>
-<script src="ragex-theme.js?v=20261011-case-spin-v3"></script>
+<script src="ragex-theme.js?v=20261011-case-spin-audio-v4"></script>
 </body>
 </html>
