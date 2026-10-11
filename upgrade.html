@@ -179,6 +179,27 @@ footer.site-footer{border-top:1px solid #253c28;padding:24px max(5.1vw,24px);dis
 .source-inventory-pager span{min-width:55px;font-size:10px}
 @media(max-width:760px){.page-title{margin:4px 0 18px!important}.page-title .title-brand{letter-spacing:-1.7px}.page-title .title-upgrade{font-size:.64em!important}.source-inventory-pager{gap:7px}}
 
+
+/* Matched inventory / market grids: same 9-card page and no oversized empty rows. */
+.lower{align-items:start;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:12px}
+.lower>.box{align-self:start;height:auto;min-height:0}
+.lower>.box .box-body{height:auto;min-height:0}
+.item-grid{grid-template-columns:repeat(3,minmax(0,1fr));grid-auto-rows:auto;align-content:start;align-items:stretch;min-height:0}
+.skin{height:100%;display:flex;flex-direction:column;min-height:0}
+.skin-icon{flex:0 0 76px}
+.skin-name{flex:0 0 auto}
+.skin-meta{flex:0 0 auto}
+.skin-price{flex:0 0 auto;margin-top:auto;margin-bottom:4px}
+.buy-btn,.sell-btn{flex:0 0 auto;margin-top:7px}
+.catalog-status{margin:0 0 6px;min-height:0;line-height:1.35}
+.catalog-search-row{margin-bottom:6px}
+.market-filter-row{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:6px;margin-bottom:8px}
+.market-filter-row select,.market-filter-row input{width:100%;min-width:0;max-width:100%;padding:8px 7px;font-size:10px}
+.catalog-pager{margin-top:9px}
+.source-inventory-pager{margin-top:9px}
+@media(max-width:760px){.lower{grid-template-columns:minmax(0,1fr);align-items:start}.market-filter-row{grid-template-columns:repeat(2,minmax(0,1fr))}.catalog-search-row{flex-wrap:nowrap}.catalog-search-row .search{flex:1 1 auto}.catalog-search-row select{flex:0 0 90px;min-width:0}}
+@media(max-width:420px){.item-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.market-filter-row{grid-template-columns:repeat(2,minmax(0,1fr))}.skin-icon{flex-basis:70px}}
+
 </style>
   <link rel="stylesheet" href="ragex-theme.css?v=20261011-upgrade-title-balance-pager-v6">
 </head>
@@ -211,7 +232,7 @@ footer.site-footer{border-top:1px solid #253c28;padding:24px max(5.1vw,24px);dis
 <div class="status" id="status"></div>
 <div class="lower">
 <section class="box"><div class="box-head"><span>Мой инвентарь</span><small id="inventoryCount">0 предметов</small></div><div class="box-body"><p style="font-size:12px;color:var(--muted);line-height:1.6;margin-top:0">Выбери предмет для ставки. Баланс и инвентарь сохраняются в этом браузере.</p><div class="item-grid" id="inventoryGrid"></div><div class="catalog-pager source-inventory-pager" id="sourceInventoryPager" hidden><button type="button" id="sourceInventoryPrev" disabled>← НАЗАД</button><span id="sourceInventoryPageLabel">1 / 1</span><button type="button" id="sourceInventoryNext" disabled>ДАЛЕЕ →</button></div><div class="empty" id="inventoryEmpty">Инвентарь пока пуст.</div><button class="primary" id="addDemoSkinBtn" style="display:none;font-size:12px;padding:10px;margin-top:12px" onclick="addDemoItem()">＋ ВЫДАТЬ ДЕМО-СКИН</button><div id="demoHint" class="small-hint">Включи демо-режим, чтобы выдавать тестовые предметы.</div></div></section>
-<section class="box"><div class="box-head"><span>Маркет</span><small id="catalogHeaderStatus">Загружаю рынок…</small></div><div class="box-body"><p id="catalogStatus" class="catalog-status" aria-live="polite">Загружаю каталог. Покупка временно недоступна.</p><div class="controls catalog-search-row"><input class="search" id="search" placeholder="Поиск по названию или оружию…"><select id="sort" aria-label="Сортировка по цене"><option value="asc">Цена ↑</option><option value="desc">Цена ↓</option></select></div><div class="controls catalog-filter-row"><select id="rarityFilter" aria-label="Фильтр по редкости"><option value="">Все редкости</option></select><select id="weaponFilter" aria-label="Фильтр по оружию"><option value="">Все оружия</option></select></div><div class="controls catalog-filter-row"><input id="minPrice" type="number" min="0" placeholder="Цена от"><input id="maxPrice" type="number" min="0" placeholder="Цена до"></div><div class="item-grid" id="targetGrid"></div><div class="catalog-pager"><button type="button" id="catalogPrev" disabled>← НАЗАД</button><span id="catalogPageLabel">Страница 1</span><button type="button" id="catalogNext" disabled>ДАЛЕЕ →</button></div></div></section>
+<section class="box"><div class="box-head"><span>Маркет</span><small id="catalogHeaderStatus">Загружаю рынок…</small></div><div class="box-body"><p id="catalogStatus" class="catalog-status" aria-live="polite">Загружаю каталог. Покупка временно недоступна.</p><div class="controls catalog-search-row"><input class="search" id="search" placeholder="Поиск по названию или оружию…"><select id="sort" aria-label="Сортировка по цене"><option value="asc">Цена ↑</option><option value="desc">Цена ↓</option></select></div><div class="controls catalog-filter-row market-filter-row"><select id="rarityFilter" aria-label="Фильтр по редкости"><option value="">Все редкости</option></select><select id="weaponFilter" aria-label="Фильтр по оружию"><option value="">Все оружия</option></select><input id="minPrice" type="number" min="0" placeholder="Цена от"><input id="maxPrice" type="number" min="0" placeholder="Цена до"></div><div class="item-grid" id="targetGrid"></div><div class="catalog-pager"><button type="button" id="catalogPrev" disabled>← НАЗАД</button><span id="catalogPageLabel">Страница 1</span><button type="button" id="catalogNext" disabled>ДАЛЕЕ →</button></div></div></section>
 </div>
 </main>
 <footer class="site-footer"><a class="logo" href="index.html">RAGE<span>X</span></a><span>Каталог скинов: <a href="https://github.com/ByMykel/CSGO-API" target="_blank" rel="noopener noreferrer">CSGO-API</a> · Демоверсия, не связана с Valve</span><span>© 2026 RAGEX</span></footer>
@@ -234,7 +255,7 @@ footer.site-footer{border-top:1px solid #253c28;padding:24px max(5.1vw,24px);dis
 let catalog=[];
 const CATALOG_API='https://raw.githubusercontent.com/ByMykel/CSGO-API/main/public/api/en/skins.json';
 const CATALOG_CACHE_KEY='ragexCs2CatalogBaseCacheV2';
-const CATALOG_PAGE_SIZE=18;
+const CATALOG_PAGE_SIZE=9;
 let catalogPage=0,catalogIsLive=false,catalogLoadFailed=false,targetPreset='all';
 let inventory=window.RagexStore.getInventory(),demoInventory=[],source=null,target=null,busy=false,demoMode=false,quickMode=false,lastBaseChance=0,lockedBoostAmount=0;
 const SOURCE_INVENTORY_PAGE_SIZE=9;let sourceInventoryPage=0;
