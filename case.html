@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="theme-color" content="#050906">
 <title>RAGEX — Открытие кейса</title>
-<link rel="stylesheet" href="ragex-theme.css?v=20261011-case-pages-v1">
+<link rel="stylesheet" href="ragex-theme.css?v=20261011-case-spin-v3">
 <style>
 :root{--bg:#050906;--green:#a8ff2e;--muted:#98a99a;--line:#293c2c;--text:#f3f7f1;--accent:#a8ff2e}
 *{box-sizing:border-box}html{background:var(--bg);scroll-behavior:smooth}body{margin:0;min-height:100vh;background:radial-gradient(ellipse at 52% -7%,color-mix(in srgb,var(--accent) 15%,transparent),transparent 44%),var(--bg);color:var(--text);font-family:Inter,Arial,sans-serif}a{color:inherit;text-decoration:none}button,input{font:inherit}
@@ -21,6 +21,8 @@
 @media(max-width:780px){.detail-page{padding:22px 14px 50px}.case-hero{grid-template-columns:1fr;padding:14px;gap:18px}.case-art{min-height:185px;max-height:235px}.case-art img{max-height:235px}.case-name{font-size:34px;margin-top:11px}.case-description{font-size:12px;margin-bottom:17px}.opening-controls{grid-template-columns:1fr}.open-action{width:100%}.open-cost{text-align:left}.open-button{width:100%}.drop-grid{grid-template-columns:repeat(3,minmax(0,1fr))}.section-caption{max-width:180px}.reel-panel{padding:12px}.reel-head h2{font-size:12px}}
 @media(max-width:480px){.drop-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}.loot-card{padding:8px}.loot-image{height:85px}.loot-name{font-size:9px}.section-title-row{display:block}.section-caption{text-align:left;max-width:none;margin-top:7px}.qty-chip{padding:0 8px}.reel-cell{flex-basis:112px;width:112px}.reel-window{height:100px}.reel-cell img{height:60px}}
 @media(prefers-reduced-motion:reduce){*,*:before,*:after{animation-duration:.01ms!important;transition-duration:.01ms!important;scroll-behavior:auto!important}}
+
+@media(prefers-reduced-motion:reduce){.reel-track{transition-duration:5.15s!important;transition-timing-function:cubic-bezier(.08,.72,.1,1)!important}}
 </style>
 </head>
 <body>
@@ -67,9 +69,10 @@
   </section>
   <div class="bottom-note">RAGEX — демо-экономика. Награда и стоимость открытия фиксируются в момент нажатия, а прокрутка показывает уже выбранный результат. Цена предмета ориентируется на доступные рыночные данные и не гарантирует цену реальной продажи.</div>
 </main>
-<script src="ragex-store.js?v=20261011-case-pages-v1"></script>
-<script src="ragex-prices.js?v=20261011-case-pages-v1"></script>
-<script src="ragex-cases.js?v=20261011-case-pages-v1"></script>
+<audio id="caseSpinSound" src="upgrade-spin.mp3" preload="auto"></audio>
+<script src="ragex-store.js?v=20261011-case-spin-v3"></script>
+<script src="ragex-prices.js?v=20261011-case-spin-v3"></script>
+<script src="ragex-cases.js?v=20261011-case-spin-v3"></script>
 <script>
 'use strict';
 const system = window.RagexCaseSystem;
@@ -99,20 +102,68 @@ function renderDropPool(){if(!dropTable){$('dropGrid').innerHTML='';$('dropLoadi
 function randomFrom(pool){return pool[Math.floor(Math.random()*pool.length)]}
 function buildCell(item,isWinner=false){return `<div class="reel-cell${isWinner?' winner':''}" style="--rarity:${rarityCss(item)}" ${isWinner?'data-winner="true"':''}>${imageHTML(item)}<small>${safe(item.name)}</small></div>`}
 function buildReel(reward,index){const pool=allDrops.length?allDrops:system.getCatalog();const track=document.createElement('div');track.className='reel-track';let html='';for(let i=0;i<22;i++)html+=buildCell(randomFrom(pool),false);html+=buildCell(reward,true);for(let i=0;i<6;i++)html+=buildCell(randomFrom(pool),false);track.innerHTML=html;const row=document.createElement('div');row.className='reel-row';const win=safe(reward.name);row.innerHTML=`<div class="reel-window" aria-label="Прокрутка награды ${win}"></div>`;row.querySelector('.reel-window').appendChild(track);$('reelList').appendChild(row);return{row,window:row.querySelector('.reel-window'),track,target:track.querySelector('[data-winner="true"]'),index}}
-function animateReel(reel,delay){return new Promise(resolve=>{const reduce=window.matchMedia&&window.matchMedia('(prefers-reduced-motion: reduce)').matches;const start=()=>{const targetRect=reel.target.getBoundingClientRect();const trackRect=reel.track.getBoundingClientRect();const offset=(targetRect.left-trackRect.left)+reel.target.offsetWidth/2-reel.window.clientWidth/2;reel.track.style.transition=reduce?'none':'transform 4.65s cubic-bezier(.08,.72,.1,1)';reel.track.style.transform=`translateX(${-Math.max(0,offset)}px)`;if(reduce){reel.target.classList.add('winner');setTimeout(resolve,60)}else setTimeout(()=>{reel.target.classList.add('winner');resolve()},4850)};reel.track.style.transition='none';reel.track.style.transform='translateX(0)';void reel.track.offsetHeight;setTimeout(()=>requestAnimationFrame(start),delay)})}
+function animateReel(reel,delay){return new Promise(resolve=>{
+  let finished=false,animation=null,failSafe=null;
+  const duration=5150;
+  let finalX=0;
+  const finish=()=>{
+    if(finished)return;finished=true;
+    if(failSafe)clearTimeout(failSafe);
+    // Commit the exact final position before removing the Web Animation effect.
+    reel.track.style.transform=`translate3d(${finalX}px,0,0)`;
+    if(animation){try{animation.cancel()}catch(_){}}
+    reel.track.style.willChange='';
+    reel.target.classList.add('winner');
+    resolve();
+  };
+  const start=()=>{
+    try{
+      reel.track.style.transition='none';
+      reel.track.style.transform='translate3d(0px,0,0)';
+      reel.track.style.willChange='transform';
+      // Force layout with the reel visible, then compute the target against the actual window centre.
+      void reel.track.getBoundingClientRect().width;
+      const winRect=reel.window.getBoundingClientRect();
+      const targetRect=reel.target.getBoundingClientRect();
+      const offset=(targetRect.left+targetRect.width/2)-(winRect.left+winRect.width/2);
+      const distance=Math.round(offset);
+      finalX=-distance;
+      if(!Number.isFinite(finalX)||winRect.width<=0||targetRect.width<=0){throw new Error('Reel has no measurable layout');}
+      // Web Animations API avoids CSS transition batching issues where the track stays still.
+      animation=reel.track.animate(
+        [{transform:'translate3d(0px,0,0)'},{transform:`translate3d(${finalX}px,0,0)`}],
+        {duration,easing:'cubic-bezier(.08,.72,.1,1)',fill:'forwards'}
+      );
+      animation.onfinish=finish;
+      failSafe=setTimeout(finish,duration+700);
+    }catch(error){
+      console.error('RAGEX case reel animation error',error);
+      // Fallback to a CSS transform animation if Web Animations is unavailable.
+      try{
+        reel.track.style.transition='none';reel.track.style.transform='translate3d(0px,0,0)';void reel.track.offsetWidth;
+        reel.track.style.transition=`transform ${duration}ms cubic-bezier(.08,.72,.1,1)`;
+        requestAnimationFrame(()=>{reel.track.style.transform=`translate3d(${finalX}px,0,0)`;});
+        failSafe=setTimeout(finish,duration+700);
+      }catch(_){finish()}
+    }
+  };
+  setTimeout(()=>requestAnimationFrame(()=>requestAnimationFrame(start)),Math.max(0,delay||0));
+})}
+function startCaseSpinSound(){const audio=$('caseSpinSound');if(!audio)return;try{audio.pause();audio.currentTime=0;audio.loop=true;audio.volume=0.65;const p=audio.play();if(p&&typeof p.catch==='function')p.catch(()=>{setMessage('Звук недоступен: проверь, что upgrade-spin.mp3 загружен в корень сайта.','error')})}catch(error){console.warn('Case spin sound unavailable',error)}}
+function stopCaseSpinSound(){const audio=$('caseSpinSound');if(!audio)return;try{audio.pause();audio.currentTime=0;audio.loop=false}catch(_){}}
 function showResult(rewards){$('reelTitle').textContent=rewards.length===1?'ПРЕДМЕТ ВЫПАЛ':'ВЫПАЛО ПРЕДМЕТОВ: '+rewards.length;$('reelStatus').textContent='Результат зачислен в инвентарь';$('resultGrid').innerHTML=rewards.map(item=>`<div class="result-card" style="--rarity:${rarityCss(item)}">${imageHTML(item)}<strong>${safe(item.name)}</strong><span>${fmt(item.value)} ★</span></div>`).join('');$('resultSummary').classList.add('show');$('openAgainButton').textContent='ОТКРЫТЬ ЕЩЁ';$('openAgainButton').disabled=false}
 async function openCases(){if(opening||!catalogReady||!dropTable)return;const qty=getQty();const total=qty*box.price;const store=window.RagexStore;if(!store){setMessage('Общая логика баланса не загрузилась. Обнови страницу.','error');return}if(store.getBalance()<total){setMessage(`Не хватает ${fmt(total-store.getBalance())} ★ для открытия выбранного количества.`,'error');updateOpenButton();return}const rewards=[];for(let i=0;i<qty;i++){const chosen=system.pickReward(box,dropTable);if(!chosen){setMessage('Не удалось выбрать награду из доступного пула. Попробуй позже.','error');return}rewards.push(chosen)}
   // Commit the transaction before animation to prevent refreshing the page from refunding the opening.
   if(!store.spendBalance(total)){setMessage('Баланс изменился. Проверь сумму и попробуй снова.','error');updateOpenButton();return}
   const now=Date.now();const owned=rewards.map((item,index)=>({...item,id:`case-${box.id}-${now}-${index}-${Math.random().toString(36).slice(2,8)}`,demo:false,source:'case',caseName:box.name,caseCost:box.price,openedAt:now}));
   const inv=store.getInventory();store.setInventory([...inv,...owned]);lastRewards=rewards;opening=true;$('reelPanel').classList.add('show');$('resultSummary').classList.remove('show');$('reelList').innerHTML='';$('reelTitle').textContent=qty===1?'ПРОКРУТКА ДРОПА':`ПРОКРУТКА ДРОПА · ${qty} КЕЙСОВ`;$('reelStatus').textContent='Определяем, что выпало…';setMessage('Ставка списана, результаты уже сохранены. Прокрутка показывает полученные предметы.','ready');updateOpenButton();
-  const reels=rewards.map((reward,index)=>buildReel(reward,index));await Promise.all(reels.map((reel,index)=>animateReel(reel,index*115)));showResult(rewards);opening=false;updateOpenButton();$('reelStatus').textContent='Готово';setMessage(`Открытие завершено. ${qty===1?'Предмет добавлен':`Все ${qty} предметов добавлены`} в общий инвентарь.`,'ready');$('reelPanel').scrollIntoView({behavior:'smooth',block:'center'});
+  const reels=rewards.map((reward,index)=>buildReel(reward,index));startCaseSpinSound();try{await Promise.all(reels.map((reel,index)=>animateReel(reel,index*115)));}finally{stopCaseSpinSound();}showResult(rewards);opening=false;updateOpenButton();$('reelStatus').textContent='Готово';setMessage(`Открытие завершено. ${qty===1?'Предмет добавлен':`Все ${qty} предметов добавлены`} в общий инвентарь.`,'ready');$('reelPanel').scrollIntoView({behavior:'smooth',block:'center'});
 }
 function setup(){document.title=`RAGEX — ${box.name}`;document.documentElement.style.setProperty('--accent',box.accent);$('detailPage').style.setProperty('--accent',box.accent);$('caseImage').src=box.image;$('caseImage').alt=box.name;$('caseTag').textContent=box.tag;$('caseName').textContent=box.name;$('caseDescription').textContent=box.desc;$('totalCost').textContent=`${fmt(box.price)} ★`;setQty(1);$('qtyMinus').addEventListener('click',()=>setQty(getQty()-1));$('qtyPlus').addEventListener('click',()=>setQty(getQty()+1));$('qtyInput').addEventListener('input',()=>setQty($('qtyInput').value));document.querySelectorAll('.qty-chip').forEach(button=>button.addEventListener('click',()=>setQty(button.dataset.qty)));$('openButton').addEventListener('click',openCases);$('openAgainButton').addEventListener('click',()=>{if(opening)return;openCases();});window.addEventListener('ragex:change',updateOpenButton);}
 setup();
 setMessage('Подключаем каталог скинов и подтверждаем цены…');
 system.loadCatalog().then(result=>{if(!result.ok){catalogReady=false;setMessage('Каталог цен временно недоступен. Открытие выключено, фиктивные награды не используются.','error');$('dropLoading').textContent='Каталог временно недоступен. Попробуй обновить страницу позже.';updateOpenButton();return}catalogReady=true;dropTable=system.makeDropTable(box);allDrops=system.allDropItems(dropTable);if(!dropTable||!allDrops.length){catalogReady=false;setMessage('Для этого кейса пока не удалось сформировать пул наград дешевле цены открытия.','error');updateOpenButton();renderDropPool();return}setMessage(`Каталог готов · ${fmt(allDrops.length)} возможных предметов в этом кейсе.`,'ready');renderDropPool();updateOpenButton();});
 </script>
-<script src="ragex-theme.js?v=20261011-case-pages-v1"></script>
+<script src="ragex-theme.js?v=20261011-case-spin-v3"></script>
 </body>
 </html>

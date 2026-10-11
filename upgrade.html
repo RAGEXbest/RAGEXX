@@ -231,7 +231,7 @@ footer.site-footer{border-top:1px solid #253c28;padding:24px max(5.1vw,24px);dis
 @keyframes fireworkBurst{0%{opacity:0;transform:translate(-50%,-50%) scale(.25) rotate(0)}12%{opacity:1}100%{opacity:0;transform:translate(calc(-50% + var(--dx)),calc(-50% + var(--dy))) scale(.1) rotate(200deg)}}
 @media(prefers-reduced-motion:reduce){.upgrade-result-banner.is-visible,.item-panel.result-loss,.weapon.glitch-evaporate,.weapon.celebrate-target,.firework-particle{animation-duration:.25s!important}}
 </style>
-  <link rel="stylesheet" href="ragex-theme.css?v=20261011-upgrade-title-balance-pager-v6">
+  <link rel="stylesheet" href="ragex-theme.css?v=20261011-odds-plus5-upgrade-title-balance-pager-v6">
 </head>
 <body>
 <header class="site-header">
@@ -279,8 +279,8 @@ footer.site-footer{border-top:1px solid #253c28;padding:24px max(5.1vw,24px);dis
 <audio id="spinSound" src="upgrade-spin.mp3" preload="auto"></audio>
 <audio id="winSound" src="https://assets.mixkit.co/active_storage/sfx/3057/3057-preview.mp3" preload="auto"></audio>
 <audio id="loseSound" src="https://assets.mixkit.co/active_storage/sfx/3116/3116-preview.mp3" preload="auto"></audio>
-<script src="ragex-store.js?v=20261011-no-fallback-knife-floor-v3"></script>
-<script src="ragex-prices.js?v=20261011-no-fallback-knife-floor-v3"></script>
+<script src="ragex-store.js?v=20261011-odds-plus5-no-fallback-knife-floor-v3"></script>
+<script src="ragex-prices.js?v=20261011-odds-plus5-no-fallback-knife-floor-v3"></script>
 <script>
 let catalog=[];
 const CATALOG_API='https://raw.githubusercontent.com/ByMykel/CSGO-API/main/public/api/en/skins.json';
@@ -553,7 +553,7 @@ function getBoostAmount(){
 }
 function getBaseChance(from,to,boost=0){if(!from||!to||Number(to.value)<=0)return 0;return Math.min(95,Math.max(1,Math.round(((Number(from.value)+Math.max(0,Number(boost)||0))/Number(to.value))*80)))}
 // The wheel keeps the same visual design; the lose/gray result is deliberately more frequent than the green outcome.
-function getActualChance(displayed){return Math.max(0,displayed*0.35)}
+function getActualChance(displayed){const shown=Math.max(0,Number(displayed)||0);return Math.min(shown,Math.max(0,shown*0.35+5))}
 function updatePanels(){
  document.getElementById('sourceIcon').innerHTML=source?itemVisual(source,true):'';document.getElementById('sourceName').textContent=source?source.name:'Предмет не выбран';document.getElementById('sourceValue').textContent=source?Number(source.value).toLocaleString('ru-RU')+' ★':'★';
  document.getElementById('targetIcon').innerHTML=target?itemVisual(target,true):'';document.getElementById('targetName').textContent=target?target.name:'Цель не выбрана';document.getElementById('targetValue').textContent=target?Number(target.value).toLocaleString('ru-RU')+' ★':'★';
@@ -931,6 +931,6 @@ renderInventory();renderTargets();updatePanels();syncNavigationLock();
 loadCs2Catalog();
 </script>
 <div class="ragex-toast" id="ragexToast" role="status" aria-live="polite"></div>
-<script src="ragex-theme.js?v=20261011-upgrade-title-balance-pager-v6"></script>
+<script src="ragex-theme.js?v=20261011-odds-plus5-upgrade-title-balance-pager-v6"></script>
 </body>
 </html>
