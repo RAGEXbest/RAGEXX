@@ -164,22 +164,37 @@ footer.site-footer{border-top:1px solid #253c28;padding:24px max(5.1vw,24px);dis
 @media(max-width:760px){.upgrade-controls-top .source-tools{width:calc(50% - 5px);gap:7px}.source-mode-controls{gap:5px}.source-mode-controls .mode-btn{padding:7px 8px;font-size:8px}.source-balance{min-height:32px}.boost-control,.target-presets{width:100%}}
 @media(max-width:480px){.page-title{gap:8px}.page-title .title-word{font-size:1.04em}.page-title .title-upgrade{letter-spacing:1.6px}.upgrade-controls-top .source-tools{width:100%}.source-mode-controls .mode-btn{font-size:8px;padding:7px 7px}.boost-chip{font-size:7px}}
 
+
+/* Final title and compact paged source-inventory tuning */
+.page-title{display:flex;align-items:center;justify-content:center;gap:clamp(12px,2vw,24px);text-align:center;margin:8px 0 24px!important;line-height:1!important}
+.page-title .title-brand{display:inline-flex;align-items:center;position:relative;color:#f4f9f1;font-size:1.12em;font-weight:1000;font-style:italic;letter-spacing:-2.2px;line-height:1;text-shadow:0 0 24px #79ff3533;transform:skew(-7deg)}
+.wrap>.page-title .title-brand{color:#f4f9f1!important}
+.wrap>.page-title .title-brand-x{color:var(--green)!important}
+.wrap>.page-title .title-upgrade{color:#e7f4e4!important}
+.page-title .title-brand-x{position:relative;display:inline-block;color:var(--green)}
+.page-title .title-brand-x:after{content:"";position:absolute;height:4px;width:25px;background:var(--green);right:-1px;bottom:-4px;transform:rotate(-43deg);box-shadow:0 0 12px #adff39}
+.page-title .title-upgrade{display:inline-block;border:0!important;padding:0!important;margin:0!important;color:#e7f4e4!important;font-size:.68em!important;font-weight:900;letter-spacing:clamp(1.5px,.3vw,3.2px)!important;text-shadow:0 0 20px #84ff2720;line-height:1}
+.source-inventory-pager{margin-top:11px}
+.source-inventory-pager button{padding:7px 9px;font-size:9px}
+.source-inventory-pager span{min-width:55px;font-size:10px}
+@media(max-width:760px){.page-title{margin:4px 0 18px!important}.page-title .title-brand{letter-spacing:-1.7px}.page-title .title-upgrade{font-size:.64em!important}.source-inventory-pager{gap:7px}}
+
 </style>
-  <link rel="stylesheet" href="ragex-theme.css?v=20261011-layout-tune-v5">
+  <link rel="stylesheet" href="ragex-theme.css?v=20261011-upgrade-title-balance-pager-v6">
 </head>
 <body>
 <header class="site-header">
   <a class="logo" href="index.html" aria-label="RAGEX — главная">RAGE<span class="x">X</span></a>
   <nav class="nav" aria-label="Основная навигация"><a href="index.html"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m3 10 9-7 9 7v10a1 1 0 0 1-1 1h-5v-7h-6v7H4a1 1 0 0 1-1-1z" fill="currentColor" stroke="none"/></svg>ГЛАВНАЯ</a><a class="active" href="upgrade.html" aria-current="page"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2 20 7v10l-8 5-8-5V7z"/><path d="M12 2v20M8.5 9 12 7l3.5 2M8.5 15 12 17l3.5-2"/></svg>АПГРЕЙДЕР</a><a href="cases.html"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m12 2 9 5-9 5-9-5zM3 7v10l9 5 9-5V7M12 12v10"/></svg>КЕЙСЫ</a><a href="inventory.html"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="7" width="18" height="14" rx="2"/><path d="M8 7V5a4 4 0 0 1 8 0v2M3 12h18"/></svg>ИНВЕНТАРЬ</a></nav>
   <div class="header-actions">
+    <div class="balance" aria-label="Общий баланс сайта"><span class="star">★</span><strong id="balanceValue">5 000</strong></div>
     <a class="profile" href="inventory.html" aria-label="Открыть инвентарь"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="8" r="4"/><path d="M4 21v-2a8 8 0 0 1 16 0v2z"/></svg></a>
   </div>
 </header>
 <main class="wrap">
-<h1 class="page-title" aria-label="RAGEX Upgrade"><span class="title-rage"><span class="title-word">RAGE<span class="title-x">X</span></span></span><span class="title-slash">/</span><span class="title-upgrade">UPGRADE</span></h1>
+<h1 class="page-title" aria-label="RAGEX Upgrade"><span class="title-brand">RAGE<span class="title-brand-x">X</span></span><span class="title-upgrade">UPGRADE</span></h1>
 <div class="upgrade-controls-top">
   <div class="source-tools" aria-label="Настройки апгрейда">
-    <div class="source-balance balance" aria-label="Общий баланс сайта"><span class="star">★</span><strong id="balance">5 000</strong><span class="balance-caption">ОБЩИЙ БАЛАНС</span></div>
     <div class="source-mode-controls">
       <button class="mode-btn" id="demoModeBtn" onclick="toggleDemoMode()" title="Переключить демо-режим">ДЕМО ВЫКЛ</button>
       <button class="mode-btn" id="quickBtn" onclick="toggleQuickMode()" title="Переключить скорость вращения">БЫСТРО ВЫКЛ</button>
@@ -195,7 +210,7 @@ footer.site-footer{border-top:1px solid #253c28;padding:24px max(5.1vw,24px);dis
 </div>
 <div class="status" id="status"></div>
 <div class="lower">
-<section class="box"><div class="box-head"><span>Мой инвентарь</span><small id="inventoryCount">0 предметов</small></div><div class="box-body"><p style="font-size:12px;color:var(--muted);line-height:1.6;margin-top:0">Выбери предмет для ставки. Баланс и инвентарь сохраняются в этом браузере.</p><div class="item-grid" id="inventoryGrid"></div><div class="empty" id="inventoryEmpty">Инвентарь пока пуст.</div><button class="primary" id="addDemoSkinBtn" style="display:none;font-size:12px;padding:10px;margin-top:12px" onclick="addDemoItem()">＋ ВЫДАТЬ ДЕМО-СКИН</button><div id="demoHint" class="small-hint">Включи демо-режим, чтобы выдавать тестовые предметы.</div></div></section>
+<section class="box"><div class="box-head"><span>Мой инвентарь</span><small id="inventoryCount">0 предметов</small></div><div class="box-body"><p style="font-size:12px;color:var(--muted);line-height:1.6;margin-top:0">Выбери предмет для ставки. Баланс и инвентарь сохраняются в этом браузере.</p><div class="item-grid" id="inventoryGrid"></div><div class="catalog-pager source-inventory-pager" id="sourceInventoryPager" hidden><button type="button" id="sourceInventoryPrev" disabled>← НАЗАД</button><span id="sourceInventoryPageLabel">1 / 1</span><button type="button" id="sourceInventoryNext" disabled>ДАЛЕЕ →</button></div><div class="empty" id="inventoryEmpty">Инвентарь пока пуст.</div><button class="primary" id="addDemoSkinBtn" style="display:none;font-size:12px;padding:10px;margin-top:12px" onclick="addDemoItem()">＋ ВЫДАТЬ ДЕМО-СКИН</button><div id="demoHint" class="small-hint">Включи демо-режим, чтобы выдавать тестовые предметы.</div></div></section>
 <section class="box"><div class="box-head"><span>Маркет</span><small id="catalogHeaderStatus">Загружаю рынок…</small></div><div class="box-body"><p id="catalogStatus" class="catalog-status" aria-live="polite">Загружаю каталог. Покупка временно недоступна.</p><div class="controls catalog-search-row"><input class="search" id="search" placeholder="Поиск по названию или оружию…"><select id="sort" aria-label="Сортировка по цене"><option value="asc">Цена ↑</option><option value="desc">Цена ↓</option></select></div><div class="controls catalog-filter-row"><select id="rarityFilter" aria-label="Фильтр по редкости"><option value="">Все редкости</option></select><select id="weaponFilter" aria-label="Фильтр по оружию"><option value="">Все оружия</option></select></div><div class="controls catalog-filter-row"><input id="minPrice" type="number" min="0" placeholder="Цена от"><input id="maxPrice" type="number" min="0" placeholder="Цена до"></div><div class="item-grid" id="targetGrid"></div><div class="catalog-pager"><button type="button" id="catalogPrev" disabled>← НАЗАД</button><span id="catalogPageLabel">Страница 1</span><button type="button" id="catalogNext" disabled>ДАЛЕЕ →</button></div></div></section>
 </div>
 </main>
@@ -222,6 +237,7 @@ const CATALOG_CACHE_KEY='ragexCs2CatalogBaseCacheV2';
 const CATALOG_PAGE_SIZE=18;
 let catalogPage=0,catalogIsLive=false,catalogLoadFailed=false,targetPreset='all';
 let inventory=window.RagexStore.getInventory(),demoInventory=[],source=null,target=null,busy=false,demoMode=false,quickMode=false,lastBaseChance=0,lockedBoostAmount=0;
+const SOURCE_INVENTORY_PAGE_SIZE=9;let sourceInventoryPage=0;
 let soundEnabled=true;
 try{soundEnabled=localStorage.getItem('ragexSoundEnabled')!=='false'}catch(_){soundEnabled=true}
 function syncNavigationLock(){
@@ -278,7 +294,21 @@ function skinCard(item,kind,index){
  const weaponMeta=item.weaponName||item.category||'';
  return `<div class="skin ${selected?'selected':''}" style="--rarity-color:${/^#[0-9a-f]{6}$/i.test(String(item.rarityColor||''))?item.rarityColor:'#334034'}" onclick="selectItem('${kind}',${index})"><div class="skin-icon">${visual}</div><div class="skin-name">${escapeHtml(item.name)}</div>${weaponMeta?`<div class="skin-meta">${escapeHtml(weaponMeta)}</div>`:''}${rarityMarkup(item)}<div class="skin-price" title="${item.priceAdjusted?escapeHtml(item.priceAdjustmentNote||'Источник вернул неправдоподобно низкую цену; применён минимальный уровень 3 000 ★ для ножа.'):''}">${Number(item.value).toLocaleString('ru-RU')} ★</div>${kind==='target'?`<button class="buy-btn"${disabled} onclick="event.stopPropagation();buySkin(${index})">КУПИТЬ СКИН</button>`:sell}</div>`;
 }
-function renderInventory(){const list=activeInventory();document.getElementById('inventoryGrid').innerHTML=list.map((item,i)=>skinCard(item,'source',i)).join('');document.getElementById('inventoryEmpty').style.display=list.length?'none':'block';document.getElementById('inventoryCount').textContent=list.length+' предметов'+(demoMode?' · демо':'')}
+function renderInventory(){
+ const list=activeInventory();
+ const pages=Math.max(1,Math.ceil(list.length/SOURCE_INVENTORY_PAGE_SIZE));
+ sourceInventoryPage=Math.max(0,Math.min(sourceInventoryPage,pages-1));
+ const start=sourceInventoryPage*SOURCE_INVENTORY_PAGE_SIZE;
+ const pageItems=list.slice(start,start+SOURCE_INVENTORY_PAGE_SIZE);
+ document.getElementById('inventoryGrid').innerHTML=pageItems.map((item,offset)=>skinCard(item,'source',start+offset)).join('');
+ document.getElementById('inventoryEmpty').style.display=list.length?'none':'block';
+ document.getElementById('inventoryCount').textContent=list.length+' предметов'+(demoMode?' · демо':'');
+ const pager=document.getElementById('sourceInventoryPager');
+ pager.hidden=list.length<=SOURCE_INVENTORY_PAGE_SIZE;
+ document.getElementById('sourceInventoryPageLabel').textContent=`${sourceInventoryPage+1} / ${pages}`;
+ document.getElementById('sourceInventoryPrev').disabled=sourceInventoryPage<=0;
+ document.getElementById('sourceInventoryNext').disabled=sourceInventoryPage>=pages-1;
+}
 function matchesTargetPreset(item){
  if(!source||!item||targetPreset==='all')return true;
  const boost=demoMode?0:getBoostAmount();
@@ -296,11 +326,37 @@ function matchesTargetPreset(item){
  }
  return true;
 }
+function getFilteredTargets(){
+ const query=(document.getElementById('search').value||'').trim().toLocaleLowerCase('ru');
+ const selectedRarity=document.getElementById('rarityFilter').value;
+ const selectedWeapon=document.getElementById('weaponFilter').value;
+ const minText=document.getElementById('minPrice').value,maxText=document.getElementById('maxPrice').value;
+ const list=catalog.filter(item=>{
+  const hay=[item.name,item.weaponName,item.category,item.rarity,(item.wears||[]).join(' ')].join(' ').toLocaleLowerCase('ru');
+  if(query&&!hay.includes(query))return false;
+  if(selectedRarity&&item.rarity!==selectedRarity)return false;
+  if(selectedWeapon&&item.weaponName!==selectedWeapon)return false;
+  if(minText!==''&&Number(item.value)<Number(minText))return false;
+  if(maxText!==''&&Number(item.value)>Number(maxText))return false;
+  if(source&&targetPreset!=='all'&&!matchesTargetPreset(item))return false;
+  return true;
+ });
+ list.sort((a,b)=>document.getElementById('sort').value==='asc'?a.value-b.value:b.value-a.value);
+ return list;
+}
 function selectTargetPreset(preset){
- if(busy)return;
- targetPreset=targetPreset===preset?'all':preset;
- catalogPage=0;
- if(target&&source&&!matchesTargetPreset(target))target=null;
+ if(busy||!source)return;
+ targetPreset=preset; // Presets select a target mode; pressing the same one picks a fresh random target.
+ const candidates=getFilteredTargets();
+ if(candidates.length){
+  const pickedIndex=Math.floor(Math.random()*candidates.length);
+  target=candidates[pickedIndex];
+  catalogPage=Math.floor(pickedIndex/CATALOG_PAGE_SIZE);
+  showStatus(`Подобрана случайная цель по фильтру ${preset.replace('chance:','').replace('mult:','×')}${preset.startsWith('chance:')?'%':''}: ${target.name}.`);
+ }else{
+  target=null;catalogPage=0;
+  showStatus('Для этого процента или множителя не найдено подходящих скинов. Измени цену, редкость или оружие в фильтрах.');
+ }
  document.querySelectorAll('#targetPresets [data-preset]').forEach(button=>{
   const active=button.dataset.preset===targetPreset;
   button.classList.toggle('active',active);
@@ -312,24 +368,10 @@ function updatePresetCaption(){
  const el=document.getElementById('presetCaption');if(!el)return;
  if(!source){el.textContent=targetPreset==='all'?'Выбери исходный скин — маркет подберёт подходящие цели.':'Сначала выбери скин для ставки, затем маркет отфильтрует цели.';return;}
  const labels={'chance:35':'около 35%','chance:50':'около 50%','chance:75':'около 75%','mult:4':'множитель ×4','mult:8':'множитель ×8','mult:10':'множитель ×10'};
- el.textContent=targetPreset==='all'?'Выбери шанс или множитель — список маркета подстроится.':`Маркет показывает цели под ${labels[targetPreset]||'выбранный фильтр'}.`;
+ el.textContent=targetPreset==='all'?'Выбери шанс или множитель — список маркета подстроится.':`Цель выбрана случайно: ${labels[targetPreset]||'выбранный фильтр'}. Нажми другой фильтр, чтобы выбрать заново.`;
 }
 function renderTargets(){
- const query=(document.getElementById('search').value||'').trim().toLocaleLowerCase('ru');
- const selectedRarity=document.getElementById('rarityFilter').value;
- const selectedWeapon=document.getElementById('weaponFilter').value;
- let list=catalog.filter(item=>{
-   const hay=[item.name,item.weaponName,item.category,item.rarity,(item.wears||[]).join(' ')].join(' ').toLocaleLowerCase('ru');
-   if(query&&!hay.includes(query))return false;
-   if(selectedRarity&&item.rarity!==selectedRarity)return false;
-   if(selectedWeapon&&item.weaponName!==selectedWeapon)return false;
-   const minText=document.getElementById('minPrice').value,maxText=document.getElementById('maxPrice').value;
-   if(minText!==''&&Number(item.value)<Number(minText))return false;
-   if(maxText!==''&&Number(item.value)>Number(maxText))return false;
-   if(source&&targetPreset!=='all'&&!matchesTargetPreset(item))return false;
-   return true;
- });
- list.sort((a,b)=>document.getElementById('sort').value==='asc'?a.value-b.value:b.value-a.value);
+ const list=getFilteredTargets();
  const total=list.length,pages=Math.max(1,Math.ceil(total/CATALOG_PAGE_SIZE));
  catalogPage=Math.max(0,Math.min(catalogPage,pages-1));
  const pageItems=list.slice(catalogPage*CATALOG_PAGE_SIZE,(catalogPage+1)*CATALOG_PAGE_SIZE);
@@ -468,7 +510,7 @@ function updatePanels(){
  const arc=document.getElementById('successArc'),circumference=2*Math.PI*123;
  // Keep the current wheel artwork and shown percent unchanged in layout.
  arc.setAttribute('stroke-dasharray',(circumference*base/100)+' '+circumference);arc.style.opacity=selected?'1':'0';
- document.getElementById('balance').textContent=window.RagexStore.getBalance().toLocaleString('ru-RU');
+ document.getElementById('balanceValue').textContent=window.RagexStore.getBalance().toLocaleString('ru-RU');
  const balance=window.RagexStore.getBalance();
  const boostInput=document.getElementById('boostAmount'),boostSlider=document.getElementById('boostSlider'),boostMax=document.getElementById('boostMaxBtn');
  const boostControl=document.getElementById('boostControl'),presetPanel=document.getElementById('targetPresetsPanel');
@@ -742,20 +784,22 @@ async function runUpgrade(){
    updatePanels();
  }
 }
-document.getElementById('search').addEventListener('input',()=>{catalogPage=0;renderTargets()});
-document.getElementById('sort').addEventListener('change',()=>{catalogPage=0;renderTargets()});
-document.getElementById('rarityFilter').addEventListener('change',()=>{catalogPage=0;renderTargets()});
-document.getElementById('weaponFilter').addEventListener('change',()=>{catalogPage=0;renderTargets()});
-document.getElementById('minPrice').addEventListener('input',()=>{catalogPage=0;renderTargets()});
-document.getElementById('maxPrice').addEventListener('input',()=>{catalogPage=0;renderTargets()});
+document.getElementById('search').addEventListener('input',()=>{catalogPage=0;if(target&&!getFilteredTargets().includes(target))target=null;renderTargets();updatePanels()});
+document.getElementById('sort').addEventListener('change',()=>{catalogPage=0;if(target&&!getFilteredTargets().includes(target))target=null;renderTargets();updatePanels()});
+document.getElementById('rarityFilter').addEventListener('change',()=>{catalogPage=0;if(target&&!getFilteredTargets().includes(target))target=null;renderTargets();updatePanels()});
+document.getElementById('weaponFilter').addEventListener('change',()=>{catalogPage=0;if(target&&!getFilteredTargets().includes(target))target=null;renderTargets();updatePanels()});
+document.getElementById('minPrice').addEventListener('input',()=>{catalogPage=0;if(target&&!getFilteredTargets().includes(target))target=null;renderTargets();updatePanels()});
+document.getElementById('maxPrice').addEventListener('input',()=>{catalogPage=0;if(target&&!getFilteredTargets().includes(target))target=null;renderTargets();updatePanels()});
 document.getElementById('catalogPrev').addEventListener('click',()=>{if(catalogPage>0){catalogPage--;renderTargets()}});
 document.getElementById('catalogNext').addEventListener('click',()=>{catalogPage++;renderTargets()});
+document.getElementById('sourceInventoryPrev').addEventListener('click',()=>{if(sourceInventoryPage>0){sourceInventoryPage--;renderInventory()}});
+document.getElementById('sourceInventoryNext').addEventListener('click',()=>{const pages=Math.ceil(activeInventory().length/SOURCE_INVENTORY_PAGE_SIZE);if(sourceInventoryPage<pages-1){sourceInventoryPage++;renderInventory()}});
 window.addEventListener('ragex:change',()=>{const currentSourceId=source&&source.id;inventory=window.RagexStore.getInventory();if(!busy&&!demoMode&&currentSourceId&&!inventory.some(item=>String(item.id)===String(currentSourceId)))source=null;renderInventory();updatePanels()});
 populateCatalogFilters();
 renderInventory();renderTargets();updatePanels();syncNavigationLock();
 loadCs2Catalog();
 </script>
 <div class="ragex-toast" id="ragexToast" role="status" aria-live="polite"></div>
-<script src="ragex-theme.js?v=20261011-layout-tune-v5"></script>
+<script src="ragex-theme.js?v=20261011-upgrade-title-balance-pager-v6"></script>
 </body>
 </html>

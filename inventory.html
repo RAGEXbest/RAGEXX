@@ -10,7 +10,22 @@ body.confirm-open{overflow:hidden}.confirm-backdrop{position:fixed;inset:0;z-ind
 .icon img{width:100%;height:100%;max-width:190px;object-fit:contain;filter:drop-shadow(0 8px 13px #0009)}
 .icon .icon-fallback{font-size:48px}
 .sr-only{position:absolute!important;width:1px!important;height:1px!important;padding:0!important;margin:-1px!important;overflow:hidden!important;clip:rect(0,0,0,0)!important;white-space:nowrap!important;border:0!important}.inventory-pager{display:flex;align-items:center;justify-content:center;gap:12px;margin-top:18px}.inventory-pager[hidden]{display:none!important}.inventory-pager button{background:#101810;color:#cfe5c7;border:1px solid #354933;border-radius:8px;padding:9px 13px;font-size:11px;font-weight:900;cursor:pointer}.inventory-pager button:hover:not(:disabled){border-color:var(--green);color:var(--green)}.inventory-pager button:disabled{opacity:.35;cursor:not-allowed}.inventory-pager span{min-width:100px;text-align:center;color:var(--muted);font-size:11px}@media(max-width:520px){.grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}.card{padding:11px}.price{font-size:15px}}
-</style>  <link rel="stylesheet" href="ragex-theme.css?v=20261011-inventory-pager-v2">
+</style>  <link rel="stylesheet" href="ragex-theme.css?v=20261011-inventory-market-grid-v3">
+<style>
+/* Compact marketplace-style inventory: fixed pages, tidy cards, strong prices */
+.wrap{max-width:1380px!important}
+.grid{grid-template-columns:repeat(5,minmax(0,1fr))!important;gap:12px!important}
+.card{min-height:188px!important;padding:13px!important;border-radius:12px!important}
+.icon{height:72px!important;margin:0 0 7px!important}
+.name{font-size:12px!important;min-height:32px!important;line-height:1.4!important}
+.price{font-size:14px!important;margin:6px 0 9px!important;padding:4px 8px!important}
+.card .sell{min-height:35px!important;padding:8px 6px!important;font-size:10px!important;letter-spacing:.3px!important}
+.inventory-pager{margin-top:20px!important}
+.inventory-pager button{min-width:96px;min-height:36px}
+@media(max-width:1100px){.grid{grid-template-columns:repeat(4,minmax(0,1fr))!important}}
+@media(max-width:820px){.grid{grid-template-columns:repeat(3,minmax(0,1fr))!important}}
+@media(max-width:560px){.grid{grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:9px!important}.card{min-height:175px!important;padding:10px!important}.icon{height:66px!important}.name{font-size:11px!important;min-height:30px!important}.price{font-size:13px!important}}
+</style>
 </head><body>
 <header class="site-header">
   <a class="logo" href="index.html" aria-label="RAGEX — главная">RAGE<span class="x">X</span></a>
@@ -30,7 +45,7 @@ body.confirm-open{overflow:hidden}.confirm-backdrop{position:fixed;inset:0;z-ind
     <div class="confirm-actions"><button class="confirm-cancel" type="button" id="sellConfirmCancel">ОТМЕНА</button><button class="confirm-accept" type="button" id="sellConfirmAccept">ДА, ПРОДАТЬ</button></div>
   </section>
 </div>
-<script src="ragex-store.js?v=20261011-market-prices-v2"></script><script src="ragex-prices.js?v=20261011-no-fallback-knife-floor-v3"></script><script>
+<script src="ragex-store.js?v=20261011-inventory-market-grid-v3"></script><script src="ragex-prices.js?v=20261011-inventory-market-grid-v3"></script><script>
 const grid=document.getElementById('grid'),empty=document.getElementById('empty'),status=document.getElementById('status');
 function fmt(n){return Number(n||0).toLocaleString('ru-RU')}
 function showStatus(s){status.textContent=s;status.classList.add('show')}
@@ -116,5 +131,5 @@ document.getElementById('inventoryNext').addEventListener('click',()=>{const pag
 grid.addEventListener('click',event=>{const button=event.target.closest('[data-sell-id]');if(button)sell(button.dataset.sellId)});
 window.addEventListener('ragex:change',render);render();refreshInventoryMarketPrices();
 </script><div class="ragex-toast" id="ragexToast" role="status" aria-live="polite"></div>
-<script src="ragex-theme.js?v=20261011-inventory-pager-v2"></script>
+<script src="ragex-theme.js?v=20261011-inventory-market-grid-v3"></script>
 </body></html>
