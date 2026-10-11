@@ -200,6 +200,36 @@ footer.site-footer{border-top:1px solid #253c28;padding:24px max(5.1vw,24px);dis
 @media(max-width:760px){.lower{grid-template-columns:minmax(0,1fr);align-items:start}.market-filter-row{grid-template-columns:repeat(2,minmax(0,1fr))}.catalog-search-row{flex-wrap:nowrap}.catalog-search-row .search{flex:1 1 auto}.catalog-search-row select{flex:0 0 90px;min-width:0}}
 @media(max-width:420px){.item-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.market-filter-row{grid-template-columns:repeat(2,minmax(0,1fr))}.skin-icon{flex-basis:70px}}
 
+
+/* RAGEX upgrade result animations */
+.upgrade-result-banner{min-height:0;width:100%;max-width:300px;margin:-3px 0 0;padding:10px 12px;text-align:center;border-radius:10px;font-size:clamp(13px,1.2vw,17px);font-weight:1000;letter-spacing:1.4px;line-height:1.25;opacity:0;transform:translateY(6px) scale(.96);}
+.upgrade-result-banner[hidden]{display:none!important}
+.upgrade-result-banner.is-visible{animation:resultBannerEnter .28s cubic-bezier(.2,.8,.2,1) both}
+.upgrade-result-banner.is-win{color:#b8ff62;border:1px solid #83eb42;background:linear-gradient(105deg,#10250e,#071009);text-shadow:0 0 17px #9bff4b65;box-shadow:0 0 26px #8cff271e,inset 0 0 17px #8cff270c}
+.upgrade-result-banner.is-lose{color:#ff6472;border:1px solid #ff4b5c80;background:linear-gradient(105deg,#270b10,#100709);text-shadow:0 0 17px #ff334f62;box-shadow:0 0 26px #ff26401b,inset 0 0 17px #ff26400b}
+@keyframes resultBannerEnter{0%{opacity:0;transform:translateY(8px) scale(.94);filter:blur(3px)}65%{opacity:1;transform:translateY(-1px) scale(1.025);filter:blur(0)}100%{opacity:1;transform:translateY(0) scale(1)}}
+.item-panel.result-loss{border-color:#ff4356;box-shadow:inset 0 0 42px #ff16300d,0 0 28px #ff1f3725;animation:lossPanelGlitch .95s steps(2,end) both}
+@keyframes lossPanelGlitch{0%,100%{transform:translateX(0);filter:none}12%{transform:translateX(-5px);filter:hue-rotate(125deg)}24%{transform:translateX(4px);filter:contrast(1.6)}37%{transform:translateX(-2px);filter:hue-rotate(-65deg)}52%{transform:translateX(3px);filter:contrast(1.5)}70%{transform:translateX(-1px);filter:none}}
+.weapon{position:relative;overflow:visible}
+.weapon.glitch-evaporate{animation:sourceGlitchJitter .95s steps(2,end) both!important}
+.weapon.glitch-evaporate>img:not(.glitch-fragment),.weapon.glitch-evaporate>span:not(.glitch-fragment){animation:sourceVaporize .95s ease-in both}
+@keyframes sourceGlitchJitter{0%,100%{transform:translate(0,0) skew(0);filter:none}10%{transform:translate(-6px,1px) skew(-5deg);filter:drop-shadow(5px 0 #ff304e) drop-shadow(-5px 0 #42e8ff)}22%{transform:translate(5px,-2px) skew(4deg);filter:drop-shadow(-5px 0 #ff304e)}34%{transform:translate(-3px,2px) skew(-2deg);filter:brightness(1.8)}45%{transform:translate(4px,0) skew(3deg);filter:drop-shadow(4px 0 #ff304e) drop-shadow(-4px 0 #42e8ff)}58%{transform:translate(-1px,-2px);filter:brightness(1.35)}}
+@keyframes sourceVaporize{0%{opacity:1;transform:translate(0,0) scale(1);filter:blur(0)}20%{opacity:.25;transform:translate(-4px,1px) scale(1.02);filter:blur(1px) hue-rotate(100deg)}36%{opacity:.9;transform:translate(3px,-2px) scale(.98);filter:blur(0) hue-rotate(-50deg)}60%{opacity:.62;transform:translate(-2px,-6px) scale(.82);filter:blur(3px) saturate(1.8)}100%{opacity:0;transform:translate(8px,-18px) scale(.42);filter:blur(9px) saturate(2)}}
+.glitch-fragment{position:absolute!important;left:0;top:0;width:100%!important;height:100%!important;object-fit:contain!important;pointer-events:none;z-index:4;opacity:.8!important;filter:drop-shadow(0 0 8px #ff3657)!important}
+.glitch-fragment-a{clip-path:inset(0 0 70% 0);animation:fragmentSliceA .9s steps(3,end) forwards!important}
+.glitch-fragment-b{clip-path:inset(35% 0 35% 0);filter:drop-shadow(0 0 8px #39dcff)!important;animation:fragmentSliceB .88s steps(3,end) forwards!important}
+.glitch-fragment-c{clip-path:inset(72% 0 0 0);animation:fragmentSliceC .9s steps(3,end) forwards!important}
+@keyframes fragmentSliceA{0%{transform:translate(0,0);opacity:0}18%{transform:translate(-12px,-2px);opacity:1}45%{transform:translate(9px,-10px);opacity:.8}100%{transform:translate(-24px,-26px) scale(.7);opacity:0;filter:blur(5px)}}
+@keyframes fragmentSliceB{0%{transform:translate(0,0);opacity:0}17%{transform:translate(13px,1px);opacity:.95}48%{transform:translate(-10px,5px);opacity:.7}100%{transform:translate(22px,-7px) scale(.8);opacity:0;filter:blur(4px)}}
+@keyframes fragmentSliceC{0%{transform:translate(0,0);opacity:0}15%{transform:translate(-3px,0);opacity:.9}55%{transform:translate(10px,11px);opacity:.7}100%{transform:translate(-17px,27px) scale(.55);opacity:0;filter:blur(6px)}}
+.item-panel.result-win{border-color:#8eff46;box-shadow:inset 0 0 40px #8aff2913,0 0 32px #8aff2730}
+.weapon.celebrate-target{animation:targetWinFloat .68s cubic-bezier(.2,.8,.2,1) 2!important;filter:drop-shadow(0 0 28px #a8ff2e80)!important;z-index:2}
+@keyframes targetWinFloat{0%,100%{transform:translateY(0) scale(1) rotate(0)}35%{transform:translateY(-10px) scale(1.11) rotate(-2deg)}68%{transform:translateY(-4px) scale(1.055) rotate(2deg)}}
+.fireworks-layer{position:absolute;inset:-24px;z-index:10;pointer-events:none;overflow:visible}
+.firework-particle{position:absolute;left:50%;top:50%;width:5px;height:5px;border-radius:50%;background:var(--spark-color,#b8ff39);box-shadow:0 0 7px var(--spark-color,#b8ff39),0 0 15px var(--spark-color,#b8ff39);animation:fireworkBurst var(--spark-time,900ms) cubic-bezier(.12,.68,.22,1) var(--spark-delay,0ms) forwards;opacity:0}
+.firework-particle.spark-line{width:3px;height:11px;border-radius:3px}
+@keyframes fireworkBurst{0%{opacity:0;transform:translate(-50%,-50%) scale(.25) rotate(0)}12%{opacity:1}100%{opacity:0;transform:translate(calc(-50% + var(--dx)),calc(-50% + var(--dy))) scale(.1) rotate(200deg)}}
+@media(prefers-reduced-motion:reduce){.upgrade-result-banner.is-visible,.item-panel.result-loss,.weapon.glitch-evaporate,.weapon.celebrate-target,.firework-particle{animation-duration:.25s!important}}
 </style>
   <link rel="stylesheet" href="ragex-theme.css?v=20261011-upgrade-title-balance-pager-v6">
 </head>
@@ -225,9 +255,9 @@ footer.site-footer{border-top:1px solid #253c28;padding:24px max(5.1vw,24px);dis
 </div>
 <div class="top-grid">
 <div class="item-column source-column">
-  <section class="item-panel"><div><div class="panel-title">Выбери предмет для ставки</div><div class="panel-sub">Выбери скин в нижнем инвентаре</div></div><div class="weapon" id="sourceIcon">🔫</div><div><div class="item-name" id="sourceName">Предмет не выбран</div><div class="item-value" id="sourceValue">★</div></div></section><section class="boost-control is-hidden" id="boostControl" aria-label="Добавить баланс к апгрейду"><div class="boost-head"><label class="boost-label" for="boostAmount">ДОБАВИТЬ К СТАВКЕ</label><span class="boost-chip">БАЛАНС → ШАНС</span></div><div class="boost-row"><input id="boostAmount" type="number" min="0" step="10" value="0" inputmode="numeric" aria-label="Сумма дополнительной ставки"><span class="boost-currency">★</span><button class="boost-max" id="boostMaxBtn" type="button">МАКС.</button></div><input class="boost-slider" id="boostSlider" type="range" min="0" max="5000" step="10" value="0" aria-label="Увеличить или уменьшить дополнительную ставку"><div class="boost-range-labels"><span>0 ★</span><span id="boostBalanceLimit">5 000 ★</span></div><div class="boost-note" id="boostNote">Сумма спишется при старте апгрейда и повысит шанс.</div></section></div>
-<div class="dial-wrap"><div class="dial blank" id="dial"><svg class="dial-svg" viewBox="0 0 270 270" aria-hidden="true"><circle class="dial-track" cx="135" cy="135" r="123"></circle><circle class="dial-success" id="successArc" cx="135" cy="135" r="123" transform="rotate(-90 135 135)"></circle><circle class="dial-center" cx="135" cy="135" r="98"></circle></svg><div class="pointer" id="pointer"></div><div class="dial-inner" id="dialInner"><div class="chance" id="chance"></div><div class="chance-label" id="chanceLabel">ШАНС УСПЕХА</div></div></div><button class="primary" id="upgradeBtn" onclick="runUpgrade(false)">↗ &nbsp; ПРОКАЧАТЬ</button></div>
-<div class="item-column target-column"><section class="item-panel"><div><div class="panel-title">Цель апгрейда</div><div class="panel-sub">Предмет, который хочешь получить</div></div><div class="weapon" id="targetIcon">🎯</div><div><div class="item-name" id="targetName">Цель не выбрана</div><div class="item-value" id="targetValue">★</div></div></section><section class="target-presets is-hidden" id="targetPresetsPanel"><div class="preset-heading"><span>ПОДОБРАТЬ ЦЕЛЬ</span><small>БЫСТРЫЕ ФИЛЬТРЫ</small></div><div class="preset-buttons" id="targetPresets" role="group" aria-label="Фильтр по шансу или множителю"><button type="button" data-preset="chance:35">35%</button><button type="button" data-preset="chance:50">50%</button><button type="button" data-preset="chance:75">75%</button><button type="button" data-preset="mult:4">4×</button><button type="button" data-preset="mult:8">8×</button><button type="button" data-preset="mult:10">10×</button></div><p class="preset-caption" id="presetCaption">Выбери исходный скин — маркет подберёт подходящие цели.</p></section></div>
+  <section class="item-panel" id="sourcePanel"><div><div class="panel-title">Выбери предмет для ставки</div><div class="panel-sub">Выбери скин в нижнем инвентаре</div></div><div class="weapon" id="sourceIcon">🔫</div><div><div class="item-name" id="sourceName">Предмет не выбран</div><div class="item-value" id="sourceValue">★</div></div></section><section class="boost-control is-hidden" id="boostControl" aria-label="Добавить баланс к апгрейду"><div class="boost-head"><label class="boost-label" for="boostAmount">ДОБАВИТЬ К СТАВКЕ</label><span class="boost-chip">БАЛАНС → ШАНС</span></div><div class="boost-row"><input id="boostAmount" type="number" min="0" step="10" value="0" inputmode="numeric" aria-label="Сумма дополнительной ставки"><span class="boost-currency">★</span><button class="boost-max" id="boostMaxBtn" type="button">МАКС.</button></div><input class="boost-slider" id="boostSlider" type="range" min="0" max="5000" step="10" value="0" aria-label="Увеличить или уменьшить дополнительную ставку"><div class="boost-range-labels"><span>0 ★</span><span id="boostBalanceLimit">5 000 ★</span></div><div class="boost-note" id="boostNote">Сумма спишется при старте апгрейда и повысит шанс.</div></section></div>
+<div class="dial-wrap"><div class="dial blank" id="dial"><svg class="dial-svg" viewBox="0 0 270 270" aria-hidden="true"><circle class="dial-track" cx="135" cy="135" r="123"></circle><circle class="dial-success" id="successArc" cx="135" cy="135" r="123" transform="rotate(-90 135 135)"></circle><circle class="dial-center" cx="135" cy="135" r="98"></circle></svg><div class="pointer" id="pointer"></div><div class="dial-inner" id="dialInner"><div class="chance" id="chance"></div><div class="chance-label" id="chanceLabel">ШАНС УСПЕХА</div></div></div><div class="upgrade-result-banner" id="upgradeResultBanner" hidden aria-live="assertive"></div><button class="primary" id="upgradeBtn" onclick="runUpgrade(false)">↗ &nbsp; ПРОКАЧАТЬ</button></div>
+<div class="item-column target-column"><section class="item-panel" id="targetPanel"><div><div class="panel-title">Цель апгрейда</div><div class="panel-sub">Предмет, который хочешь получить</div></div><div class="weapon" id="targetIcon">🎯</div><div><div class="item-name" id="targetName">Цель не выбрана</div><div class="item-value" id="targetValue">★</div></div></section><section class="target-presets is-hidden" id="targetPresetsPanel"><div class="preset-heading"><span>ПОДОБРАТЬ ЦЕЛЬ</span><small>БЫСТРЫЕ ФИЛЬТРЫ</small></div><div class="preset-buttons" id="targetPresets" role="group" aria-label="Фильтр по шансу или множителю"><button type="button" data-preset="chance:35">35%</button><button type="button" data-preset="chance:50">50%</button><button type="button" data-preset="chance:75">75%</button><button type="button" data-preset="mult:4">4×</button><button type="button" data-preset="mult:8">8×</button><button type="button" data-preset="mult:10">10×</button></div><p class="preset-caption" id="presetCaption">Выбери исходный скин — маркет подберёт подходящие цели.</p></section></div>
 </div>
 <div class="status" id="status"></div>
 <div class="lower">
@@ -511,7 +541,7 @@ async function loadCs2Catalog(){
   setCatalogStatus('Не удалось получить цены Steam Market. Тестовые цены и предметы удалены из каталога; покупка заблокирована до получения проверенных цен.');
  }
 }
-function selectItem(kind,index){if(busy)return;if(kind==='source'){source=activeInventory()[index]||null;if(target&&targetPreset!=='all'&&!matchesTargetPreset(target))target=null;}else{if(!catalogIsLive){showStatus('Каталог пока не готов: выбери цель после загрузки рыночных цен.');return}target=catalog[index]||null;if(!target||!target.marketPrice||target.demoPrice){target=null;showStatus('Этот предмет не имеет проверенной рыночной цены и недоступен для выбора.');return}}updatePanels();renderInventory();renderTargets()}
+function selectItem(kind,index){if(busy)return;clearUpgradeResult();if(kind==='source'){source=activeInventory()[index]||null;if(target&&targetPreset!=='all'&&!matchesTargetPreset(target))target=null;}else{if(!catalogIsLive){showStatus('Каталог пока не готов: выбери цель после загрузки рыночных цен.');return}target=catalog[index]||null;if(!target||!target.marketPrice||target.demoPrice){target=null;showStatus('Этот предмет не имеет проверенной рыночной цены и недоступен для выбора.');return}}updatePanels();renderInventory();renderTargets()}
 function getBoostAmount(){
  const input=document.getElementById('boostAmount');
  if(!input||demoMode)return 0;
@@ -652,17 +682,24 @@ function safePlayAudio(audio, restart=true){
   if(playback&&typeof playback.catch==='function')playback.catch(()=>{});
  }catch(_){/* Audio is optional; the upgrade still works if playback is blocked. */}
 }
-function startUpgradeSpinSound(){
+function startUpgradeSpinSound(durationMs){
  const audio=document.getElementById('spinSound');
  if(!audio||!soundEnabled)return;
- audio.loop=true;
+ // The spin SFX is played once, never looped. The normal wheel is tuned close
+ // to the track length; playbackRate makes the sound finish with the animation.
+ audio.loop=false;
  audio.volume=0.38;
+ const naturalDuration=(Number.isFinite(audio.duration)&&audio.duration>0)?audio.duration:3.68325;
+ const targetDuration=Math.max(0.1,Number(durationMs||3900)/1000);
+ const rate=naturalDuration/targetDuration;
+ // Quick mode can need a much faster rate; if unsupported, it is still stopped at wheel end.
+ try{audio.playbackRate=Math.max(0.75,Math.min(3.0,rate));}catch(_){}
  safePlayAudio(audio,true);
 }
 function stopUpgradeSpinSound(){
  const audio=document.getElementById('spinSound');
  if(!audio)return;
- try{audio.pause();audio.currentTime=0;}catch(_){}
+ try{audio.pause();audio.currentTime=0;audio.playbackRate=1;}catch(_){}
 }
 function playUpgradeResultSound(won){
  if(!soundEnabled)return;
@@ -671,6 +708,72 @@ function playUpgradeResultSound(won){
  audio.loop=false;
  audio.volume=0.68;
  safePlayAudio(audio,true);
+}
+
+function waitForEffect(ms){return new Promise(resolve=>window.setTimeout(resolve,ms))}
+function clearUpgradeResult(){
+ const banner=document.getElementById('upgradeResultBanner');
+ if(banner){banner.hidden=true;banner.className='upgrade-result-banner';banner.textContent=''}
+ const sourceIcon=document.getElementById('sourceIcon'),targetIcon=document.getElementById('targetIcon');
+ const sourcePanel=document.getElementById('sourcePanel'),targetPanel=document.getElementById('targetPanel');
+ if(sourceIcon){sourceIcon.classList.remove('glitch-evaporate');sourceIcon.querySelectorAll('.glitch-fragment').forEach(node=>node.remove())}
+ if(targetIcon){targetIcon.classList.remove('celebrate-target');targetIcon.querySelectorAll('.fireworks-layer').forEach(node=>node.remove())}
+ if(sourcePanel)sourcePanel.classList.remove('result-loss');
+ if(targetPanel)targetPanel.classList.remove('result-win');
+}
+function showUpgradeResult(won){
+ const banner=document.getElementById('upgradeResultBanner');
+ if(!banner)return;
+ banner.textContent=won?'ВЫ ПОБЕДИЛИ!':'ВЫ ПРОИГРАЛИ';
+ banner.className='upgrade-result-banner '+(won?'is-win':'is-lose');
+ banner.hidden=false;
+ requestAnimationFrame(()=>banner.classList.add('is-visible'));
+}
+async function animateSourceVaporize(){
+ const icon=document.getElementById('sourceIcon'),panel=document.getElementById('sourcePanel');
+ if(!icon||!panel)return;
+ panel.classList.add('result-loss');
+ const visual=icon.querySelector('img:not([hidden]),span:not([hidden])');
+ if(visual){
+  ['a','b','c'].forEach(part=>{
+   const clone=visual.cloneNode(true);
+   clone.className='glitch-fragment glitch-fragment-'+part;
+   clone.removeAttribute('onerror');clone.removeAttribute('loading');clone.removeAttribute('referrerpolicy');clone.hidden=false;
+   icon.appendChild(clone);
+  });
+ }
+ icon.classList.add('glitch-evaporate');
+ await waitForEffect(1020);
+ icon.classList.remove('glitch-evaporate');
+ icon.querySelectorAll('.glitch-fragment').forEach(node=>node.remove());
+ panel.classList.remove('result-loss');
+}
+async function animateTargetFireworks(){
+ const icon=document.getElementById('targetIcon'),panel=document.getElementById('targetPanel');
+ if(!icon||!panel)return;
+ panel.classList.add('result-win');
+ icon.classList.add('celebrate-target');
+ const layer=document.createElement('div');layer.className='fireworks-layer';
+ const colors=['#a8ff2e','#eaffb8','#ffffff','#ffd76a','#83ffcc'];
+ // Several green/gold fireworks burst around the target skin.
+ for(let burst=0;burst<3;burst++){
+  const baseAngle=Math.random()*Math.PI*2;
+  for(let i=0;i<12;i++){
+   const angle=baseAngle+(Math.PI*2*i/12);
+   const distance=30+Math.random()*56;
+   const particle=document.createElement('span');
+   particle.className='firework-particle'+(i%3===0?' spark-line':'');
+   particle.style.setProperty('--dx',`${Math.cos(angle)*distance}px`);
+   particle.style.setProperty('--dy',`${Math.sin(angle)*distance}px`);
+   particle.style.setProperty('--spark-color',colors[(i+burst)%colors.length]);
+   particle.style.setProperty('--spark-delay',`${burst*130+Math.random()*70}ms`);
+   particle.style.setProperty('--spark-time',`${780+Math.random()*350}ms`);
+   layer.appendChild(particle);
+  }
+ }
+ icon.appendChild(layer);
+ await waitForEffect(1400);
+ layer.remove();icon.classList.remove('celebrate-target');panel.classList.remove('result-win');
 }
 
 async function runUpgrade(){
@@ -691,6 +794,7 @@ async function runUpgrade(){
  const isQuick=quickMode;
  const boostAmount=isDemo?0:getBoostAmount();
  if(boostAmount>window.RagexStore.getBalance()){showStatus('Недостаточно баланса для дополнительной ставки.');return}
+ clearUpgradeResult();
  const baseChance=getBaseChance(sourceItem,targetItem,boostAmount);
  const actualChance=getActualChance(baseChance);
  const visibleGreenAngle=baseChance*3.6;
@@ -705,7 +809,7 @@ async function runUpgrade(){
  const offset=((landingAngle-currentAngle)+360)%360;
  const fullTurns=isQuick?3:6;
  const destination=currentAngle+fullTurns*360+offset;
- const durationMs=(isQuick?1.25:5.2)*1000;
+ const durationMs=(isQuick?1.25:3.9)*1000;
  let stakeConsumed=false;
 
  // Lock navigation and every inventory transaction before changing the stake.
@@ -755,7 +859,7 @@ async function runUpgrade(){
  renderInventory();
  renderTargets();
  showStatus('Ставка списана'+(boostAmount?' · дополнительно '+boostAmount.toLocaleString('ru-RU')+' ★':'')+'. '+(isQuick?'Быстрая игра':'Обычная игра')+' · шанс '+baseChance+'%');
- startUpgradeSpinSound();
+ startUpgradeSpinSound(durationMs);
 
  try {
    await animatePointerTo(pointer,currentAngle,destination,durationMs);
@@ -774,6 +878,11 @@ async function runUpgrade(){
      }
    }
 
+   showUpgradeResult(won);
+   playUpgradeResultSound(won);
+   if(won){await animateTargetFireworks();}
+   else{await animateSourceVaporize();}
+
    source=null;
    renderInventory();
    renderTargets();
@@ -781,7 +890,6 @@ async function runUpgrade(){
    showStatus(won
      ? '✓ УСПЕХ! Получен '+targetItem.name+'. Ставка уже списана.'
      : '✕ Неудача. Исходный предмет списан из '+(isDemo?'временного демо-инвентаря.':'общего инвентаря.'));
-   playUpgradeResultSound(won);
  } catch(error) {
    stopUpgradeSpinSound();
    console.error('RAGEX upgrade spin failed:',error);
