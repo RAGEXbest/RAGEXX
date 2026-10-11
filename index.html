@@ -89,18 +89,66 @@ h1 span{display:block;color:var(--green);text-shadow:0 0 24px #85ff2520}
 @media(max-width:560px){.site-header{gap:12px}.logo{font-size:27px}.balance{height:39px;padding-left:10px}.balance .star{font-size:18px;margin-right:7px}.balance strong{font-size:14px}.balance button{height:39px;width:37px;margin-left:9px;font-size:23px}.profile{width:40px;height:40px}.profile svg{width:23px}.nav{justify-content:space-between;gap:5px;overflow-x:auto}.nav a{font-size:10px;gap:5px;white-space:nowrap}.nav a svg{width:18px;height:18px}.nav a.active:after{bottom:-1px}.hero{padding:45px 6% 60px}.eyebrow{font-size:10px;letter-spacing:4px;gap:13px;margin-bottom:23px}h1{font-size:clamp(36px,10vw,52px);letter-spacing:-1.6px;margin-bottom:16px}.hero-copy p{font-size:15px;line-height:1.6}.hero-buttons{margin-top:25px;gap:10px}.cta{width:100%;min-width:0;height:53px;font-size:13px}.hero-art{min-height:260px;margin-top:13px}.knife{width:105%;max-height:300px}.art-ring{width:72%}.risk-note{right:0;top:8%;font-size:9px;padding:9px 11px;letter-spacing:1px}.feature-panel{width:90%;padding:28px 12px 12px;border-radius:17px}.feature-grid{grid-template-columns:1fr;gap:22px}.feature{min-height:115px;padding:12px 10px 13px}.feature-icon{width:54px;height:54px;margin-top:-25px;margin-bottom:8px}.feature-icon svg{width:28px;height:28px}.feature strong{font-size:16px}.feature span.desc{font-size:13px;max-width:280px}.site-footer{padding:0 5% 22px;flex-wrap:wrap;font-size:10px}.site-footer .logo{font-size:21px}}
 @media(prefers-reduced-motion:reduce){*,*:before,*:after{animation-duration:.01ms!important;animation-iteration-count:1!important;scroll-behavior:auto!important;transition-duration:.01ms!important}}
 @media (prefers-reduced-motion: reduce){.knife{animation:none!important}.art-glow{animation:none!important;opacity:.8}}
+/* Keep the hero butterfly gently animated even if the device requests reduced motion. */
+@media (prefers-reduced-motion: reduce){
+  .knife{animation:knifeFloat 5.5s ease-in-out infinite!important;animation-duration:5.5s!important;animation-iteration-count:infinite!important}
+  .art-glow{animation:glowBreathe 4s ease-in-out infinite!important;animation-duration:4s!important;animation-iteration-count:infinite!important;opacity:.8}
+}
+/* RAGEX demo activity widgets */
+.brand-cluster{display:flex;align-items:center;gap:18px;flex:none;min-width:max-content}
+.online-counter{display:flex;align-items:center;gap:8px;padding:8px 11px;border:1px solid #29452c;border-radius:11px;background:linear-gradient(135deg,#08140b,#060b08);box-shadow:inset 0 0 16px #71ff1910;white-space:nowrap}
+.online-person{width:18px;height:18px;color:var(--green);flex:none;filter:drop-shadow(0 0 5px #8cff4640)}
+.online-lamp{width:7px;height:7px;border-radius:50%;background:#6cff52;box-shadow:0 0 10px #69ff49;flex:none;animation:onlinePulse 1.8s ease-in-out infinite}
+.online-number{font-weight:900;font-size:15px;color:#edffe6;font-variant-numeric:tabular-nums;min-width:24px;text-align:right}
+.online-caption{font-size:10px;font-weight:800;letter-spacing:.8px;color:#a8ff2e;text-transform:uppercase}
+.online-demo{font-size:8px;letter-spacing:.7px;color:#728579;text-transform:uppercase;margin-left:2px}
+.demo-ticker{position:relative;z-index:10;width:100%;height:64px;display:flex;align-items:center;gap:18px;padding:0 max(5.1vw,24px);overflow:hidden;background:linear-gradient(90deg,#070e09,#09140c 40%,#060b08);border-bottom:1px solid #203624;box-shadow:0 7px 24px #0003}
+.ticker-label{display:flex;align-items:center;gap:9px;flex:none;padding-right:17px;border-right:1px solid #345236;height:34px}
+.ticker-label-mark{display:grid;place-items:center;width:28px;height:28px;border:1px solid #557b37;border-radius:8px;color:var(--green);background:#0c190b}
+.ticker-label-mark svg{width:16px;height:16px;fill:none;stroke:currentColor;stroke-width:1.8}
+.ticker-label-title{font-size:11px;font-weight:900;letter-spacing:1.1px;text-transform:uppercase;color:#ddf6d4;white-space:nowrap}
+.ticker-label-sub{font-size:8px;font-weight:800;letter-spacing:.8px;color:#7fb45e;margin-top:3px}
+.ticker-viewport{position:relative;overflow:hidden;flex:1;min-width:0;mask-image:linear-gradient(90deg,transparent,#000 2%,#000 97%,transparent)}
+.ticker-track{display:flex;width:max-content;align-items:center;will-change:transform;transform:translate3d(0,0,0)}
+.ticker-loop{display:flex;align-items:center;gap:12px;padding-right:12px;flex:none}
+.ticker-card{height:43px;min-width:245px;max-width:300px;display:flex;align-items:center;gap:10px;padding:5px 12px;border:1px solid #253c29;border-radius:10px;background:linear-gradient(115deg,#0a140c,#070c08);box-shadow:inset 0 0 15px #8cff1707;white-space:nowrap;animation:tickerEntry .45s cubic-bezier(.2,.8,.2,1) both}
+.ticker-skin-icon{width:31px;height:31px;display:grid;place-items:center;flex:none;border-radius:7px;color:var(--skin-color,#a8ff2e);border:1px solid color-mix(in srgb,var(--skin-color,#a8ff2e) 45%,transparent);background:color-mix(in srgb,var(--skin-color,#a8ff2e) 10%,#07100a);font-size:16px;box-shadow:0 0 13px color-mix(in srgb,var(--skin-color,#a8ff2e) 12%,transparent)}
+.ticker-info{display:flex;flex-direction:column;gap:3px;min-width:0}
+.ticker-player{font-size:10px;color:#91a395;line-height:1.1}
+.ticker-item{font-size:11px;font-weight:800;color:#eff9ed;overflow:hidden;text-overflow:ellipsis;max-width:185px;line-height:1.1}
+.ticker-value{font-size:11px;font-weight:900;color:var(--skin-color,#a8ff2e);margin-left:auto;white-space:nowrap;text-shadow:0 0 11px color-mix(in srgb,var(--skin-color,#a8ff2e) 18%,transparent)}
+@keyframes onlinePulse{0%,100%{opacity:1;box-shadow:0 0 10px #69ff49}50%{opacity:.55;box-shadow:0 0 4px #69ff49}}
+@keyframes tickerEntry{from{opacity:0;transform:translateX(18px) scale(.98)}to{opacity:1;transform:translateX(0) scale(1)}}
+@media(max-width:1160px){.brand-cluster{gap:11px}.online-counter{padding:7px 8px;gap:6px}.online-demo{display:none}.demo-ticker{padding-inline:4%;gap:13px}}
+@media(max-width:850px){.site-header{align-items:center}.brand-cluster{gap:9px}.online-counter{gap:5px;padding:7px}.online-caption{font-size:9px}.online-number{font-size:13px}.online-person{width:16px;height:16px}.demo-ticker{height:58px;padding-inline:5%;gap:12px}.ticker-label{padding-right:12px}.ticker-label-title{font-size:10px}.ticker-card{min-width:220px;height:40px}.ticker-value{font-size:10px}}
+@media(max-width:560px){.brand-cluster{gap:8px}.brand-cluster .logo{font-size:27px}.online-counter{padding:6px 7px;border-radius:9px}.online-number{font-size:12px;min-width:19px}.online-caption{font-size:8px;letter-spacing:.5px}.online-person{width:14px;height:14px}.online-lamp{width:6px;height:6px}.demo-ticker{height:54px;padding-inline:12px;gap:9px}.ticker-label{gap:6px;padding-right:9px;height:30px}.ticker-label-mark{width:24px;height:24px}.ticker-label-title{font-size:9px;letter-spacing:.5px}.ticker-label-sub{font-size:7px}.ticker-card{min-width:205px;padding:5px 8px;gap:7px}.ticker-skin-icon{width:27px;height:27px}.ticker-item{font-size:10px;max-width:140px}.ticker-player{font-size:9px}}
 </style>
   <link rel="stylesheet" href="ragex-theme.css?v=20261011-no-topup-boost1">
 </head>
 <body>
 <header class="site-header">
-  <a class="logo" href="index.html" aria-label="RAGEX — главная">RAGE<span class="x">X</span></a>
+  <div class="brand-cluster">
+    <a class="logo" href="index.html" aria-label="RAGEX — главная">RAGE<span class="x">X</span></a>
+    <div class="online-counter" title="Демо-счётчик активности; это не число реальных посетителей" aria-label="Демо-онлайн">
+      <svg class="online-person" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="7" r="3.4" fill="currentColor" opacity=".85"/><path d="M5.2 20v-1.4a6.8 6.8 0 0 1 13.6 0V20z" fill="currentColor" opacity=".85"/><path d="M2.5 21h19" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/></svg>
+      <span class="online-lamp" aria-hidden="true"></span>
+      <span class="online-number" id="demoOnlineCount">108</span>
+      <span class="online-caption">онлайн</span><span class="online-demo">DEMO</span>
+    </div>
+  </div>
   <nav class="nav" aria-label="Основная навигация"><a class="active" href="index.html" aria-current="page"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m3 10 9-7 9 7v10a1 1 0 0 1-1 1h-5v-7h-6v7H4a1 1 0 0 1-1-1z" fill="currentColor" stroke="none"/></svg>ГЛАВНАЯ</a><a href="upgrade.html"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2 20 7v10l-8 5-8-5V7z"/><path d="M12 2v20M8.5 9 12 7l3.5 2M8.5 15 12 17l3.5-2"/></svg>АПГРЕЙДЕР</a><a href="cases.html"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m12 2 9 5-9 5-9-5zM3 7v10l9 5 9-5V7M12 12v10"/></svg>КЕЙСЫ</a><a href="inventory.html"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="7" width="18" height="14" rx="2"/><path d="M8 7V5a4 4 0 0 1 8 0v2M3 12h18"/></svg>ИНВЕНТАРЬ</a></nav>
   <div class="header-actions">
     <div class="balance" aria-label="Общий демо-баланс сайта"><span class="star">★</span><strong id="balanceValue">5 000</strong></div>
     <a class="profile" href="inventory.html" aria-label="Открыть инвентарь"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="8" r="4"/><path d="M4 21v-2a8 8 0 0 1 16 0v2z"/></svg></a>
   </div>
 </header>
+<section class="demo-ticker" aria-label="Демо-лента дропов" title="Вымышленные примеры выпадений — демонстрационный контент">
+  <div class="ticker-label">
+    <span class="ticker-label-mark" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M4 17.5 9 12l3.5 3.5L20 7" stroke-linecap="round" stroke-linejoin="round"/><path d="M14.5 7H20v5.5" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+    <div><div class="ticker-label-title">ДЕМО-ДРОПЫ</div><div class="ticker-label-sub">СИМУЛЯЦИЯ</div></div>
+  </div>
+  <div class="ticker-viewport"><div class="ticker-track" id="demoDropTrack"><div class="ticker-loop" id="demoDropLoopA"></div><div class="ticker-loop" id="demoDropLoopB" aria-hidden="true"></div></div></div>
+</section>
 <main>
   <section class="hero">
     <div class="ambient" aria-hidden="true"></div>
@@ -131,5 +179,211 @@ h1 span{display:block;color:var(--green);text-shadow:0 0 24px #85ff2520}
 <script src="ragex-store.js"></script>
 <div class="ragex-toast" id="ragexToast" role="status" aria-live="polite"></div>
 <script src="ragex-theme.js?v=20261011-no-topup-boost1"></script>
+
+<script>
+(() => {
+  'use strict';
+  const ONLINE_KEY = 'ragexDemoOnline.v1';
+  const DROP_KEY = 'ragexDemoDrops.v1';
+  const NEXT_DROP_KEY = 'ragexDemoNextDropAt.v1';
+  const onlineEl = document.getElementById('demoOnlineCount');
+  const track = document.getElementById('demoDropTrack');
+  const loopA = document.getElementById('demoDropLoopA');
+  const loopB = document.getElementById('demoDropLoopB');
+  if (!onlineEl || !track || !loopA || !loopB) return;
+
+  const demoSkins = [
+    {name:'Butterfly Knife | Gamma Doppler', value:128400, color:'#73ff69', symbol:'✦'},
+    {name:'AWP | Dragon Lore', value:246800, color:'#e8bd53', symbol:'◆'},
+    {name:'AK-47 | Wild Lotus', value:86400, color:'#a8ff2e', symbol:'✧'},
+    {name:'Sport Gloves | Pandora’s Box', value:197500, color:'#bd83ff', symbol:'✦'},
+    {name:'M4A4 | Howl', value:113200, color:'#ff5d63', symbol:'◆'},
+    {name:'Karambit | Doppler', value:73800, color:'#6bd8ff', symbol:'✧'},
+    {name:'AWP | Medusa', value:92500, color:'#56d9a2', symbol:'✦'},
+    {name:'Glock-18 | Fade', value:28400, color:'#ffc46a', symbol:'◆'},
+    {name:'AK-47 | Fire Serpent', value:65700, color:'#ffa16b', symbol:'✧'},
+    {name:'M9 Bayonet | Lore', value:43200, color:'#dcff67', symbol:'✦'},
+    {name:'Desert Eagle | Blaze', value:22900, color:'#ffb65c', symbol:'◆'},
+    {name:'AWP | Printstream', value:21800, color:'#e9f2f0', symbol:'✧'}
+  ];
+  const nicknames = ['xNova','re1zen','bl4ze','k1ro','vexor','ne0n','shadowX','r4ven','phantom','z3ro','Kryptex','toxik','vanta','Lunex'];
+  const money = n => Math.round(n).toLocaleString('ru-RU') + ' ★';
+  const pick = arr => arr[Math.floor(Math.random() * arr.length)];
+  const now = Date.now();
+
+  function hourBasedOnline() {
+    const hour = new Date().getHours();
+    // Higher demo activity in typical evening peak hours, lower during the day/night.
+    const min = hour >= 18 && hour <= 23 ? 105 : 80;
+    const max = hour >= 18 && hour <= 23 ? 130 : 116;
+    return Math.floor(min + Math.random() * (max - min + 1));
+  }
+  function readOnline() {
+    try {
+      const saved = JSON.parse(localStorage.getItem(ONLINE_KEY) || 'null');
+      if (saved && Number.isFinite(saved.value) && Date.now() - saved.updatedAt < 60 * 60 * 1000) return saved;
+    } catch (_) {}
+    const value = hourBasedOnline();
+    const saved = {value, updatedAt:Date.now()};
+    try { localStorage.setItem(ONLINE_KEY, JSON.stringify(saved)); } catch (_) {}
+    return saved;
+  }
+  function animateNumber(from, to) {
+    const start = performance.now();
+    const duration = 650;
+    const frame = time => {
+      const t = Math.min(1, (time - start) / duration);
+      const eased = 1 - Math.pow(1 - t, 3);
+      onlineEl.textContent = String(Math.round(from + (to - from) * eased));
+      if (t < 1) requestAnimationFrame(frame);
+    };
+    requestAnimationFrame(frame);
+  }
+  let online = readOnline();
+  onlineEl.textContent = String(online.value);
+  // Change the demo counter hourly and persist the selected value between reloads.
+  setInterval(() => {
+    const next = hourBasedOnline();
+    const previous = Number(onlineEl.textContent) || online.value;
+    online = {value:next, updatedAt:Date.now()};
+    try { localStorage.setItem(ONLINE_KEY, JSON.stringify(online)); } catch (_) {}
+    animateNumber(previous, next);
+  }, 60 * 60 * 1000);
+
+  function initialDrops() {
+    const list = [];
+    const used = new Set();
+    while (list.length < 9) {
+      const skin = pick(demoSkins);
+      // Keep a variety of skins at startup, but allow repeat players.
+      let key = skin.name;
+      if (used.has(key)) continue;
+      used.add(key);
+      list.push({id:'seed-' + list.length, player:pick(nicknames), skin:skin.name, value:skin.value, color:skin.color, symbol:skin.symbol, createdAt:now - (9-list.length)*30000});
+    }
+    return list;
+  }
+  function loadDrops() {
+    try {
+      const list = JSON.parse(localStorage.getItem(DROP_KEY) || 'null');
+      if (Array.isArray(list) && list.length >= 6 && list.every(x => x && x.skin && Number.isFinite(x.value))) return list.slice(-24);
+    } catch (_) {}
+    const list = initialDrops();
+    try { localStorage.setItem(DROP_KEY, JSON.stringify(list)); } catch (_) {}
+    return list;
+  }
+  let drops = loadDrops();
+  function cardMarkup(item) {
+    const el = document.createElement('div');
+    el.className = 'ticker-card';
+    el.style.setProperty('--skin-color', item.color || '#a8ff2e');
+    const icon = document.createElement('div');
+    icon.className = 'ticker-skin-icon';
+    icon.textContent = item.symbol || '✦';
+    const info = document.createElement('div');
+    info.className = 'ticker-info';
+    const player = document.createElement('span');
+    player.className = 'ticker-player';
+    player.textContent = (item.player || 'RAGEX-demo') + ' · демо-дроп';
+    const skin = document.createElement('span');
+    skin.className = 'ticker-item';
+    skin.textContent = item.skin;
+    info.append(player, skin);
+    const val = document.createElement('strong');
+    val.className = 'ticker-value';
+    val.textContent = money(item.value);
+    el.append(icon, info, val);
+    return el;
+  }
+  function renderAll() {
+    loopA.replaceChildren();
+    loopB.replaceChildren();
+    drops.forEach(item => loopA.appendChild(cardMarkup(item)));
+    drops.forEach(item => loopB.appendChild(cardMarkup(item)));
+  }
+  renderAll();
+
+  // Pixel-based ticker animation keeps the scroll smooth while new cards are appended.
+  let offset = 0;
+  let previousFrame = performance.now();
+  const reduceMotion = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  function tick(time) {
+    const dt = Math.min(0.05, Math.max(0, (time - previousFrame) / 1000));
+    previousFrame = time;
+    const loopWidth = loopA.scrollWidth;
+    if (loopWidth > 0 && !reduceMotion) {
+      offset += 26 * dt;
+      if (offset >= loopWidth) offset -= loopWidth;
+      track.style.transform = `translate3d(${-offset}px,0,0)`;
+    }
+    requestAnimationFrame(tick);
+  }
+  requestAnimationFrame(tick);
+
+  function addDemoDrop() {
+    const skin = pick(demoSkins);
+    const item = {
+      id:'drop-' + Date.now() + '-' + Math.random().toString(36).slice(2, 7),
+      player:pick(nicknames), skin:skin.name, value:skin.value,
+      color:skin.color, symbol:skin.symbol, createdAt:Date.now()
+    };
+    drops.push(item);
+    const trimOldest = drops.length > 18;
+    if (trimOldest) drops = drops.slice(-18);
+    // Append one card to both identical loops instead of re-rendering/resetting the animation.
+    loopA.appendChild(cardMarkup(item));
+    loopB.appendChild(cardMarkup(item));
+    if (trimOldest) {
+      loopA.firstElementChild?.remove();
+      loopB.firstElementChild?.remove();
+    }
+    try { localStorage.setItem(DROP_KEY, JSON.stringify(drops)); } catch (_) {}
+    // Mark a new demo event visually without blocking the moving ticker.
+    try { localStorage.setItem(NEXT_DROP_KEY, String(Date.now() + 30000)); } catch (_) {}
+  }
+  let nextAt = Date.now() + 30000;
+  try { nextAt = Number(localStorage.getItem(NEXT_DROP_KEY)) || nextAt; } catch (_) {}
+  if (nextAt <= Date.now()) {
+    // A reload does not erase the previous feed; at most one overdue demo item is appended.
+    addDemoDrop();
+    nextAt = Date.now() + 30000;
+  } else {
+    try { localStorage.setItem(NEXT_DROP_KEY, String(nextAt)); } catch (_) {}
+  }
+  setInterval(() => {
+    if (Date.now() >= nextAt) {
+      addDemoDrop();
+      nextAt = Date.now() + 30000;
+      try { localStorage.setItem(NEXT_DROP_KEY, String(nextAt)); } catch (_) {}
+    }
+  }, 1000);
+
+  // Cross-tab updates retain the same demo feed on this browser.
+  window.addEventListener('storage', event => {
+    if (event.key === DROP_KEY) {
+      try {
+        const shared = JSON.parse(event.newValue || '[]');
+        if (Array.isArray(shared) && shared.length) {
+          drops = shared.slice(-18);
+          renderAll();
+          offset = 0;
+          track.style.transform = 'translate3d(0,0,0)';
+        }
+      } catch (_) {}
+    }
+    if (event.key === ONLINE_KEY) {
+      try {
+        const shared = JSON.parse(event.newValue || 'null');
+        if (shared && Number.isFinite(shared.value)) {
+          const previous = Number(onlineEl.textContent) || shared.value;
+          online = shared;
+          animateNumber(previous, shared.value);
+        }
+      } catch (_) {}
+    }
+  });
+})();
+</script>
+
 </body>
 </html>
