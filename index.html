@@ -102,29 +102,32 @@ h1 span{display:block;color:var(--green);text-shadow:0 0 24px #85ff2520}
 .online-number{font-weight:900;font-size:15px;color:#edffe6;font-variant-numeric:tabular-nums;min-width:24px;text-align:right}
 .online-caption{font-size:10px;font-weight:800;letter-spacing:.8px;color:#a8ff2e;text-transform:uppercase}
 .online-demo{display:none!important}
-.demo-ticker{position:relative;z-index:10;width:100%;height:78px;display:flex;align-items:center;gap:18px;padding:0 max(5.1vw,24px);overflow:hidden;background:linear-gradient(90deg,#070e09,#09140c 40%,#060b08);border-bottom:1px solid #203624;box-shadow:0 7px 24px #0003}
-.ticker-label{display:flex;align-items:center;gap:9px;flex:none;padding-right:17px;border-right:1px solid #345236;height:40px}
+.demo-ticker{position:relative;z-index:10;width:100%;height:78px;display:flex;align-items:center;gap:0;padding:0 max(5.1vw,24px);overflow:hidden;background:linear-gradient(90deg,#070e09,#09140c 40%,#060b08);border-bottom:1px solid #203624;box-shadow:0 7px 24px #0003}
+.ticker-label{display:none!important}
 .ticker-label-mark{display:grid;place-items:center;width:28px;height:28px;border:1px solid #557b37;border-radius:8px;color:var(--green);background:#0c190b}
 .ticker-label-mark svg{width:16px;height:16px;fill:none;stroke:currentColor;stroke-width:1.8}
 .ticker-label-title{font-size:13px;font-weight:950;letter-spacing:1px;text-transform:uppercase;color:#ddf6d4;white-space:nowrap}
 .ticker-label-sub{font-size:9px;font-weight:800;letter-spacing:.7px;color:#7fb45e;margin-top:4px}
-.ticker-viewport{position:relative;overflow:hidden;flex:1;min-width:0;mask-image:linear-gradient(90deg,transparent,#000 2%,#000 97%,transparent)}
+.ticker-viewport{position:relative;overflow:hidden;flex:1;width:100%;min-width:0;height:100%;display:flex;align-items:center;mask-image:linear-gradient(90deg,transparent,#000 1.5%,#000 98.5%,transparent)}
 .ticker-track{display:flex;width:max-content;align-items:center;will-change:transform;transform:translate3d(0,0,0)}
 .ticker-loop{display:flex;align-items:center;gap:12px;padding-right:12px;flex:none}
-.ticker-card{height:58px;min-width:292px;max-width:350px;display:flex;align-items:center;gap:11px;padding:6px 13px;border:1px solid #253c29;border-radius:11px;background:linear-gradient(115deg,#0a140c,#070c08);box-shadow:inset 0 0 15px #8cff1707;white-space:nowrap;animation:tickerEntry .45s cubic-bezier(.2,.8,.2,1) both}
+.ticker-card{height:58px;min-width:292px;max-width:350px;display:flex;align-items:center;gap:11px;padding:6px 13px;border:1px solid #253c29;border-radius:11px;background:linear-gradient(115deg,#0a140c,#070c08);box-shadow:inset 0 0 15px #8cff1707;white-space:nowrap;flex:none}
 .ticker-skin-icon{width:62px;height:45px;display:grid;place-items:center;flex:none;overflow:hidden;border-radius:8px;color:var(--skin-color,#a8ff2e);border:1px solid color-mix(in srgb,var(--skin-color,#a8ff2e) 40%,transparent);background:radial-gradient(ellipse at center,color-mix(in srgb,var(--skin-color,#a8ff2e) 11%,#07100a),#070c08 72%);font-size:19px;box-shadow:0 0 13px color-mix(in srgb,var(--skin-color,#a8ff2e) 12%,transparent)}
 .ticker-skin-image{display:block;width:100%;height:100%;object-fit:contain;padding:2px;opacity:0;grid-area:1 / 1;filter:drop-shadow(0 0 6px color-mix(in srgb,var(--skin-color,#a8ff2e) 18%,transparent));transition:opacity .25s ease}
 .ticker-skin-image.is-loaded{opacity:1}
 .ticker-skin-fallback{display:grid;place-items:center;width:100%;height:100%;font-size:20px;grid-area:1 / 1}
 .ticker-info{display:flex;flex-direction:column;gap:3px;min-width:0}
-.ticker-player{font-size:10px;color:#91a395;line-height:1.1}
+.ticker-card-entering{animation:tickerEnterFromLeft .78s cubic-bezier(.18,.8,.24,1) both}
+.ticker-card-entering .ticker-skin-icon{animation:tickerGlowIn .78s ease-out both}
+@keyframes tickerEnterFromLeft{0%{opacity:0;transform:translate3d(-38px,0,0) scale(.96);filter:blur(2px)}68%{opacity:1;transform:translate3d(5px,0,0) scale(1.01);filter:blur(0)}100%{opacity:1;transform:translate3d(0,0,0) scale(1);filter:blur(0)}}
+@keyframes tickerGlowIn{0%{box-shadow:0 0 0 color-mix(in srgb,var(--skin-color,#a8ff2e) 0%,transparent)}65%{box-shadow:0 0 23px color-mix(in srgb,var(--skin-color,#a8ff2e) 28%,transparent)}100%{box-shadow:0 0 13px color-mix(in srgb,var(--skin-color,#a8ff2e) 12%,transparent)}}
 .ticker-item{font-size:13px;font-weight:900;color:#eff9ed;overflow:hidden;text-overflow:ellipsis;max-width:218px;line-height:1.15}
 .ticker-value{font-size:13px;font-weight:950;color:var(--skin-color,#a8ff2e);margin-left:auto;white-space:nowrap;text-shadow:0 0 11px color-mix(in srgb,var(--skin-color,#a8ff2e) 22%,transparent)}
 @keyframes onlinePulse{0%,100%{opacity:1;box-shadow:0 0 10px #69ff49}50%{opacity:.55;box-shadow:0 0 4px #69ff49}}
-@keyframes tickerEntry{from{opacity:0;transform:translateX(18px) scale(.98)}to{opacity:1;transform:translateX(0) scale(1)}}
-@media(max-width:1160px){.brand-cluster{gap:11px}.online-counter{padding:7px 8px;gap:6px}.online-demo{display:none}.demo-ticker{padding-inline:4%;gap:13px}}
-@media(max-width:850px){.site-header{align-items:center}.brand-cluster{gap:9px}.online-counter{gap:5px;padding:7px}.online-caption{font-size:9px}.online-number{font-size:13px}.online-person{width:16px;height:16px}.demo-ticker{height:72px;padding-inline:5%;gap:12px}.ticker-label{padding-right:12px}.ticker-label-title{font-size:11px}.ticker-card{min-width:270px;height:54px}.ticker-value{font-size:12px}.ticker-item{font-size:12px;max-width:182px}.ticker-skin-icon{width:54px;height:41px}}
-@media(max-width:560px){.brand-cluster{gap:8px}.brand-cluster .logo{font-size:27px}.online-counter{padding:6px 7px;border-radius:9px}.online-number{font-size:12px;min-width:19px}.online-caption{font-size:8px;letter-spacing:.5px}.online-person{width:14px;height:14px}.online-lamp{width:6px;height:6px}.demo-ticker{height:66px;padding-inline:12px;gap:9px}.ticker-label{gap:6px;padding-right:9px;height:34px}.ticker-label-mark{width:24px;height:24px}.ticker-label-title{font-size:9px;letter-spacing:.5px}.ticker-label-sub{font-size:7px}.ticker-card{min-width:250px;padding:5px 8px;gap:7px;height:48px}.ticker-skin-icon{width:46px;height:36px}.ticker-skin-fallback{font-size:17px}.ticker-item{font-size:11px;max-width:154px}.ticker-value{font-size:11px}.ticker-player{font-size:9px}}
+
+@media(max-width:1160px){.brand-cluster{gap:11px}.online-counter{padding:7px 8px;gap:6px}.online-demo{display:none}.demo-ticker{padding-inline:4%;gap:0}}
+@media(max-width:850px){.site-header{align-items:center}.brand-cluster{gap:9px}.online-counter{gap:5px;padding:7px}.online-caption{font-size:9px}.online-number{font-size:13px}.online-person{width:16px;height:16px}.demo-ticker{height:72px;padding-inline:5%;gap:0}.ticker-card{min-width:270px;height:54px}.ticker-value{font-size:12px}.ticker-item{font-size:12px;max-width:182px}.ticker-skin-icon{width:54px;height:41px}}
+@media(max-width:560px){.brand-cluster{gap:8px}.brand-cluster .logo{font-size:27px}.online-counter{padding:6px 7px;border-radius:9px}.online-number{font-size:12px;min-width:19px}.online-caption{font-size:8px;letter-spacing:.5px}.online-person{width:14px;height:14px}.online-lamp{width:6px;height:6px}.demo-ticker{height:66px;padding-inline:12px;gap:0}.ticker-card{min-width:250px;padding:5px 8px;gap:7px;height:48px}.ticker-skin-icon{width:46px;height:36px}.ticker-skin-fallback{font-size:17px}.ticker-item{font-size:11px;max-width:154px}.ticker-value{font-size:11px}}
 </style>
   <link rel="stylesheet" href="ragex-theme.css?v=20261011-no-topup-boost1">
 </head>
@@ -145,11 +148,7 @@ h1 span{display:block;color:var(--green);text-shadow:0 0 24px #85ff2520}
     <a class="profile" href="inventory.html" aria-label="Открыть инвентарь"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="8" r="4"/><path d="M4 21v-2a8 8 0 0 1 16 0v2z"/></svg></a>
   </div>
 </header>
-<section class="demo-ticker" aria-label="Примеры предметов CS2 в ленте RAGEX" title="Лента-пример с предметами из каталога CS2; имена игроков и события сгенерированы для демонстрации">
-  <div class="ticker-label">
-    <span class="ticker-label-mark" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M4 17.5 9 12l3.5 3.5L20 7" stroke-linecap="round" stroke-linejoin="round"/><path d="M14.5 7H20v5.5" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
-    <div><div class="ticker-label-title">ЛЕНТА ДРОПОВ</div><div class="ticker-label-sub">ПРЕДМЕТЫ CS2 · ПРИМЕРЫ</div></div>
-  </div>
+<section class="demo-ticker" aria-label="Лента предметов CS2">
   <div class="ticker-viewport"><div class="ticker-track" id="demoDropTrack"><div class="ticker-loop" id="demoDropLoopA"></div><div class="ticker-loop" id="demoDropLoopB" aria-hidden="true"></div></div></div>
 </section>
 <main>
@@ -211,7 +210,6 @@ h1 span{display:block;color:var(--green);text-shadow:0 0 24px #85ff2520}
     {name:'Desert Eagle | Blaze', value:22900, color:'#ffb65c', symbol:'◆'},
     {name:'AWP | Printstream', value:21800, color:'#e9f2f0', symbol:'✧'}
   ];
-  const nicknames = ['xNova','re1zen','bl4ze','k1ro','vexor','ne0n','shadowX','r4ven','phantom','z3ro','Kryptex','toxik','vanta','Lunex'];
   let skinImageMap = {};
   function normalizeSkinName(name) {
     return String(name || '')
@@ -282,17 +280,19 @@ h1 span{display:block;color:var(--green);text-shadow:0 0 24px #85ff2520}
   const pick = arr => arr[Math.floor(Math.random() * arr.length)];
   const now = Date.now();
 
-  function hourBasedOnline() {
+  function onlineRange() {
     const hour = new Date().getHours();
-    // Higher demo activity in typical evening peak hours, lower during the day/night.
-    const min = hour >= 18 && hour <= 23 ? 105 : 80;
-    const max = hour >= 18 && hour <= 23 ? 130 : 116;
-    return Math.floor(min + Math.random() * (max - min + 1));
+    return (hour >= 18 && hour <= 23) ? {min:105, max:130} : {min:80, max:116};
+  }
+  function hourBasedOnline() {
+    const range = onlineRange();
+    return Math.floor(range.min + Math.random() * (range.max - range.min + 1));
   }
   function readOnline() {
     try {
       const saved = JSON.parse(localStorage.getItem(ONLINE_KEY) || 'null');
-      if (saved && Number.isFinite(saved.value) && Date.now() - saved.updatedAt < 60 * 60 * 1000) return saved;
+      // Keep the last value across reloads; it is varied by the timer below every 12 seconds.
+      if (saved && Number.isFinite(saved.value) && Date.now() - saved.updatedAt < 90 * 1000) return saved;
     } catch (_) {}
     const value = hourBasedOnline();
     const saved = {value, updatedAt:Date.now()};
@@ -312,14 +312,19 @@ h1 span{display:block;color:var(--green);text-shadow:0 0 24px #85ff2520}
   }
   let online = readOnline();
   onlineEl.textContent = String(online.value);
-  // Change the demo counter hourly and persist the selected value between reloads.
+  // Gently vary the displayed counter more often and persist the current value across reloads.
   setInterval(() => {
-    const next = hourBasedOnline();
-    const previous = Number(onlineEl.textContent) || online.value;
+    const range = onlineRange();
+    const current = Number(onlineEl.textContent) || online.value;
+    const step = 1 + Math.floor(Math.random() * 6);
+    const direction = Math.random() < 0.5 ? -1 : 1;
+    let next = Math.max(range.min, Math.min(range.max, current + step * direction));
+    if (next === current) next = current >= range.max ? current - 1 : current + 1;
+    const previous = current;
     online = {value:next, updatedAt:Date.now()};
     try { localStorage.setItem(ONLINE_KEY, JSON.stringify(online)); } catch (_) {}
     animateNumber(previous, next);
-  }, 60 * 60 * 1000);
+  }, 12 * 1000);
 
   function initialDrops() {
     const list = [];
@@ -330,23 +335,44 @@ h1 span{display:block;color:var(--green);text-shadow:0 0 24px #85ff2520}
       let key = skin.name;
       if (used.has(key)) continue;
       used.add(key);
-      list.push({id:'seed-' + list.length, player:pick(nicknames), skin:skin.name, value:skin.value, color:skin.color, symbol:skin.symbol, createdAt:now - (9-list.length)*30000});
+      list.push({id:'seed-' + list.length, skin:skin.name, value:skin.value, color:skin.color, symbol:skin.symbol, createdAt:now - (9-list.length)*30000});
     }
     return list;
   }
   function loadDrops() {
     try {
       const list = JSON.parse(localStorage.getItem(DROP_KEY) || 'null');
-      if (Array.isArray(list) && list.length >= 6 && list.every(x => x && x.skin && Number.isFinite(x.value))) return list.slice(-24);
+      if (Array.isArray(list) && list.length >= 6 && list.every(x => x && x.skin && Number.isFinite(x.value))) {
+        return list.slice(-24).map((x, i) => ({
+          id: x.id || `saved-${i}-${x.createdAt || 0}`,
+          skin: x.skin,
+          value: Number(x.value),
+          color: x.color || '#a8ff2e',
+          symbol: x.symbol || '✦',
+          createdAt: Number(x.createdAt) || now
+        }));
+      }
     } catch (_) {}
     const list = initialDrops();
     try { localStorage.setItem(DROP_KEY, JSON.stringify(list)); } catch (_) {}
     return list;
   }
   let drops = loadDrops();
-  function cardMarkup(item) {
+  const tickerViewport = document.querySelector('.ticker-viewport');
+  const tickerEnterObserver = ('IntersectionObserver' in window) ? new IntersectionObserver(entries => {
+    entries.forEach(entry => {
+      if (!entry.isIntersecting) return;
+      const card = entry.target;
+      tickerEnterObserver.unobserve(card);
+      card.classList.add('ticker-card-entering');
+      card.addEventListener('animationend', event => { if (event.target === card) card.classList.remove('ticker-card-entering'); });
+    });
+  }, {root:tickerViewport, threshold:0.12}) : null;
+
+  function cardMarkup(item, animateOnEnter = false) {
     const el = document.createElement('div');
     el.className = 'ticker-card';
+    if (animateOnEnter) el.dataset.animateOnEnter = 'true';
     el.style.setProperty('--skin-color', item.color || '#a8ff2e');
     const icon = document.createElement('div');
     icon.className = 'ticker-skin-icon';
@@ -362,13 +388,10 @@ h1 span{display:block;color:var(--green);text-shadow:0 0 24px #85ff2520}
     icon.append(image, fallback);
     const info = document.createElement('div');
     info.className = 'ticker-info';
-    const player = document.createElement('span');
-    player.className = 'ticker-player';
-    player.textContent = (item.player || 'RAGEX') + ' · пример дропа';
     const skin = document.createElement('span');
     skin.className = 'ticker-item';
     skin.textContent = item.skin;
-    info.append(player, skin);
+    info.append(skin);
     const val = document.createElement('strong');
     val.className = 'ticker-value';
     val.textContent = money(item.value);
@@ -388,12 +411,11 @@ h1 span{display:block;color:var(--green);text-shadow:0 0 24px #85ff2520}
   // Pixel-based ticker animation keeps the scroll smooth while new cards are appended.
   let offset = 0;
   let previousFrame = performance.now();
-  const reduceMotion = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   function tick(time) {
     const dt = Math.min(0.05, Math.max(0, (time - previousFrame) / 1000));
     previousFrame = time;
     const loopWidth = loopA.scrollWidth;
-    if (loopWidth > 0 && !reduceMotion) {
+    if (loopWidth > 0) {
       offset += 26 * dt;
       if (offset >= loopWidth) offset -= loopWidth;
       track.style.transform = `translate3d(${-offset}px,0,0)`;
@@ -406,15 +428,24 @@ h1 span{display:block;color:var(--green);text-shadow:0 0 24px #85ff2520}
     const skin = pick(demoSkins);
     const item = {
       id:'drop-' + Date.now() + '-' + Math.random().toString(36).slice(2, 7),
-      player:pick(nicknames), skin:skin.name, value:skin.value,
+      skin:skin.name, value:skin.value,
       color:skin.color, symbol:skin.symbol, createdAt:Date.now()
     };
     drops.push(item);
     const trimOldest = drops.length > 18;
     if (trimOldest) drops = drops.slice(-18);
     // Append one card to both identical loops instead of re-rendering/resetting the animation.
-    loopA.appendChild(cardMarkup(item));
-    loopB.appendChild(cardMarkup(item));
+    const newCardA = cardMarkup(item, true);
+    const newCardB = cardMarkup(item, true);
+    loopA.appendChild(newCardA);
+    loopB.appendChild(newCardB);
+    if (tickerEnterObserver) {
+      tickerEnterObserver.observe(newCardA);
+      tickerEnterObserver.observe(newCardB);
+    } else {
+      newCardA.classList.add('ticker-card-entering');
+      newCardB.classList.add('ticker-card-entering');
+    }
     updateVisibleTickerImages();
     if (trimOldest) {
       loopA.firstElementChild?.remove();
@@ -447,11 +478,16 @@ h1 span{display:block;color:var(--green);text-shadow:0 0 24px #85ff2520}
       try {
         const shared = JSON.parse(event.newValue || '[]');
         if (Array.isArray(shared) && shared.length) {
-          drops = shared.slice(-18);
+          drops = shared.slice(-18).map((x, i) => ({
+            id: x.id || `shared-${i}-${x.createdAt || 0}`,
+            skin: x.skin,
+            value: Number(x.value),
+            color: x.color || '#a8ff2e',
+            symbol: x.symbol || '✦',
+            createdAt: Number(x.createdAt) || Date.now()
+          }));
           renderAll();
           updateVisibleTickerImages();
-          offset = 0;
-          track.style.transform = 'translate3d(0,0,0)';
         }
       } catch (_) {}
     }
