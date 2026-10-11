@@ -103,7 +103,7 @@ footer.site-footer{border-top:1px solid #253c28;padding:24px max(5.1vw,24px);dis
 <div class="status" id="status"></div>
 <div class="lower">
 <section class="box"><div class="box-head"><span>▰ Мой инвентарь</span><small id="inventoryCount">0 предметов</small></div><div class="box-body"><p style="font-size:12px;color:var(--muted);line-height:1.6;margin-top:0">Выбери предмет для ставки. Баланс и инвентарь сохраняются в этом браузере.</p><div class="item-grid" id="inventoryGrid"></div><div class="empty" id="inventoryEmpty">Инвентарь пока пуст.</div><button class="primary" id="addDemoSkinBtn" style="display:none;font-size:12px;padding:10px;margin-top:12px" onclick="addDemoItem()">＋ ВЫДАТЬ ДЕМО-СКИН</button><div id="demoHint" class="small-hint">Включи демо-режим, чтобы выдавать тестовые предметы.</div></div></section>
-<section class="box"><div class="box-head"><span>⌁ Каталог скинов CS2</span><small id="catalogHeaderStatus">Загружаю каталог…</small></div><div class="box-body"><p id="catalogStatus" class="catalog-status" aria-live="polite">Загружаю каталог и актуальные цены Steam Market. 1 ★ = 1 ₽.</p><p class="catalog-status" style="font-size:10px;margin-top:-7px">Источники: <a href="https://github.com/17mafo/cs-price-tracker" target="_blank" rel="noopener noreferrer">цены Steam Market</a> · <a href="https://www.cbr-xml-daily.ru/" target="_blank" rel="noopener noreferrer">курс EUR/RUB по данным ЦБ РФ</a>.</p><div class="controls"><input class="search" id="search" placeholder="Поиск по названию или оружию…"><select id="sort" aria-label="Сортировка по цене"><option value="asc">Цена ↑</option><option value="desc">Цена ↓</option></select></div><div class="controls"><select id="rarityFilter" aria-label="Фильтр по редкости"><option value="">Все редкости</option></select><select id="weaponFilter" aria-label="Фильтр по оружию"><option value="">Все оружия</option></select></div><div class="controls"><input id="minPrice" type="number" min="0" placeholder="Цена от"><input id="maxPrice" type="number" min="0" placeholder="Цена до"></div><div class="item-grid" id="targetGrid"></div><div class="catalog-pager"><button type="button" id="catalogPrev" disabled>← НАЗАД</button><span id="catalogPageLabel">Страница 1</span><button type="button" id="catalogNext" disabled>ДАЛЕЕ →</button></div></div></section>
+<section class="box"><div class="box-head"><span>⌁ Каталог скинов CS2</span><small id="catalogHeaderStatus">Загружаю рынок…</small></div><div class="box-body"><p id="catalogStatus" class="catalog-status" aria-live="polite">Загружаю каталог и рыночные цены. Покупка временно недоступна.</p><p class="catalog-status" style="font-size:10px;margin-top:-7px">Источники: <a href="https://github.com/17mafo/cs-price-tracker" target="_blank" rel="noopener noreferrer">цены Steam Market</a> · <a href="https://www.cbr-xml-daily.ru/" target="_blank" rel="noopener noreferrer">курс EUR/RUB по данным ЦБ РФ</a>.</p><div class="controls"><input class="search" id="search" placeholder="Поиск по названию или оружию…"><select id="sort" aria-label="Сортировка по цене"><option value="asc">Цена ↑</option><option value="desc">Цена ↓</option></select></div><div class="controls"><select id="rarityFilter" aria-label="Фильтр по редкости"><option value="">Все редкости</option></select><select id="weaponFilter" aria-label="Фильтр по оружию"><option value="">Все оружия</option></select></div><div class="controls"><input id="minPrice" type="number" min="0" placeholder="Цена от"><input id="maxPrice" type="number" min="0" placeholder="Цена до"></div><div class="item-grid" id="targetGrid"></div><div class="catalog-pager"><button type="button" id="catalogPrev" disabled>← НАЗАД</button><span id="catalogPageLabel">Страница 1</span><button type="button" id="catalogNext" disabled>ДАЛЕЕ →</button></div></div></section>
 </div>
 <p style="color:var(--muted);font-size:11px;line-height:1.7;margin-top:22px">Цены берутся из снимка Steam Community Market в EUR и конвертируются в рубли по ежедневному курсу EUR/RUB. 1 ★ = 1 ₽. Это демо-сайт: нет Steam-входа, денежных операций или выдачи предметов CS2.</p>
 </main>
@@ -121,25 +121,14 @@ footer.site-footer{border-top:1px solid #253c28;padding:24px max(5.1vw,24px);dis
 <audio id="spinSound" src="upgrade-spin.mp3" preload="auto"></audio>
 <audio id="winSound" src="upgrade-win.mp3" preload="auto"></audio>
 <audio id="loseSound" src="upgrade-lose.mp3" preload="auto"></audio>
-<script src="ragex-store.js?v=20261011-market-prices-v2"></script>
-<script src="ragex-prices.js?v=20261011-market-prices-v2"></script>
+<script src="ragex-store.js?v=20261011-no-fallback-knife-floor-v3"></script>
+<script src="ragex-prices.js?v=20261011-no-fallback-knife-floor-v3"></script>
 <script>
-const fallbackCatalog=[
-{name:'MP7 | Neon Pulse',value:180,icon:'🟢',weaponName:'MP7',category:'Пистолеты-пулемёты',rarity:'Restricted',rarityColor:'#8847ff'},
-{name:'USP-S | Cybershade',value:300,icon:'🔷',weaponName:'USP-S',category:'Пистолеты',rarity:'Classified',rarityColor:'#d32ce6'},
-{name:'AK-47 | Night Strike',value:420,icon:'🔫',weaponName:'AK-47',category:'Винтовки',rarity:'Restricted',rarityColor:'#8847ff'},
-{name:'M4A1-S | Dark Bloom',value:650,icon:'🌿',weaponName:'M4A1-S',category:'Винтовки',rarity:'Classified',rarityColor:'#d32ce6'},
-{name:'AWP | Green Phantom',value:900,icon:'🎯',weaponName:'AWP',category:'Снайперские винтовки',rarity:'Covert',rarityColor:'#eb4b4b'},
-{name:'Desert Eagle | Acid',value:1200,icon:'🟩',weaponName:'Desert Eagle',category:'Пистолеты',rarity:'Covert',rarityColor:'#eb4b4b'},
-{name:'Knife | Acid Edge',value:1800,icon:'🗡️',weaponName:'Knife',category:'Ножи',rarity:'Extraordinary',rarityColor:'#eb4b4b'},
-{name:'Gloves | Toxic',value:2600,icon:'🧤',weaponName:'Gloves',category:'Перчатки',rarity:'Extraordinary',rarityColor:'#eb4b4b'},
-{name:'AWP | Neon Storm',value:4000,icon:'⚡',weaponName:'AWP',category:'Снайперские винтовки',rarity:'Covert',rarityColor:'#eb4b4b'}
-];
-let catalog=fallbackCatalog.slice();
+let catalog=[];
 const CATALOG_API='https://raw.githubusercontent.com/ByMykel/CSGO-API/main/public/api/en/skins.json';
 const CATALOG_CACHE_KEY='ragexCs2CatalogBaseCacheV2';
 const CATALOG_PAGE_SIZE=60;
-let catalogPage=0,catalogIsLive=false;
+let catalogPage=0,catalogIsLive=false,catalogLoadFailed=false;
 let inventory=window.RagexStore.getInventory(),demoInventory=[],source=null,target=null,busy=false,demoMode=false,quickMode=false,lastBaseChance=0,lockedBoostAmount=0;
 let soundEnabled=true;
 try{soundEnabled=localStorage.getItem('ragexSoundEnabled')!=='false'}catch(_){soundEnabled=true}
@@ -195,7 +184,7 @@ function skinCard(item,kind,index){
  const sell=(kind==='source'&&!demoMode)?`<button class="sell-btn"${disabled} onclick="event.stopPropagation();sellInventoryItem(${index})">ПРОДАТЬ · ${Math.floor(Number(item.value)||0).toLocaleString('ru-RU')} ★</button>`:'';
  const visual=itemVisual(item,false);
  const weaponMeta=item.weaponName||item.category||'';
- return `<div class="skin ${selected?'selected':''}" style="--rarity-color:${/^#[0-9a-f]{6}$/i.test(String(item.rarityColor||''))?item.rarityColor:'#334034'}" onclick="selectItem('${kind}',${index})"><div class="skin-icon">${visual}</div><div class="skin-name">${escapeHtml(item.name)}</div>${weaponMeta?`<div class="skin-meta">${escapeHtml(weaponMeta)}</div>`:''}${rarityMarkup(item)}<div class="skin-price">${Number(item.value).toLocaleString('ru-RU')} ★</div>${kind==='target'?`<button class="buy-btn"${disabled} onclick="event.stopPropagation();buySkin(${index})">КУПИТЬ</button>`:sell}</div>`;
+ return `<div class="skin ${selected?'selected':''}" style="--rarity-color:${/^#[0-9a-f]{6}$/i.test(String(item.rarityColor||''))?item.rarityColor:'#334034'}" onclick="selectItem('${kind}',${index})"><div class="skin-icon">${visual}</div><div class="skin-name">${escapeHtml(item.name)}</div>${weaponMeta?`<div class="skin-meta">${escapeHtml(weaponMeta)}</div>`:''}${rarityMarkup(item)}<div class="skin-price" title="${item.priceAdjusted?escapeHtml(item.priceAdjustmentNote||'Источник вернул неправдоподобно низкую цену; применён минимальный уровень 3 000 ★ для ножа.'):''}">${Number(item.value).toLocaleString('ru-RU')} ★</div>${kind==='target'?`<button class="buy-btn"${disabled} onclick="event.stopPropagation();buySkin(${index})">КУПИТЬ</button>`:sell}</div>`;
 }
 function renderInventory(){const list=activeInventory();document.getElementById('inventoryGrid').innerHTML=list.map((item,i)=>skinCard(item,'source',i)).join('');document.getElementById('inventoryEmpty').style.display=list.length?'none':'block';document.getElementById('inventoryCount').textContent=list.length+' предметов'+(demoMode?' · демо':'')}
 function renderTargets(){
@@ -216,11 +205,13 @@ function renderTargets(){
  const total=list.length,pages=Math.max(1,Math.ceil(total/CATALOG_PAGE_SIZE));
  catalogPage=Math.max(0,Math.min(catalogPage,pages-1));
  const pageItems=list.slice(catalogPage*CATALOG_PAGE_SIZE,(catalogPage+1)*CATALOG_PAGE_SIZE);
- document.getElementById('targetGrid').innerHTML=pageItems.map(item=>skinCard(item,'target',catalog.indexOf(item))).join('')||'<div class="empty">Предметы не найдены. Попробуй изменить фильтры.</div>';
- document.getElementById('catalogPageLabel').textContent=`${catalogPage+1} / ${pages} · ${total.toLocaleString('ru-RU')} скинов`;
- document.getElementById('catalogPrev').disabled=catalogPage<=0;
- document.getElementById('catalogNext').disabled=catalogPage>=pages-1;
- document.getElementById('catalogHeaderStatus').textContent=catalog.length>100?`${catalog.length.toLocaleString('ru-RU')} скинов`:'Демо-каталог';
+ document.getElementById('targetGrid').innerHTML=(!catalogIsLive||!catalog.length)
+   ? `<div class="empty">${catalogLoadFailed?'Каталог с рыночными ценами временно недоступен. Тестовые предметы удалены, покупки заблокированы. Попробуй обновить страницу позже.':'Каталог загружается. До загрузки проверенных цен предметы не показываются и купить их нельзя.'}</div>`
+   : (pageItems.map(item=>skinCard(item,'target',catalog.indexOf(item))).join('')||'<div class="empty">Предметы не найдены. Попробуй изменить фильтры.</div>');
+ document.getElementById('catalogPageLabel').textContent=catalogIsLive?`${catalogPage+1} / ${pages} · ${total.toLocaleString('ru-RU')} скинов`:'Ожидание цен';
+ document.getElementById('catalogPrev').disabled=!catalogIsLive||catalogPage<=0;
+ document.getElementById('catalogNext').disabled=!catalogIsLive||catalogPage>=pages-1;
+ document.getElementById('catalogHeaderStatus').textContent=catalogIsLive?`${catalog.length.toLocaleString('ru-RU')} скинов`:'Рынок загружается';
 }
 function populateCatalogFilters(){
  const rarityEl=document.getElementById('rarityFilter'),weaponEl=document.getElementById('weaponFilter');
@@ -270,18 +261,22 @@ function normalizeApiSkin(skin){
 function safeApiImage(url){return typeof url==='string'&&/^https:\/\//i.test(url)}
 function setCatalogStatus(message){const el=document.getElementById('catalogStatus');if(el)el.textContent=message}
 function useLoadedCatalog(items,live){
- if(!Array.isArray(items)||items.length<10)return false;
+ if(!live||!Array.isArray(items)||items.length<10||items.some(item=>!item.marketPrice||item.demoPrice||!Number.isFinite(Number(item.value))||Number(item.value)<=0)){
+  catalog=[];catalogIsLive=false;catalogLoadFailed=true;target=null;catalogPage=0;populateCatalogFilters();renderTargets();updatePanels();return false;
+ }
+ catalogLoadFailed=false;
  catalog=items;
  if(target&&!catalog.some(item=>String(item.id)===String(target.id)))target=null;
- catalogIsLive=!!live;
+ catalogIsLive=true;
  catalogPage=0;
  populateCatalogFilters();
  renderTargets();
  updatePanels();
- setCatalogStatus(live?'Рыночные цены Steam Market загружены и переведены в рубли: 1 ★ = 1 ₽. Цены обновляются по источнику рынка.':'Цены рынка временно недоступны. Используются только резервные демо-значения; они не являются рыночными.');
+ setCatalogStatus('Рыночные цены Steam Market загружены и переведены в рубли: 1 ★ = 1 ₽. Предметы без проверенной рыночной цены скрыты.');
  return true;
 }
 async function loadCs2Catalog(){
+ catalogLoadFailed=false;
  let baseItems=null;
  try{
   const cached=JSON.parse(localStorage.getItem(CATALOG_CACHE_KEY)||'null');
@@ -300,8 +295,9 @@ async function loadCs2Catalog(){
   console.warn('RAGEX base catalog refresh failed; using cached catalog if available:',error);
  }
  if(!baseItems){
-  populateCatalogFilters();renderTargets();
-  setCatalogStatus('Не удалось загрузить каталог CS2. Проверь подключение и обнови страницу.');
+  catalog=[];catalogIsLive=false;catalogLoadFailed=true;target=null;populateCatalogFilters();renderTargets();
+  document.getElementById('catalogHeaderStatus').textContent='Нет подключения';
+  setCatalogStatus('Не удалось загрузить каталог CS2. Покупка отключена, чтобы нельзя было купить тестовые предметы. Проверь подключение и обнови страницу.');
   return;
  }
  try{
@@ -315,15 +311,17 @@ async function loadCs2Catalog(){
    setCatalogStatus(`Рыночные цены Steam Market · 1 ★ = 1 ₽ · данные цен до ${marketDate} · курс EUR/RUB: ${fxText} ₽ (${date})${priced.fxSource==='fallback-cbr'?' · резервный курс':''}. Загружено вариантов: ${priced.count.toLocaleString('ru-RU')}${priced.stale?' · используется сохранённый снимок цен':''}.`);
    return;
   }
-  useLoadedCatalog(baseItems,false);
-  setCatalogStatus('Рыночный источник сейчас недоступен. Показываются резервные демо-цены, не рыночные. Повтори загрузку позже.');
+  useLoadedCatalog([],false);
+  catalogLoadFailed=true;renderTargets();document.getElementById('catalogHeaderStatus').textContent='Рыночные цены недоступны';
+  setCatalogStatus('Рыночный источник сейчас недоступен. Тестовые цены и предметы отключены, покупки заблокированы. Повтори загрузку позже.');
  }catch(error){
   console.warn('RAGEX market prices unavailable:',error);
-  useLoadedCatalog(baseItems,false);
-  setCatalogStatus('Не удалось получить цены Steam Market. Сейчас показаны резервные демо-цены, а не реальные рыночные цены.');
+  useLoadedCatalog([],false);
+  catalogLoadFailed=true;renderTargets();document.getElementById('catalogHeaderStatus').textContent='Рыночные цены недоступны';
+  setCatalogStatus('Не удалось получить цены Steam Market. Тестовые цены и предметы удалены из каталога; покупка заблокирована до получения проверенных цен.');
  }
 }
-function selectItem(kind,index){if(busy)return;if(kind==='source')source=activeInventory()[index]||null;else target=catalog[index]||null;updatePanels();renderInventory();renderTargets()}
+function selectItem(kind,index){if(busy)return;if(kind==='source')source=activeInventory()[index]||null;else{if(!catalogIsLive){showStatus('Каталог пока не готов: выбери цель после загрузки рыночных цен.');return}target=catalog[index]||null;if(!target||!target.marketPrice||target.demoPrice){target=null;showStatus('Этот предмет не имеет проверенной рыночной цены и недоступен для выбора.');return}}updatePanels();renderInventory();renderTargets()}
 function getBoostAmount(){
  const input=document.getElementById('boostAmount');
  if(!input||demoMode)return 0;
@@ -368,11 +366,12 @@ function toggleSound(){
 function showStatus(message){const status=document.getElementById('status');status.className='status show';status.textContent=message}
 function toggleDemoMode(){if(busy)return;demoMode=!demoMode;if(demoMode){demoInventory=[];source=null;}else{demoInventory=[];source=null;}updatePanels();renderInventory();renderTargets();showStatus(demoMode?'Демо-режим включён. Тестовые предметы не сохраняются в общем инвентаре.':'Демо-режим выключен. Все временные демо-предметы удалены. Обычный инвентарь сохранён.')}
 function toggleQuickMode(){if(busy){showStatus('Дождись завершения апгрейда, прежде чем менять режим игры.');return}quickMode=!quickMode;updatePanels();showStatus(quickMode?'Быстрая игра включена: короткое вращение. Нажми «Прокачать», чтобы начать.':'Быстрая игра выключена: обычное медленное вращение.')}
-function addDemoItem(){if(busy){showStatus('Нельзя добавлять предметы во время апгрейда.');return}if(!demoMode)return;const item=catalog[Math.floor(Math.random()*Math.min(3,catalog.length))];demoInventory.push({...item,id:'demo-'+Date.now()+'-'+Math.random(),demo:true});renderInventory();showStatus('Выдан временный тестовый предмет: '+item.name+'. Он не влияет на обычный инвентарь.')}
+function addDemoItem(){if(busy){showStatus('Нельзя добавлять предметы во время апгрейда.');return}if(!demoMode)return;if(!catalogIsLive||!catalog.length){showStatus('Нельзя выдать демо-скин, пока не загружен каталог предметов.');return}const item=catalog[Math.floor(Math.random()*Math.min(3,catalog.length))];if(!item)return;demoInventory.push({...item,id:'demo-'+Date.now()+'-'+Math.random(),demo:true});renderInventory();showStatus('Выдан временный демо-предмет из каталога CS2: '+item.name+'. Он не влияет на обычный инвентарь.')}
 function buySkin(index){
  if(busy||!document.getElementById('upgradeConfirmBackdrop').hidden){showStatus('Покупка временно недоступна. Закрой подтверждение или дождись окончания апгрейда.');return}
  if(demoMode){showStatus('Покупка отключена в демо-режиме. Выключи демо для покупок за общий баланс.');return}
- const item=catalog[index];if(!item)return;
+ if(!catalogIsLive){showStatus('Покупка отключена: рыночный каталог ещё не загружен.');return}
+ const item=catalog[index];if(!item||!item.marketPrice||item.demoPrice){showStatus('Этот предмет не имеет проверенной рыночной цены и его нельзя купить.');return;}
  if(!window.RagexStore.spendBalance(item.value)){showStatus('Недостаточно средств. Нужно '+item.value.toLocaleString('ru-RU')+' ★.');updatePanels();return}
  inventory=window.RagexStore.getInventory();inventory.push({...item,id:Date.now()+'-'+Math.random(),demo:false});persistInventory();renderInventory();updatePanels();showStatus('Покупка успешна: '+item.name+' добавлен в общий инвентарь.');
 }

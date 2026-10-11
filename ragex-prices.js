@@ -223,6 +223,16 @@
     return name;
   }
 
+  function applyPlausibilityFloor(item, value) {
+    const label = `${item && item.name || ''} ${item && item.weaponName || ''} ${item && item.category || ''}`.toLowerCase();
+    // Steam snapshots can contain malformed 0.03 EUR values for knife/glove listings.
+    // A 3-ruble knife is not a plausible market listing; keep it at a conservative minimum.
+    if (/(\bknife\b|bayonet|karambit|butterfly|daggers|navaja|stiletto|talon|ursus|kukri|skeleton|survival knife|nomad knife|flip knife|gut knife|falchion|bowie|huntsman|paracord|нож)/i.test(label) && Number(value) < 3000) {
+      return { value: 3000, adjusted: true };
+    }
+    return { value: Number(value), adjusted: false };
+  }
+
   function expandCatalog(baseItems, marketIndex, rate) {
     const output = [];
     for (const item of baseItems || []) {
@@ -237,8 +247,10 @@
         const key = `${q}|${wearKey(wear)}`;
         const rec = marketIndex.get(key);
         if (!rec) continue;
-        const value = priceRub(rec, rate);
-        if (!value) continue;
+        const rawValue = priceRub(rec, rate);
+        if (!rawValue) continue;
+        const sanity = applyPlausibilityFloor(item, rawValue);
+        const value = sanity.value;
         const displayName = wear ? `${baseName} (${wear})` : baseName;
         output.push({
           ...item,
@@ -256,6 +268,8 @@
           priceUpdatedAt: null,
           marketPriceSource: 'Steam Community Market',
           demoPrice: false,
+          priceAdjusted: sanity.adjusted,
+          priceAdjustmentNote: sanity.adjusted ? 'Рыночный источник вернул неправдоподобно низкую цену; применён минимальный уровень 3 000 ★ для ножа.' : '',
           stattrak: meta.stattrak,
           souvenir: meta.souvenir
         });
@@ -264,8 +278,10 @@
       // Wearless catalog items occasionally exist (not common for weapon finishes).
       if (!found && !wears.length) {
         const rec = marketIndex.get(`${q}|__no_wear__`);
-        const value = priceRub(rec, rate);
-        if (rec && value) output.push({ ...item, name: baseName, value, marketHashName: rec.marketName, marketPriceEur: Number(rec.eur), marketPriceRub: value, marketPrice: true, priceCurrency: 'RUB', marketPriceSource: 'Steam Community Market', demoPrice: false });
+        const rawValue = priceRub(rec, rate);
+        const sanity = applyPlausibilityFloor(item, rawValue);
+        const value = sanity.value;
+        if (rec && value) output.push({ ...item, name: baseName, value, marketHashName: rec.marketName, marketPriceEur: Number(rec.eur), marketPriceRub: value, marketPrice: true, priceCurrency: 'RUB', marketPriceSource: 'Steam Community Market', demoPrice: false, priceAdjusted: sanity.adjusted, priceAdjustmentNote: sanity.adjusted ? 'Рыночный источник вернул неправдоподобно низкую цену; применён минимальный уровень 3 000 ★ для ножа.' : '' });
       }
     }
     // Some wear variants may not have a tracked Steam price. Never invent a market price for them.
@@ -323,8 +339,10 @@
           if (options.length) rec = options.reduce((min, next) => !min || Number(next.eur) < Number(min.eur) ? next : min, null);
         }
         if (!rec) return item;
-        const value = priceRub(rec, data.fx.rate);
-        if (!value) return item;
+        const rawValue = priceRub(rec, data.fx.rate);
+        if (!rawValue) return item;
+        const sanity = applyPlausibilityFloor(item, rawValue);
+        const value = sanity.value;
         count++;
         const parsedName = parseMarketName(item.name || '');
         const displayName = (meta.wear || parsedName.wear) ? item.name : rec.marketName;
@@ -340,6 +358,8 @@
           priceUpdatedAt: data.updatedAt || '',
           marketPriceSource: 'Steam Community Market',
           demoPrice: false,
+          priceAdjusted: sanity.adjusted,
+          priceAdjustmentNote: sanity.adjusted ? 'Рыночный источник вернул неправдоподобно низкую цену; применён минимальный уровень 3 000 ★ для ножа.' : '',
           wearName: meta.wear || rec.wear || ''
         };
       });

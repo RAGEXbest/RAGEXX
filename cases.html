@@ -17,7 +17,7 @@
 <div class="cases"><article class="case"><div class="case-icon">📦</div><div><h2>NEON START</h2><p>Стартовые скины и яркие покрытия</p><div class="price">350 ★</div><button class="open" onclick="openCase(0,this)">ОТКРЫТЬ КЕЙС</button></div></article><article class="case"><div class="case-icon">🟩</div><div><h2>TOXIC DROP</h2><p>Зелёные акценты и редкие предметы</p><div class="price">750 ★</div><button class="open" onclick="openCase(1,this)">ОТКРЫТЬ КЕЙС</button></div></article><article class="case"><div class="case-icon">🔒</div><div><h2>ELITE VAULT</h2><p>Дорогие скины для коллекции</p><div class="price">1 500 ★</div><button class="open" onclick="openCase(2,this)">ОТКРЫТЬ КЕЙС</button></div></article></div>
 <div class="status" id="status" role="status"><div class="win-icon" id="winIcon">✨</div><div><strong id="winName">Предмет найден</strong><div id="winValue"></div><a href="inventory.html" style="display:inline-block;margin-top:7px;color:var(--green);font-size:12px;font-weight:800">ОТКРЫТЬ ИНВЕНТАРЬ ↗</a></div></div>
 </main><footer class="foot">Демо-кейсы RAGEX · Баланс и предметы общие для страниц в этом браузере.</footer>
-<script src="ragex-store.js?v=20261011-market-prices-v2"></script><script src="ragex-prices.js?v=20261011-market-prices-v2"></script><script>
+<script src="ragex-store.js?v=20261011-market-prices-v2"></script><script src="ragex-prices.js?v=20261011-no-fallback-knife-floor-v3"></script><script>
 const fmt=n=>Number(n).toLocaleString('ru-RU');
 function renderBalance(){document.getElementById('balance').textContent=fmt(window.RagexStore.getBalance())}
 window.addEventListener('ragex:change',renderBalance);renderBalance();
