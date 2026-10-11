@@ -8,7 +8,7 @@
 
   const PRICE_URL = 'https://raw.githubusercontent.com/17mafo/cs-price-tracker/main/static/prices/latest.json';
   const FX_URL = 'https://www.cbr-xml-daily.ru/daily_json.js';
-  const INDEX_CACHE_KEY = 'ragexCs2MarketPriceIndexV2';
+  const INDEX_CACHE_KEY = 'ragexCs2MarketPriceIndexV3';
   const FX_CACHE_KEY = 'ragexEurRubRateV1';
   const PRICE_TTL = 18 * 60 * 60 * 1000;
   const FX_TTL = 8 * 60 * 60 * 1000;
@@ -85,6 +85,42 @@
     }
   }
 
+  // The price-tracker JSON stores each item's history summary under
+  // { steam: { last_24h, last_7d, last_30d, last_90d, last_ever } }.
+  // Earlier code looked only for rawValue.price, which is not present in that
+  // format and caused every market price to be ignored.
+  function numericPrice(value) {
+    if (typeof value === 'number') return Number.isFinite(value) && value > 0 ? value : 0;
+    if (typeof value !== 'string') return 0;
+    const cleaned = value.trim().replace(/[€$£\s]/g, '').replace(',', '.');
+    const parsed = Number(cleaned);
+    return Number.isFinite(parsed) && parsed > 0 ? parsed : 0;
+  }
+
+  function extractEurPrice(rawValue) {
+    if (rawValue == null) return 0;
+    if (typeof rawValue !== 'object') return numericPrice(rawValue);
+
+    const steam = rawValue.steam && typeof rawValue.steam === 'object' ? rawValue.steam : rawValue;
+    // Prefer recent weighted averages, fall back to longer periods when an
+    // item did not trade in the shorter window.
+    const candidates = [
+      steam.last_24h,
+      steam.last_7d,
+      steam.last_30d,
+      steam.last_90d,
+      steam.last_ever,
+      rawValue.price,
+      rawValue.price_eur,
+      rawValue.last_price
+    ];
+    for (const candidate of candidates) {
+      const price = numericPrice(candidate);
+      if (price > 0) return price;
+    }
+    return 0;
+  }
+
   function wantedQualityKeys(items) {
     const keys = new Set();
     for (const item of items || []) {
@@ -123,9 +159,9 @@
         const parsed = parseMarketName(marketName);
         const qKey = qualityKey(parsed);
         if (!wanted.has(qKey)) continue;
-        const eur = Number(rawValue && typeof rawValue === 'object' ? rawValue.price : rawValue);
+        const eur = extractEurPrice(rawValue);
         if (!Number.isFinite(eur) || eur <= 0) continue;
-        const itemDate = String(rawValue && typeof rawValue === 'object' ? rawValue.date || '' : '');
+        const itemDate = String(rawValue && typeof rawValue === 'object' ? rawValue.updated_at || rawValue.updatedAt || rawValue.date || '' : '');
         if (itemDate && itemDate > latestSourceDate) latestSourceDate = itemDate;
         records.push({
           marketName,
@@ -140,7 +176,7 @@
       if (records.length < minRecords) throw new Error(`Too few matching prices (${records.length})`);
       const result = {
         savedAt: Date.now(),
-        sourceUpdatedAt: latestSourceDate || new Date().toISOString(),
+        sourceUpdatedAt: latestSourceDate || response.headers.get('last-modified') || new Date().toISOString(),
         coverage: Array.from(wanted),
         records
       };
@@ -318,6 +354,7 @@
     priceCatalog,
     priceInventory,
     getSources: () => ({ priceUrl: PRICE_URL, fxUrl: FX_URL }),
+    extractEurPrice,
     fallbackRate: FALLBACK_EUR_RUB
   };
 })();
