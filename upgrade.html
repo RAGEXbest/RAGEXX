@@ -331,14 +331,16 @@ function renderInventory(){
  document.getElementById('sourceInventoryNext').disabled=sourceInventoryPage>=pages-1;
 }
 function matchesTargetPreset(item){
+ // Target presets pick a target from the SOURCE item's value only.
+ // The optional balance boost changes the win chance for the already selected target,
+ // and must never cause the target skin to be replaced or cleared.
  if(!source||!item||targetPreset==='all')return true;
- const boost=demoMode?0:getBoostAmount();
- const stake=Math.max(1,Number(source.value)||0)+Math.max(0,Number(boost)||0);
+ const stake=Math.max(1,Number(source.value)||0);
  if(Number(item.value)<=stake)return false;
  const [type,raw]=targetPreset.split(':');
  const wanted=Number(raw);
  if(type==='chance'){
-  const chance=getBaseChance(source,item,boost);
+  const chance=getBaseChance(source,item,0);
   return Math.abs(chance-wanted)<=4;
  }
  if(type==='mult'){
@@ -542,7 +544,7 @@ function updatePanels(){
  if(boostSlider){boostSlider.max=String(Math.max(0,balance));boostSlider.value=String(Math.min(Number(boostInput&&boostInput.value)||0,balance));boostSlider.disabled=busy||demoMode||balance<=0;}
  document.getElementById('boostBalanceLimit').textContent=balance.toLocaleString('ru-RU')+' ★';
  if(boostMax)boostMax.disabled=busy||demoMode||balance<=0;
- document.getElementById('boostNote').textContent=demoMode?'В демо-режиме дополнительная ставка отключена.':'Перетащи ползунок или введи сумму. Она спишется при запуске и повысит шанс.';
+ document.getElementById('boostNote').textContent=demoMode?'В демо-режиме дополнительная ставка отключена.':'Дополнительная ставка повысит шанс на выбранный скин. Цель не изменится.';
  document.querySelectorAll('#targetPresets [data-preset]').forEach(button=>{const active=button.dataset.preset===targetPreset;button.classList.toggle('active',active);button.setAttribute('aria-pressed',String(active));button.disabled=busy||!source;});
  updatePresetCaption();
  const demoBtn=document.getElementById('demoModeBtn');demoBtn.textContent='ДЕМО '+(demoMode?'ВКЛ':'ВЫКЛ');demoBtn.classList.toggle('active',demoMode);demoBtn.setAttribute('aria-pressed',String(demoMode));
@@ -550,9 +552,9 @@ function updatePanels(){
  const soundBtn=document.getElementById('soundBtn');soundBtn.textContent=(soundEnabled?'🔊 ЗВУК ВКЛ':'🔇 ЗВУК ВЫКЛ');soundBtn.classList.toggle('active',soundEnabled);soundBtn.setAttribute('aria-pressed',String(soundEnabled));soundBtn.title=soundEnabled?'Звуки апгрейдера включены':'Звуки апгрейдера выключены';
  document.getElementById('addDemoSkinBtn').style.display=demoMode?'block':'none';document.getElementById('demoHint').textContent=demoMode?'Демо включено: выдаваемые предметы существуют только до выключения режима и не попадают в обычный инвентарь.':'Обычный режим: общий инвентарь и баланс. Предметы можно улучшать или продавать.';
 }
-document.getElementById('boostAmount').addEventListener('input',()=>{if(!busy){getBoostAmount();document.getElementById('boostSlider').value=document.getElementById('boostAmount').value;if(target&&targetPreset!=='all'&&!matchesTargetPreset(target))target=null;catalogPage=0;renderTargets();updatePanels()}});
-document.getElementById('boostSlider').addEventListener('input',()=>{if(!busy&&!demoMode){document.getElementById('boostAmount').value=document.getElementById('boostSlider').value;getBoostAmount();if(target&&targetPreset!=='all'&&!matchesTargetPreset(target))target=null;catalogPage=0;renderTargets();updatePanels()}});
-document.getElementById('boostMaxBtn').addEventListener('click',()=>{if(busy||demoMode||!source)return;document.getElementById('boostAmount').value=String(window.RagexStore.getBalance());document.getElementById('boostSlider').value=document.getElementById('boostAmount').value;if(target&&targetPreset!=='all'&&!matchesTargetPreset(target))target=null;catalogPage=0;renderTargets();updatePanels()});
+document.getElementById('boostAmount').addEventListener('input',()=>{if(!busy){getBoostAmount();document.getElementById('boostSlider').value=document.getElementById('boostAmount').value;renderTargets();updatePanels()}});
+document.getElementById('boostSlider').addEventListener('input',()=>{if(!busy&&!demoMode){document.getElementById('boostAmount').value=document.getElementById('boostSlider').value;getBoostAmount();renderTargets();updatePanels()}});
+document.getElementById('boostMaxBtn').addEventListener('click',()=>{if(busy||demoMode||!source)return;document.getElementById('boostAmount').value=String(window.RagexStore.getBalance());document.getElementById('boostSlider').value=document.getElementById('boostAmount').value;renderTargets();updatePanels()});
 document.getElementById('targetPresets').addEventListener('click',event=>{const button=event.target.closest('[data-preset]');if(button)selectTargetPreset(button.dataset.preset)});
 function toggleSound(){
  soundEnabled=!soundEnabled;
